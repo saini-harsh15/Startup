@@ -24,18 +24,22 @@ public class InvestorController {
 
     @Autowired
     private InvestorRepository investorRepository;
-    
+
     @Autowired
     private InvestorService investorService;
 
-    @GetMapping("/dashboard")
-    public String showInvestorDashboard(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    @GetMapping({"/dashboard", "/dashboard/{id}"})
+    public String showInvestorDashboard(
+            @PathVariable(value = "id", required = false) Long id,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "industry", required = false) String industry,
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+
         Object userIdObj = session.getAttribute("loggedInUserId");
         if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
-            return "redirect:/login"; // Redirect to login if not authenticated or not an investor
+            return "redirect:/login";
         }
 
-        // Get the investor object and add to the model
         Long userId;
         try {
             if (userIdObj instanceof String) {
@@ -52,51 +56,52 @@ public class InvestorController {
         if (investorOptional.isPresent()) {
             model.addAttribute("investor", investorOptional.get());
         } else {
-            // Should not happen if session is valid, but good practice to handle
             return "redirect:/";
         }
 
-        List<Startup> startups = startupService.getAllStartups();
+        List<Startup> startups = startupService.findStartupsByCriteria(search, industry);
         model.addAttribute("startups", startups);
-        return "investorDashboard";
-    }
-
-    @GetMapping("/dashboard/{id}")
-    public String showInvestorDashboardById(@PathVariable Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        Object userIdObj = session.getAttribute("loggedInUserId");
-        if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
-            return "redirect:/login"; // Redirect to login if not authenticated or not an investor
-        }
-
-        Optional<Investor> investorOptional = investorRepository.findById(id);
-        if (investorOptional.isPresent()) {
-            model.addAttribute("investor", investorOptional.get());
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Investor profile not found.");
-            return "redirect:/";
-        }
-
-        List<Startup> startups = startupService.getAllStartups();
-        model.addAttribute("startups", startups);
+        model.addAttribute("industries", startupService.getDistinctIndustries());
+        model.addAttribute("currentSearch", search);
+        model.addAttribute("currentIndustry", industry);
 
         return "investorDashboard";
     }
 
     @GetMapping("/startup/{id}")
     public String showStartupProfile(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (session.getAttribute("loggedInUserId") == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
-            return "redirect:/login"; // Redirect to login if not authenticated or not an investor
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
+            return "redirect:/login";
+        }
+
+        Long userId;
+        try {
+            if (userIdObj instanceof String) {
+                userId = Long.parseLong((String) userIdObj);
+            } else {
+                userId = (Long) userIdObj;
+            }
+        } catch (NumberFormatException | ClassCastException e) {
+            return "redirect:/login";
+        }
+
+        Optional<Investor> investorOptional = investorRepository.findById(userId);
+        if (investorOptional.isPresent()) {
+            model.addAttribute("investor", investorOptional.get());
+        } else {
+            return "redirect:/login";
         }
 
         Optional<Startup> startup = startupService.getStartupById(id);
         if (startup.isPresent()) {
             model.addAttribute("startup", startup.get());
-            return "startupProfile";
+            return "startupExpandedView";
         } else {
             return "redirect:/investor/dashboard";
         }
     }
-    
+
     @GetMapping("/profile")
     public String showProfile(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         Object userIdObj = session.getAttribute("loggedInUserId");
@@ -107,11 +112,9 @@ public class InvestorController {
 
         Long userId;
         try {
-            // Check if the object is a String and parse it
             if (userIdObj instanceof String) {
                 userId = Long.parseLong((String) userIdObj);
             } else {
-                // If the object is already a Long, cast it directly
                 userId = (Long) userIdObj;
             }
         } catch (NumberFormatException | ClassCastException e) {
@@ -163,5 +166,34 @@ public class InvestorController {
         }
 
         return "redirect:/investor/dashboard/" + userId;
+    }
+
+    @PostMapping("/apply-for-investment")
+    public String applyForInvestment(
+            @RequestParam("startupId") Long startupId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
+            redirectAttributes.addFlashAttribute("error", "Your session has expired. Please log in again.");
+            return "redirect:/login";
+        }
+
+        Long investorId;
+        try {
+            if (userIdObj instanceof String) {
+                investorId = Long.parseLong((String) userIdObj);
+            } else {
+                investorId = (Long) userIdObj;
+            }
+        } catch (NumberFormatException | ClassCastException e) {
+            redirectAttributes.addFlashAttribute("error", "An authentication error occurred. Please log in again.");
+            return "redirect:/login";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Your investment application has been submitted successfully!");
+
+        return "redirect:/investor/startup/" + startupId;
     }
 }

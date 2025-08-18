@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>Startup Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,18 +26,12 @@
         }
         .dark-mode .navbar,
         .dark-mode .sidebar,
-        .dark-mode .profile-container,
-        .dark-mode .dropdown-content,
-        .dark-mode .card,
         .dark-mode .main-content-section {
             background-color: #1e1e1e;
             box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
         }
         .dark-mode .navbar,
         .dark-mode .sidebar,
-        .dark-mode .dropdown-content,
-        .dark-mode .profile-container,
-        .dark-mode .card,
         .dark-mode .main-content-section {
             border-color: #333;
         }
@@ -49,7 +44,6 @@
         }
         .dark-mode .welcome-msg,
         .dark-mode .section-header h2,
-        .dark-mode .card h4,
         .dark-mode .profile-info p {
             color: #e0e0e0;
         }
@@ -59,14 +53,77 @@
             color: #e0e0e0;
             border-color: #555;
         }
+
         .theme-toggle {
             cursor: pointer;
-            font-size: 1.5em;
+            font-size: 1.2em;
             margin-right: 15px;
+            background-color: #e0e0e0;
+            color: #333;
+            border-radius: 5px;
+            padding: 5px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
+        .theme-toggle:hover {
+            background-color: #d4d4d4;
+            transform: translateY(-1px);
+        }
+        .dark-mode .theme-toggle {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        .dark-mode .theme-toggle:hover {
+            background-color: #444;
+        }
+
         .dark-mode .logo {
             color: #5cb85c;
         }
+
+        /* Dropdown specific dark mode fix */
+        .dark-mode .dropdown-content {
+            background-color: #2a2a2a;
+            box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode .dropdown-content a {
+            color: #e0e0e0;
+        }
+        .dark-mode .dropdown-content a:hover {
+            background-color: #3d3d3d;
+        }
+        /* End of fix */
+
+        /* --- Immersive UI enhancements --- */
+        .welcome-banner {
+            background-image: linear-gradient(135deg, #28a745, #1d7b37);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        .welcome-banner h1 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 2.8em;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .welcome-banner p {
+            font-size: 1.3em;
+            margin: 0;
+            opacity: 0.9;
+        }
+        .section-icon i {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .summary-cards .card:hover .section-icon i {
+            transform: scale(1.2);
+            color: #1a642e;
+        }
+        /* --- End of Immersive UI enhancements --- */
 
         .navbar {
             display: flex;
@@ -180,13 +237,8 @@
             background-color: #f1f1f1;
             color: #28a745;
         }
-        .sidebar .closebtn {
-            position: absolute;
-            top: 12px;
-            right: 20px;
-            font-size: 32px;
-            color: #888;
-            cursor: pointer;
+        .sidebar a i {
+            margin-right: 15px;
         }
 
         .overlay {
@@ -215,24 +267,6 @@
             padding: 0 20px;
         }
 
-        .welcome-banner {
-            background-color: #28a745;
-            color: white;
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .welcome-banner h1 {
-            color: white;
-            margin: 0 0 10px 0;
-            font-size: 2.5em;
-        }
-        .welcome-banner p {
-            font-size: 1.2em;
-            margin: 0;
-        }
         .section-icon {
             font-size: 1.5em;
             margin-right: 15px;
@@ -249,12 +283,19 @@
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             text-align: center;
         }
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode .card {
+            background-color: #2a2a2a;
+        }
+        .dark-mode .card h4,
+        .dark-mode .card p {
+            color: #e0e0e0;
         }
         .card h4 {
             margin: 0 0 10px 0;
@@ -305,12 +346,34 @@
             border: none;
             padding: 10px 20px;
             font-size: 1em;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .edit-button:hover {
             background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .welcome-banner {
+            background-image: linear-gradient(135deg, #28a745, #1d7b37);
+            color: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        .welcome-banner h1 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 2.8em;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .welcome-banner p {
+            font-size: 1.3em;
+            margin: 0;
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -318,10 +381,10 @@
 
 <div id="mySidebar" class="sidebar">
     <span class="closebtn" onclick="closeNav()">×</span>
-    <a href="#"><span class="icon">🏠</span> Dashboard</a>
-    <a href="#"><span class="icon">🚀</span> My Profile</a>
-    <a href="#"><span class="icon">📈</span> Analytics</a>
-    <a href="/contact"><span class="icon">📞</span> Contact Us</a>
+    <a href="#"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
+    <a href="#"><span class="icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
+    <a href="#"><span class="icon"><i class="fas fa-chart-line"></i></span> Analytics</a>
+    <a href="/contact"><span><i class="fas fa-envelope"></i></span> Contact Us</a>
 </div>
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
@@ -332,7 +395,9 @@
         <div class="logo">Startup Ecosystem</div>
     </div>
     <div class="navbar-right">
-        <span class="theme-toggle" onclick="toggleTheme()">🌙</span>
+        <span class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </span>
         <span class="welcome-msg">Welcome, ${startup.name}</span>
         <div class="profile-dropdown">
             <div class="profile-icon" onclick="toggleDropdown()">P</div>
@@ -352,22 +417,22 @@
 
     <div class="summary-cards">
         <div class="card">
-            <h4><span class="section-icon">📈</span>Total Investments</h4>
+            <h4><span class="section-icon"><i class="fas fa-chart-line"></i></span>Total Investments</h4>
             <p>$0</p>
         </div>
         <div class="card">
-            <h4><span class="section-icon">📩</span>Messages</h4>
+            <h4><span class="section-icon"><i class="fas fa-envelope"></i></span>Messages</h4>
             <p>0</p>
         </div>
         <div class="card">
-            <h4><span class="section-icon">👀</span>Profile Views</h4>
+            <h4><span class="section-icon"><i class="fas fa-eye"></i></span>Profile Views</h4>
             <p>0</p>
         </div>
     </div>
 
     <div class="main-content-section">
         <div class="section-header">
-            <h2><span class="section-icon">🚀</span>My Profile</h2>
+            <h2><span class="section-icon"><i class="fas fa-rocket"></i></span>My Profile</h2>
             <button class="edit-button">Edit Profile</button>
         </div>
         <div class="profile-info">
@@ -413,10 +478,10 @@
     function setTheme(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').textContent = '☀️';
+            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
         } else {
             document.body.classList.remove('dark-mode');
-            document.querySelector('.theme-toggle').textContent = '🌙';
+            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
         }
         localStorage.setItem('theme', theme);
     }

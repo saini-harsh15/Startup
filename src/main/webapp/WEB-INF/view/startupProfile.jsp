@@ -10,6 +10,7 @@
 <html>
 <head>
     <title>My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Reusing styles from dashboard for consistency */
         body {
@@ -19,6 +20,86 @@
             padding-top: 60px;
             text-align: center;
         }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode .navbar,
+        .dark-mode .sidebar,
+        .dark-mode .profile-container,
+        .dark-mode .dropdown-content {
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode .navbar,
+        .dark-mode .sidebar,
+        .dark-mode .dropdown-content,
+        .dark-mode .profile-container {
+            border-color: #333;
+        }
+        .dark-mode .sidebar a {
+            color: #e0e0e0;
+        }
+        .dark-mode .sidebar a:hover {
+            background-color: #333;
+            color: #28a745;
+        }
+        .dark-mode .profile-container h1,
+        .dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+        .dark-mode .form-group input,
+        .dark-mode .form-group textarea {
+            background-color: #333;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+        .dark-mode .logo {
+            color: #5cb85c;
+        }
+        .dark-mode .profile-icon {
+            background-color: #5cb85c;
+        }
+
+        /* Dropdown specific dark mode fix */
+        .dark-mode .dropdown-content {
+            background-color: #2a2a2a;
+            box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode .dropdown-content a {
+            color: #e0e0e0;
+        }
+        .dark-mode .dropdown-content a:hover {
+            background-color: #3d3d3d;
+        }
+        /* End of fix */
+
+        /* Theme toggle button styles */
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-right: 15px;
+            background-color: #e0e0e0;
+            color: #333;
+            border-radius: 5px;
+            padding: 5px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .theme-toggle:hover {
+            background-color: #d4d4d4;
+            transform: translateY(-1px);
+        }
+        .dark-mode .theme-toggle {
+            background-color: #333;
+            color: #e0e0e0;
+        }
+        .dark-mode .theme-toggle:hover {
+            background-color: #444;
+        }
+
 
         .navbar {
             display: flex;
@@ -132,6 +213,9 @@
             background-color: #f1f1f1;
             color: #28a745;
         }
+        .sidebar a i {
+            margin-right: 15px;
+        }
         .sidebar .closebtn {
             position: absolute;
             top: 12px;
@@ -184,7 +268,7 @@
             align-items: center;
         }
 
-        .profile-container h1 span {
+        .profile-container h1 i {
             margin-right: 15px;
         }
 
@@ -217,14 +301,15 @@
             background-color: #28a745;
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 10px 20px;
             font-size: 1.1em;
-            border-radius: 5px;
+            border-radius: 50px; /* Made the button rounded */
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         .save-button:hover {
             background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .alert-message {
@@ -250,10 +335,10 @@
 
 <div id="mySidebar" class="sidebar">
     <span class="closebtn" onclick="closeNav()">×</span>
-    <a href="/startup/dashboard/${startup.id}"><span class="icon">🏠</span> Dashboard</a>
-    <a href="/startup/profile"><span class="icon">🚀</span> My Profile</a>
-    <a href="#"><span class="icon">📈</span> Analytics</a>
-    <a href="/contact"><span class="icon">📞</span> Contact Us</a>
+    <a href="/startup/dashboard/${startup.id}"><span><i class="fas fa-tachometer-alt"></i> Dashboard</span></a>
+    <a href="/startup/profile"><span><i class="fas fa-user-circle"></i> My Profile</span></a>
+    <a href="#"><span><i class="fas fa-chart-line"></i> Analytics</span></a>
+    <a href="/contact"><span><i class="fas fa-envelope"></i> Contact Us</span></a>
 </div>
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
@@ -264,6 +349,9 @@
         <div class="logo">Startup Ecosystem</div>
     </div>
     <div class="navbar-right">
+        <span class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </span>
         <span class="welcome-msg">Welcome, ${startup.name}</span>
         <div class="profile-dropdown">
             <div class="profile-icon" onclick="toggleDropdown()">P</div>
@@ -276,7 +364,7 @@
 </div>
 <div class="container">
     <div class="profile-container">
-        <h1><span class="section-icon">🚀</span>Edit Profile</h1>
+        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
 
         <c:if test="${not empty message}">
             <div class="alert-message alert-success">${message}</div>
@@ -338,6 +426,31 @@
             }
         }
     }
+
+    // Theme Toggle Functions
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+        }
+        localStorage.setItem('theme', theme);
+    }
+
+    function toggleTheme() {
+        if (document.body.classList.contains('dark-mode')) {
+            setTheme('light');
+        } else {
+            setTheme('dark');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        setTheme(savedTheme);
+    });
 </script>
 
 </body>
