@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Contact Us</title>
+    <title>${startup.name} - Expanded View</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -27,12 +27,15 @@
         }
         .dark-mode .navbar,
         .dark-mode .sidebar,
+        .dark-mode .profile-container,
+        .dark-mode .dropdown-content,
         .dark-mode .container {
             background-color: #1e1e1e;
-            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
         }
         .dark-mode .navbar,
-        .dark-mode .sidebar {
+        .dark-mode .sidebar,
+        .dark-mode .dropdown-content,
+        .dark-mode .profile-container {
             border-color: #333;
         }
         .dark-mode .sidebar a {
@@ -43,8 +46,12 @@
             color: #28a745;
         }
         .dark-mode .welcome-msg,
-        .dark-mode h1 {
+        .dark-mode h1,
+        .dark-mode h2 {
             color: #e0e0e0;
+        }
+        .dark-mode .profile-header {
+            border-bottom: 2px solid #333;
         }
         .dark-mode .logo {
             color: #5cb85c;
@@ -52,56 +59,19 @@
         .dark-mode .profile-icon {
             background-color: #5cb85c;
         }
-        .dark-mode .dropdown-content {
-            background-color: #2a2a2a;
-            box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.1);
-        }
         .dark-mode .dropdown-content a {
             color: #e0e0e0;
         }
         .dark-mode .dropdown-content a:hover {
             background-color: #333;
         }
-        .dark-mode .form-group label {
-            color: #ccc;
-        }
-        .dark-mode .form-group input,
-        .dark-mode .form-group textarea {
-            background-color: #333;
-            color: #e0e0e0;
-            border-color: #555;
-        }
-        .dark-mode .submit-button {
-            background-color: #218838;
-        }
-        .dark-mode .submit-button:hover {
-            background-color: #155724;
-        }
-
         .theme-toggle {
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1.5em;
             margin-right: 15px;
-            background-color: #e0e0e0;
-            color: #333;
-            border-radius: 5px;
-            padding: 5px 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .theme-toggle:hover {
-            background-color: #d4d4d4;
-            transform: translateY(-1px);
-        }
-        .dark-mode .theme-toggle {
-            background-color: #333;
-            color: #e0e0e0;
-        }
-        .dark-mode .theme-toggle:hover {
-            background-color: #444;
         }
 
-        /* Reusing styles from dashboard */
+        /* --- Navbar Styles --- */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -132,6 +102,7 @@
             color: #28a745;
             cursor: pointer;
         }
+
         .navbar-right {
             display: flex;
             align-items: center;
@@ -182,6 +153,7 @@
         .dropdown-content a:hover {
             background-color: #f1f1f1;
         }
+
         .sidebar {
             height: 100%;
             width: 0;
@@ -223,6 +195,7 @@
             color: #888;
             cursor: pointer;
         }
+
         .overlay {
             display: none;
             position: fixed;
@@ -233,79 +206,73 @@
             background-color: rgba(0, 0, 0, 0.4);
             z-index: 1000;
         }
-        @media screen and (max-width: 768px) {
-            .sidebar.open {
-                width: 250px;
-            }
-            .overlay {
-                display: block;
-            }
-        }
-        /* --- Contact form styles --- */
+
+        /* --- Container Styles --- */
         .container {
-            max-width: 600px;
+            max-width: 900px;
             margin: 20px auto;
             padding: 40px;
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 20px;
             text-align: left;
         }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            color: #555;
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
         }
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 16px;
+        .profile-header h1 {
+            color: #28a745;
+            margin: 0;
+            flex-grow: 1;
         }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 150px;
+        .profile-details p {
+            font-size: 1.1em;
+            margin: 10px 0;
         }
-        .submit-button {
+        /* Button styling for Back and Apply */
+        .back-button, .apply-button {
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .back-button {
+            background-color: #6c757d;
+            color: white;
+            margin-right: 10px;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .apply-button {
             background-color: #28a745;
             color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
         }
-        .submit-button:hover {
+        .apply-button:hover {
             background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        h1 {
-            color: #28a745;
-            margin-bottom: 20px;
-            font-size: 2em;
+        .back-button, .apply-button, .apply-form {
+            display: inline-block;
         }
     </style>
 </head>
 <body>
+
 <div id="mySidebar" class="sidebar">
     <span class="closebtn" onclick="closeNav()">×</span>
-    <c:if test="${not empty investor}">
-        <a href="/investor/dashboard/${investor.id}"><span><i class="fas fa-tachometer-alt"></i> Dashboard</span></a>
-        <a href="#"><span><i class="fas fa-rocket"></i> My Startups</span></a>
-        <a href="/investor/profile"><span><i class="fas fa-user-circle"></i> Settings</span></a>
-        <a href="/contact"><span><i class="fas fa-envelope"></i> Contact Us</span></a>
-    </c:if>
-    <c:if test="${empty investor}">
-        <a href="/"><span><i class="fas fa-home"></i> Home</span></a>
-    </c:if>
+    <a href="/investor/dashboard/${investor.id}"><span><i class="fas fa-tachometer-alt"></i> Dashboard</span></a>
+    <a href="#"><span><i class="fas fa-rocket"></i> My Startups</span></a>
+    <a href="/investor/profile"><span><i class="fas fa-user-circle"></i> Settings</span></a>
+    <a href="/contact"><span><i class="fas fa-envelope"></i> Contact Us</span></a>
 </div>
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
@@ -316,50 +283,43 @@
         <div class="logo">My Project</div>
     </div>
     <div class="navbar-right">
-            <span class="theme-toggle" onclick="toggleTheme()">
-                <i class="fas fa-moon"></i>
-            </span>
-        <c:if test="${not empty investor}">
-            <span class="welcome-msg">Welcome, ${investor.investorName}</span>
-            <div class="profile-dropdown">
-                <div class="profile-icon" onclick="toggleDropdown()">P</div>
-                <div id="myDropdown" class="dropdown-content">
-                    <a href="/investor/profile">My Profile</a>
-                    <a href="/logout">Logout</a>
-                </div>
+        <span class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </span>
+        <span class="welcome-msg">Welcome, ${investor.investorName}</span>
+        <div class="profile-dropdown">
+            <div class="profile-icon" onclick="toggleDropdown()">P</div>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="/investor/profile">My Profile</a>
+                <a href="/logout">Logout</a>
             </div>
-        </c:if>
+        </div>
     </div>
 </div>
 
 <div class="container">
-    <h1>Contact Us</h1>
-    <p>Please fill out the form below and we'll get back to you as soon as possible.</p>
-    <c:if test="${not empty successMessage}">
+    <c:if test="${not empty message}">
         <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                ${successMessage}
+                ${message}
         </div>
     </c:if>
-    <c:if test="${not empty errorMessage}">
-        <div style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                ${errorMessage}
+    <div class="profile-header">
+        <h1>${startup.name}</h1>
+        <div>
+            <a href="/investor/dashboard" class="back-button">Back to Dashboard</a>
+            <form action="/investor/apply-for-investment" method="post" style="display: inline;">
+                <input type="hidden" name="startupId" value="${startup.id}">
+                <button type="submit" class="apply-button">Apply for Investment</button>
+            </form>
         </div>
-    </c:if>
-    <form action="/contact" method="post">
-        <div class="form-group">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Your Email</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" name="message" required></textarea>
-        </div>
-        <button type="submit" class="submit-button">Send Message</button>
-    </form>
+    </div>
+
+    <div class="profile-details">
+        <p><strong>Description:</strong> ${startup.description}</p>
+        <p><strong>Industry:</strong> ${startup.industry}</p>
+        <p><strong>Funding Ask:</strong> ${startup.fundingAsk}</p>
+        <p><strong>Equity Offered:</strong> ${startup.equityOffered}%</p>
+    </div>
 </div>
 
 <script>
@@ -367,13 +327,16 @@
         document.getElementById("mySidebar").classList.add("open");
         document.getElementById("overlay").style.display = "block";
     }
+
     function closeNav() {
         document.getElementById("mySidebar").classList.remove("open");
         document.getElementById("overlay").style.display = "none";
     }
+
     function toggleDropdown() {
         document.getElementById("myDropdown").classList.toggle("show");
     }
+
     window.onclick = function(event) {
         if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
             var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -385,7 +348,7 @@
             }
         }
     }
-    // New Theme Toggle Functions
+    // Theme Toggle Functions
     function setTheme(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-mode');
@@ -396,6 +359,7 @@
         }
         localStorage.setItem('theme', theme);
     }
+
     function toggleTheme() {
         if (document.body.classList.contains('dark-mode')) {
             setTheme('light');
@@ -403,10 +367,12 @@
             setTheme('dark');
         }
     }
+
     document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         setTheme(savedTheme);
     });
 </script>
+
 </body>
 </html>

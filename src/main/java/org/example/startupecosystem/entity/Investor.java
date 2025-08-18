@@ -16,17 +16,17 @@ public class Investor {
     @Column(name = "password")
     private String password;
 
-    // New fields from the verification process
     @Column(name = "investor_name")
     private String investorName;
 
     @Column(name = "investment_firm")
     private String investmentFirm;
-    
-    @Column(name = "bio", columnDefinition = "TEXT")
+
+    // Add these new fields
+    @Column(name = "bio")
     private String bio;
-    
-    @Column(name = "investment_preferences", columnDefinition = "TEXT")
+
+    @Column(name = "investment_preferences")
     private String investmentPreferences;
 
     // Getters and Setters
@@ -55,7 +55,6 @@ public class Investor {
         this.password = password;
     }
 
-    // New Getters and Setters for the added fields
     public String getInvestorName() {
         return investorName;
     }
@@ -71,32 +70,21 @@ public class Investor {
     public void setInvestmentFirm(String investmentFirm) {
         this.investmentFirm = investmentFirm;
     }
-    
+
+    // Add getters and setters for new fields
     public String getBio() {
         return bio;
     }
-    
+
     public void setBio(String bio) {
         this.bio = bio;
     }
-    
+
     public String getInvestmentPreferences() {
         return investmentPreferences;
     }
-    
-    public void setInvestmentPreferences(String investmentPreferences) {
-        this.investmentPreferences = investmentPreferences;
-    }
 
-    /**
-     * Updates the investor's profile with new information.
-     * @param investorName The new name of the investor.
-     * @param bio The investor's bio or description.
-     * @param investmentPreferences The investor's investment preferences.
-     */
-    public void updateProfile(String investorName, String bio, String investmentPreferences) {
-        this.investorName = investorName;
-        this.bio = bio;
+    public void setInvestmentPreferences(String investmentPreferences) {
         this.investmentPreferences = investmentPreferences;
     }
 }

@@ -31,6 +31,14 @@ public class StartupController {
         Optional<Startup> startupOptional = startupRepository.findById(id);
         if (startupOptional.isPresent()) {
             model.addAttribute("startup", startupOptional.get());
+
+            // --- New Code: Add dynamic values to the model ---
+            // For now, these are placeholder values. In a real application, you would fetch them from the DB.
+            model.addAttribute("totalInvestments", 0);
+            model.addAttribute("totalMessages", 0);
+            model.addAttribute("profileViews", 0);
+            // --- End of New Code ---
+
             return "startupDashboard";
         } else {
             return "redirect:/";
@@ -47,11 +55,9 @@ public class StartupController {
 
         Long userId;
         try {
-            // Check if the object is a String and parse it
             if (userIdObj instanceof String) {
                 userId = Long.parseLong((String) userIdObj);
             } else {
-                // If the object is already a Long, cast it directly
                 userId = (Long) userIdObj;
             }
         } catch (NumberFormatException | ClassCastException e) {
@@ -62,7 +68,7 @@ public class StartupController {
         Optional<Startup> startupOptional = startupRepository.findById(userId);
         if (startupOptional.isPresent()) {
             model.addAttribute("startup", startupOptional.get());
-            return "startupprofile";
+            return "startupProfile";
         } else {
             redirectAttributes.addFlashAttribute("error", "Profile not found.");
             return "redirect:/startup/dashboard/" + userId;
@@ -102,7 +108,6 @@ public class StartupController {
             redirectAttributes.addFlashAttribute("error", "An error occurred while saving your profile.");
         }
 
-        // This is the changed line: Redirects to the dashboard instead of the profile page.
         return "redirect:/startup/dashboard/" + userId;
     }
 }
