@@ -1,6 +1,11 @@
 package org.example.startupecosystem.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "investors")
@@ -22,12 +27,36 @@ public class Investor {
     @Column(name = "investment_firm")
     private String investmentFirm;
 
-    // Add these new fields
     @Column(name = "bio")
     private String bio;
 
     @Column(name = "investment_preferences")
     private String investmentPreferences;
+
+    // New fields from the provided dataset
+    @Column(name = "investor_type")
+    private String investorType;
+
+    @Column(name = "preferred_domains")
+    private String preferredDomains;
+
+    @Column(name = "funding_stages")
+    private String fundingStages;
+
+    @Column(name = "notable_investments")
+    private String notableInvestments;
+
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "website")
+    private String website;
+
+    @Column(name = "investment_range_usd")
+    private String investmentRangeUsd;
+
+    @Column(name = "linkedin")
+    private String linkedin;
 
     // Getters and Setters
 
@@ -71,7 +100,6 @@ public class Investor {
         this.investmentFirm = investmentFirm;
     }
 
-    // Add getters and setters for new fields
     public String getBio() {
         return bio;
     }
@@ -86,5 +114,69 @@ public class Investor {
 
     public void setInvestmentPreferences(String investmentPreferences) {
         this.investmentPreferences = investmentPreferences;
+    }
+
+    public String getInvestorType() {
+        return investorType;
+    }
+
+    public void setInvestorType(String investorType) {
+        this.investorType = investorType;
+    }
+
+    public String getPreferredDomains() {
+        return preferredDomains;
+    }
+
+    public void setPreferredDomains(String preferredDomains) {
+        this.preferredDomains = preferredDomains;
+    }
+
+    public String getFundingStages() {
+        return fundingStages;
+    }
+
+    public void setFundingStages(String fundingStages) {
+        this.fundingStages = fundingStages;
+    }
+
+    public String getNotableInvestments() {
+        return notableInvestments;
+    }
+
+    public void setNotableInvestments(String notableInvestments) {
+        this.notableInvestments = notableInvestments;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getInvestmentRangeUsd() {
+        return investmentRangeUsd;
+    }
+
+    public void setInvestmentRangeUsd(String investmentRangeUsd) {
+        this.investmentRangeUsd = investmentRangeUsd;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
     }
 }

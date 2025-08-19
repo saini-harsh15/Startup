@@ -42,13 +42,9 @@ public class InvestorController {
 
         Long userId;
         try {
-            if (userIdObj instanceof String) {
-                userId = Long.parseLong((String) userIdObj);
-            } else {
-                userId = (Long) userIdObj;
-            }
-        } catch (NumberFormatException | ClassCastException e) {
-            redirectAttributes.addFlashAttribute("error", "An authentication error occurred. Please log in again.");
+            userId = Long.parseLong(userIdObj.toString());
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid session user ID.");
             return "redirect:/login";
         }
 
@@ -66,6 +62,43 @@ public class InvestorController {
         model.addAttribute("currentIndustry", industry);
 
         return "investorDashboard";
+    }
+
+    // New method to show the list of all investors
+    @GetMapping("/investors")
+    public String showAllInvestors(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "sort", required = false) String sort,
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
+            redirectAttributes.addFlashAttribute("error", "You must be logged in to view this page.");
+            return "redirect:/login";
+        }
+
+        Long userId;
+        try {
+            userId = Long.parseLong(userIdObj.toString());
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid session user ID.");
+            return "redirect:/login";
+        }
+
+        Optional<Investor> investorOptional = investorRepository.findById(userId);
+        if (investorOptional.isPresent()) {
+            model.addAttribute("investor", investorOptional.get());
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User profile not found.");
+            return "redirect:/login";
+        }
+
+        List<Investor> investors = investorService.findInvestorsByCriteria(search, sort);
+        model.addAttribute("investors", investors);
+        model.addAttribute("currentSearch", search);
+        model.addAttribute("currentSort", sort);
+
+        return "exploreInvestors";
     }
 
     @GetMapping("/startup/{id}")

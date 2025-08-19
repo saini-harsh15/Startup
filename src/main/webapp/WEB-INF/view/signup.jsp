@@ -138,13 +138,13 @@
         .navbar {
             background-color: var(--card-bg) !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 0.5rem 1.5rem; /* Decreased padding to reduce vertical size */
+            padding: 0.5rem 1.5rem;
         }
 
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-color) !important;
-            font-size: 1.2rem; /* Decreased font size for a smaller look */
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -219,6 +219,27 @@
 
             <label for="investmentFirm">Investment Firm:</label>
             <input type="text" id="investmentFirm" name="investmentFirm" class="form-control">
+
+            <label for="investorType">Investor Type:</label>
+            <input type="text" id="investorType" name="investorType" class="form-control">
+
+            <label for="preferredDomains">Preferred Domains (comma-separated):</label>
+            <input type="text" id="preferredDomains" name="preferredDomains" class="form-control">
+
+            <label for="fundingStages">Funding Stages (comma-separated):</label>
+            <input type="text" id="fundingStages" name="fundingStages" class="form-control">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" class="form-control">
+
+            <label for="website">Website:</label>
+            <input type="text" id="website" name="website" class="form-control">
+
+            <label for="investmentRangeUsd">Investment Range (USD):</label>
+            <input type="text" id="investmentRangeUsd" name="investmentRangeUsd" class="form-control">
+
+            <label for="linkedin">LinkedIn Profile URL:</label>
+            <input type="text" id="linkedin" name="linkedin" class="form-control">
         </div>
 
         <button type="submit" class="btn-green mt-3 shadow">Sign Up</button>

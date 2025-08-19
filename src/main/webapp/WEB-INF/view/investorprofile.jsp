@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
-    // Prevent caching of this page to fix the back button issue
+    // Prevent caching of this page
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
@@ -10,11 +10,14 @@
 <html>
 <head>
     <title>My Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Reusing styles from dashboard for consistency */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f7f6;
             margin: 0;
             padding-top: 60px;
@@ -44,7 +47,7 @@
         }
         .dark-mode .sidebar a:hover {
             background-color: #333;
-            color: #28a745;
+            color: #5cb85c;
         }
         .dark-mode .profile-container h1,
         .dark-mode .form-group label {
