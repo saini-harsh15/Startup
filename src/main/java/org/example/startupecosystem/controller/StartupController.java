@@ -3,6 +3,7 @@ package org.example.startupecosystem.controller;
 import jakarta.servlet.http.HttpSession;
 import org.example.startupecosystem.entity.Startup;
 import org.example.startupecosystem.repository.StartupRepository;
+import org.example.startupecosystem.service.NewsService;
 import org.example.startupecosystem.service.StartupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,9 @@ public class StartupController {
 
     @Autowired
     private StartupService startupService;
+    
+    @Autowired
+    private NewsService newsService;
 
     @GetMapping("/dashboard/{id}")
     public String showStartupDashboard(@PathVariable("id") Long id, Model model, HttpSession session) {
@@ -30,16 +34,19 @@ public class StartupController {
 
         Optional<Startup> startupOptional = startupRepository.findById(id);
         if (startupOptional.isPresent()) {
-            model.addAttribute("startup", startupOptional.get());
+            Startup startup = startupOptional.get();
+            model.addAttribute("startup", startup);
 
-            // --- New Code: Add dynamic values to the model ---
-            // For now, these are placeholder values. In a real application, you would fetch them from the DB.
+            // --- Dashboard metrics (placeholder) ---
             model.addAttribute("totalInvestments", 0);
             model.addAttribute("totalMessages", 0);
             model.addAttribute("profileViews", 0);
-            // --- End of New Code ---
 
-            return "startupDashboard";
+            // --- ✅ Add News Fetching ---
+            String industry = startup.getIndustry();   // assuming you have an `industry` field in Startup entity
+            model.addAttribute("newsList", newsService.fetchNews(industry));
+
+            return "startupDashboard"; // maps to startupDashboard.jsp
         } else {
             return "redirect:/";
         }

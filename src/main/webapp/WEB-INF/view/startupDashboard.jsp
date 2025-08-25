@@ -375,6 +375,200 @@
             margin: 0;
             opacity: 0.9;
         }
+.news-section {
+    margin: 30px 0;
+    padding: 0 20px;
+}
+
+.news-header {
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #4caf50;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.news-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e8e8e8;
+    position: relative;
+}
+
+.news-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    border-color: #4caf50;
+}
+
+.news-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+.news-image-container {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.news-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover .news-img {
+    transform: scale(1.05);
+}
+
+.news-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.news-card:hover .news-overlay {
+    opacity: 1;
+}
+
+.news-content {
+    padding: 20px;
+    height: 100px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.news-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #2c3e50;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.3s ease;
+}
+
+.news-card:hover .news-title {
+    color: #4caf50;
+}
+
+.news-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #ddd;
+}
+
+.news-empty p {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .news-header {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .news-section {
+        padding: 0 15px;
+    }
+    
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .news-header {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .news-image-container {
+        height: 200px;
+    }
+    
+    .news-content {
+        padding: 16px;
+        height: 90px;
+    }
+    
+    .news-title {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .news-image-container {
+        height: 180px;
+    }
+    
+    .news-content {
+        padding: 14px;
+        height: 80px;
+    }
+    
+    .news-title {
+        font-size: 14px;
+        -webkit-line-clamp: 2;
+    }
+}
+
+/* Loading animation for images */
+.news-img[src=""] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -409,6 +603,32 @@
     </div>
 </div>
 
+<div style="margin-top: 30px; text-align: center;">
+    <a href="${pageContext.request.contextPath}/ml"
+       target="_blank"
+       style="
+           display: inline-block;
+           background: linear-gradient(135deg, #28a745, #218838);
+           color: #fff;
+           font-size: 16px;
+           font-weight: bold;
+           padding: 12px 25px;
+           border-radius: 30px;
+           text-decoration: none;
+           box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+           transition: all 0.3s ease;
+       "
+       onmouseover="this.style.background='linear-gradient(135deg,#34d058,#28a745)'"
+       onmouseout="this.style.background='linear-gradient(135deg, #28a745, #218838)'">
+       Launch Pitch Analyzer
+    </a>
+    <p style="margin-top: 10px; font-size: 14px; color: #6c757d;">
+        Analyze your pitch and get investor recommendations powered by AI.
+    </p>
+</div>
+
+
+
 <div class="container">
     <div class="welcome-banner">
         <h1>Hello, ${startup.name}!</h1>
@@ -441,6 +661,39 @@
             <p><strong>Email:</strong> ${startup.email}</p>
         </div>
     </div>
+</div>
+
+<div class="news-section">
+    <h3 class="news-header">📢 Latest in ${startup.industry}</h3>
+    <c:if test="${not empty newsList}">
+        <div class="news-grid">
+            <c:forEach var="news" items="${newsList}" varStatus="status">
+                <c:if test="${status.index < 6}"> <!-- limit to 6 articles -->
+                    <article class="news-card">
+                        <a href="${news.url}" target="_blank" class="news-link">
+                            <div class="news-image-container">
+                                <img src="${news.imageUrl}" 
+                                     alt="${news.title}" 
+                                     class="news-img"
+                                    onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
+                                    
+                                <div class="news-overlay"></div>
+                            </div>
+                            <div class="news-content">
+                                <h4 class="news-title">${news.title}</h4>
+
+                            </div>
+                        </a>
+                    </article>
+                </c:if>
+            </c:forEach>
+        </div>
+    </c:if>
+    <c:if test="${empty newsList}">
+        <div class="news-empty">
+            <p>No news articles available at the moment.</p>
+        </div>
+    </c:if>
 </div>
 
 <script>

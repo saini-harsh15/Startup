@@ -17,7 +17,7 @@ public class Investor {
 
     @Column(name = "email")
     private String email;
-
+ 
     @Column(name = "password")
     private String password;
 
@@ -33,7 +33,6 @@ public class Investor {
     @Column(name = "investment_preferences")
     private String investmentPreferences;
 
-    // New fields from the provided dataset
     @Column(name = "investor_type")
     private String investorType;
 
