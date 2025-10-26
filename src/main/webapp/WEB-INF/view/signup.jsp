@@ -1,32 +1,29 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>Signup</title>
+    <title>Signup - Startup Ecosystem</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #34c759;
-            --secondary-color: #2e8b57;
-            --background-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --subtle-text: #666;
-            --border-color: #e0e0e0;
+            --primary-color: #28a745; /* Consistent Green */
+            --secondary-color: #1d7b37;
+            --white: #ffffff;
+            --light-bg: #f4f7f6;
+            --dark-text: #333;
+            --border-color: #ddd;
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: var(--background-color);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
             margin: 0;
             padding-top: 60px;
             display: flex;
@@ -35,40 +32,62 @@
             min-height: 100vh;
         }
 
-        .container {
-            max-width: 550px;
-            background: var(--card-bg);
+        /* --- Registration Card (Same as Login container style) --- */
+        .card-custom {
+            max-width: 600px;
+            width: 90%;
+            background: var(--white);
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.08);
-            animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            margin-top: 20px;
-            margin-bottom: 20px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.8s ease-in-out;
+            margin-top: 30px;
+            margin-bottom: 30px;
             overflow-y: auto;
-            max-height: 85vh;
+            max-height: 90vh;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
             color: var(--primary-color);
             text-align: center;
-            margin-bottom: 5px;
             font-weight: 700;
-            font-size: 2rem;
-            letter-spacing: 1px;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
         }
 
-        p.sub {
-            color: var(--subtle-text);
+        .role-message {
+            color: var(--dark-text);
+            font-weight: 600;
+            display: block;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-size: 1rem;
         }
 
+        .role-message .role-accent {
+            color: var(--dark-text) !important;
+            background-color: transparent !important;
+            padding: 0;
+            border-radius: 0;
+            font-weight: 700 !important;
+            font-size: 1em;
+            display: inline;
+            box-shadow: none !important;
+        }
+
+        /* --- Form Elements --- */
         label {
             font-weight: 600;
-            color: var(--text-color);
+            color: var(--dark-text);
             margin-bottom: 5px;
             display: block;
+            font-size: 0.95rem;
+            margin-top: 15px;
         }
 
         input[type="text"],
@@ -95,48 +114,60 @@
         textarea:focus {
             border-color: var(--primary-color);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.2);
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
         }
 
-        .btn-green {
+        /* Password Toggle Styling */
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s ease;
+            z-index: 10;
+        }
+        .toggle-password:hover {
+            color: var(--primary-color);
+        }
+
+        #password, #confirmPassword {
+            padding-right: 40px;
+        }
+
+        /* --- Button Style (Pill-shaped) --- */
+        .btn-custom {
             width: 100%;
             padding: 14px;
             font-size: 1.1rem;
             font-weight: 600;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary-color);
             border: none;
-            color: white;
-            border-radius: 10px;
+            color: var(--white);
+            border-radius: 50px; /* Pill shape */
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+            margin-top: 30px;
         }
 
-        .btn-green:hover {
-            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.6);
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         /* Navbar */
         .navbar {
-            background-color: var(--card-bg) !important;
+            background-color: var(--white) !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             padding: 0.5rem 1.5rem;
         }
@@ -150,16 +181,20 @@
             gap: 8px;
         }
 
-        .navbar .btn-outline-secondary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-            transition: all 0.2s ease-in-out;
+        /* Detail Headers for Startup/Investor sections - FIXED */
+        .detail-header {
+            background-color: transparent; /* Changed to transparent */
+            color: var(--primary-color); /* Changed text color to primary green */
+            padding: 10px 0; /* Adjusted padding */
+            border-radius: 0; /* Removed border-radius */
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 700; /* Made it bolder for a heading look */
+            font-size: 1.5rem; /* Increased font size */
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color); /* Added a subtle line */
         }
 
-        .navbar .btn-outline-secondary:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
     </style>
 </head>
 
@@ -173,13 +208,33 @@
     </div>
 </nav>
 
-<div class="container">
-    <h1 class="mb-4">Create Your Account</h1>
-    <p class="sub">Join the ecosystem and unlock new opportunities!</p>
+<div class="card-custom">
+    <div class="card-header-custom">
+        <h1>Create Your Account</h1>
+
+        <p class="role-message">You are registering as a
+            <span class="role-accent">${selectedRole}</span>. Complete the form below.
+        </p>
+    </div>
 
     <c:if test="${not empty error}">
         <div class="alert alert-danger" role="alert">${error}</div>
     </c:if>
+
+    <c:choose>
+        <c:when test="${selectedRole == 'Startup'}">
+            <c:set var="startupClass" value="" />
+            <c:set var="investorClass" value="hidden" />
+        </c:when>
+        <c:when test="${selectedRole == 'Investor'}">
+            <c:set var="startupClass" value="hidden" />
+            <c:set var="investorClass" value="" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="startupClass" value="hidden" />
+            <c:set var="investorClass" value="hidden" />
+        </c:otherwise>
+    </c:choose>
 
     <form action="/completeSignup" method="post" onsubmit="return validateForm()">
         <input type="hidden" name="userType" value="${selectedRole}">
@@ -188,12 +243,23 @@
         <input type="email" id="email" name="email" required class="form-control">
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required class="form-control">
+        <div class="password-container">
+            <input type="password" id="password" name="password" required class="form-control">
+            <span class="toggle-password" onclick="togglePasswordVisibility('password', 'eyeIcon1')">
+                <i id="eyeIcon1" class="fas fa-eye-slash"></i>
+            </span>
+        </div>
 
         <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required class="form-control">
+        <div class="password-container">
+            <input type="password" id="confirmPassword" name="confirmPassword" required class="form-control">
+            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')">
+                <i id="eyeIcon2" class="fas fa-eye-slash"></i>
+            </span>
+        </div>
 
-        <div id="startupFields" class="${selectedRole == 'Startup' ? '' : 'hidden'}">
+        <div id="startupFields" class="${startupClass}">
+            <div class="detail-header">Startup Details</div>
             <label for="industry">Industry:</label>
             <input type="text" id="industry" name="industry" class="form-control">
 
@@ -213,7 +279,8 @@
             <input type="date" id="foundingDate" name="foundingDate" class="form-control">
         </div>
 
-        <div id="investorFields" class="${selectedRole == 'Investor' ? '' : 'hidden'}">
+        <div id="investorFields" class="${investorClass}">
+            <div class="detail-header">Investor Details</div>
             <label for="investorName">Investor Name:</label>
             <input type="text" id="investorName" name="investorName" class="form-control">
 
@@ -242,12 +309,27 @@
             <input type="text" id="linkedin" name="linkedin" class="form-control">
         </div>
 
-        <button type="submit" class="btn-green mt-3 shadow">Sign Up</button>
+        <button type="submit" class="btn-custom">Sign Up</button>
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    function togglePasswordVisibility(fieldId, iconId) {
+        const passwordField = document.getElementById(fieldId);
+        const eyeIcon = document.getElementById(iconId);
+
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const startupFields = document.getElementById('startupFields');
         const investorFields = document.getElementById('investorFields');
@@ -266,7 +348,10 @@
         }
 
         // Initial setup on page load
-        toggleRequiredAttributes(userTypeInput.value);
+        const roleValue = userTypeInput ? userTypeInput.value : '';
+        if (roleValue) {
+            toggleRequiredAttributes(roleValue);
+        }
     });
 
     function validateForm() {

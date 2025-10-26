@@ -10,95 +10,137 @@
 <html>
 <head>
     <title>Startup Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding-top: 60px;
-            text-align: center;
-        }
-        /* Dark mode styles */
-        .dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        .dark-mode .navbar,
-        .dark-mode .sidebar,
-        .dark-mode .main-content-section {
-            background-color: #1e1e1e;
-            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
-        }
-        .dark-mode .navbar,
-        .dark-mode .sidebar,
-        .dark-mode .main-content-section {
-            border-color: #333;
-        }
-        .dark-mode .sidebar a {
-            color: #e0e0e0;
-        }
-        .dark-mode .sidebar a:hover {
-            background-color: #333;
-            color: #28a745;
-        }
-        .dark-mode .welcome-msg,
-        .dark-mode .section-header h2,
-        .dark-mode .profile-info p {
-            color: #e0e0e0;
-        }
-        .dark-mode .form-group input,
-        .dark-mode .form-group textarea {
-            background-color: #333;
-            color: #e0e0e0;
-            border-color: #555;
+        /* =========================
+           Variables & base reset
+           ========================= */
+        :root{
+            --accent: #28a745;
+            --accent-600: #218838;
+            --bg-1: linear-gradient(180deg,#f4fbf6 0%, #eef6f2 50%, #f7fafb 100%);
+            --muted: #6b7280;
+            --text: #0f172a;
+            --card-radius: 14px;
+            --max-page-width: 1600px;
         }
 
-        .theme-toggle {
-            cursor: pointer;
-            font-size: 1.2em;
-            margin-right: 15px;
-            background-color: #e0e0e0;
-            color: #333;
-            border-radius: 5px;
-            padding: 5px 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .theme-toggle:hover {
-            background-color: #d4d4d4;
-            transform: translateY(-1px);
-        }
-        .dark-mode .theme-toggle {
-            background-color: #333;
-            color: #e0e0e0;
-        }
-        .dark-mode .theme-toggle:hover {
-            background-color: #444;
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+        body{
+            background: var(--bg-1);
+            color: var(--text);
+            min-height:100vh;
+            padding-top:78px;
+            transition: background 0.28s ease, color 0.28s ease;
         }
 
-        .dark-mode .logo {
-            color: #5cb85c;
+        /* Thin scrollbar (modern) */
+        ::-webkit-scrollbar { height:10px; width:10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(12,17,38,0.12); border-radius:999px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        * { scrollbar-width: thin; scrollbar-color: rgba(12,17,38,0.12) transparent; }
+
+        /* =========================
+           Navbar (glass)
+           ========================= */
+        .navbar{
+            position:fixed;
+            top:10px;
+            left:10px;
+            right:10px;
+            height:64px;
+            z-index:1400;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            padding:10px 18px;
+            border-radius:14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.62));
+            backdrop-filter: blur(8px) saturate(120%);
+            border: 1px solid rgba(255,255,255,0.48);
+            box-shadow: 0 8px 28px rgba(12,17,38,0.06);
+        }
+        .navbar-left{display:flex;gap:14px;align-items:center}
+        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
+        .navbar-right{display:flex;gap:12px;align-items:center}
+
+        .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
+        .profile-dropdown{position:relative}
+
+        /* Profile icon */
+        .profile-icon{
+            width:44px;height:44px;border-radius:12px;
+            display:flex;align-items:center;justify-content:center;font-weight:700;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84));
+            color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
+            box-shadow: 0 6px 20px rgba(12,17,38,0.06)
         }
 
-        /* Dropdown specific dark mode fix */
-        .dark-mode .dropdown-content {
-            background-color: #2a2a2a;
-            box-shadow: 0px 8px 16px 0px rgba(255, 255, 255, 0.1);
+        /* Theme toggle */
+        .theme-toggle{
+            cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem;
+            background: rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.5);
+            display:inline-flex;align-items:center;justify-content:center;box-shadow: 0 4px 12px rgba(12,17,38,0.04)
         }
-        .dark-mode .dropdown-content a {
-            color: #e0e0e0;
-        }
-        .dark-mode .dropdown-content a:hover {
-            background-color: #3d3d3d;
-        }
-        /* End of fix */
 
-        /* --- Immersive UI enhancements --- */
+        .dropdown-content{
+            display:none; position:absolute; right:0; top:58px; min-width:170px;
+            background: linear-gradient(180deg,#ffffff,#fbffff);
+            border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04);
+        }
+        .dropdown-content.show{display:block}
+        .dropdown-content a{display:block;padding:12px 14px;color:#0f172a;text-decoration:none;font-weight:600}
+        .dropdown-content a:hover{background: linear-gradient(90deg, rgba(40,167,69,0.06), transparent)}
+
+        /* =========================
+           Sidebar (collapsible)
+           ========================= */
+        .sidebar{
+            position:fixed;top:10px;left:10px;height:calc(100% - 20px);width:0;z-index:1350;padding-top:88px;
+            overflow:hidden;transition:width 320ms cubic-bezier(.2,.9,.2,1);
+        }
+        .sidebar .panel{
+            height:100%; width:280px; padding:18px; border-radius:14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.52));
+            border:1px solid rgba(255,255,255,0.45); backdrop-filter: blur(6px);
+            box-shadow: 6px 12px 30px rgba(12,17,38,0.06);
+            transform-origin:left center;
+        }
+        .sidebar.open{width:300px}
+        .sidebar.open .panel{width:300px}
+        .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:600}
+        .sidebar a i{margin-right:12px;color:var(--muted)}
+        .sidebar a:hover{background: rgba(40,167,69,0.06); color: var(--accent)}
+
+        /* overlay when sidebar open on small screens */
+        .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
+        .overlay.show{display:block}
+
+        /* =========================
+           Page wrapper + container
+           ========================= */
+        .page-wrap{width:100%;max-width:var(--max-page-width);margin:0 auto;padding:14px 22px}
+        .container{
+            width:100%; border-radius:16px; padding:28px; margin-top:6px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.60));
+            border: 1px solid rgba(255,255,255,0.48); backdrop-filter: blur(6px);
+            box-shadow: 0 14px 50px rgba(12,17,38,0.06);
+        }
+
+        h1{color:var(--accent); margin:0 0 16px; font-size:1.5rem; font-weight:700;}
+
+        /* --- Welcome Banner --- */
         .welcome-banner {
-            background-image: linear-gradient(135deg, #28a745, #1d7b37);
+            background-image: linear-gradient(135deg, var(--accent), var(--accent-600));
             color: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             margin-bottom: 20px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -107,171 +149,18 @@
         .welcome-banner h1 {
             color: white;
             margin: 0 0 10px 0;
-            font-size: 2.8em;
+            font-size: 2.5rem;
             letter-spacing: 1px;
             font-weight: 700;
         }
         .welcome-banner p {
-            font-size: 1.3em;
+            font-size: 1.1rem;
             margin: 0;
             opacity: 0.9;
-        }
-        .section-icon i {
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-        .summary-cards .card:hover .section-icon i {
-            transform: scale(1.2);
-            color: #1a642e;
-        }
-        /* --- End of Immersive UI enhancements --- */
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #ffffff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-        .navbar-left {
-            display: flex;
-            align-items: center;
-        }
-        .hamburger {
-            cursor: pointer;
-            font-size: 1.5em;
-            color: #555;
-            margin-right: 20px;
-        }
-        .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #28a745;
-            cursor: pointer;
+            font-weight: 400;
         }
 
-        .navbar-right {
-            display: flex;
-            align-items: center;
-        }
-        .welcome-msg {
-            margin-right: 15px;
-            font-weight: 500;
-            color: #333;
-        }
-        .profile-dropdown {
-            position: relative;
-        }
-        .profile-icon {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #28a745;
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            user-select: none;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 150px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            top: 50px;
-            right: 0;
-            border-radius: 5px;
-        }
-        .dropdown-content.show {
-            display: block;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1001;
-            top: 0;
-            left: 0;
-            background-color: #ffffff;
-            overflow-x: hidden;
-            transition: 0.4s ease;
-            padding-top: 60px;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-        }
-        .sidebar.open {
-            width: 280px;
-        }
-        .sidebar a {
-            padding: 18px 36px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            color: #333;
-            display: flex;
-            align-items: center;
-            transition: background 0.3s ease;
-        }
-        .sidebar a:hover {
-            background-color: #f1f1f1;
-            color: #28a745;
-        }
-        .sidebar a i {
-            margin-right: 15px;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-        }
-
-        @media screen and (max-width: 768px) {
-            .sidebar.open {
-                width: 250px;
-            }
-            .overlay {
-                display: block;
-            }
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .section-icon {
-            font-size: 1.5em;
-            margin-right: 15px;
-            color: #28a745;
-        }
+        /* --- Summary Cards --- */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -279,478 +168,493 @@
             margin-bottom: 30px;
         }
         .card {
-            background-color: #ffffff;
+            background-color: var(--white);
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
+            border: 1px solid rgba(12,17,38,0.04);
         }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        .dark-mode .card {
-            background-color: #2a2a2a;
-        }
-        .dark-mode .card h4,
-        .dark-mode .card p {
-            color: #e0e0e0;
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
         .card h4 {
             margin: 0 0 10px 0;
-            color: #666;
-            font-size: 1.1em;
+            color: var(--muted);
+            font-size: 1rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .card p {
-            font-size: 2em;
-            font-weight: bold;
-            color: #28a745;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
             margin: 0;
         }
+        .section-icon {
+            font-size: 1.3rem;
+            margin-right: 10px;
+            color: var(--accent);
+        }
 
+        /* --- Main Profile Section --- */
         .main-content-section {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             text-align: left;
+            border: 1px solid rgba(12,17,38,0.04);
+            margin-bottom: 20px;
         }
         .section-header {
-            color: #333;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .section-header h2 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.3rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
         }
+        .section-header a {
+            text-decoration: none;
+        }
         .profile-info p {
-            font-size: 1.1em;
+            font-size: 1rem;
             margin: 10px 0;
         }
 
         /* --- Button Styling --- */
         .edit-button {
-            background-color: #28a745;
+            background: linear-gradient(180deg, var(--accent), var(--accent-600));
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 50px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 50px; /* Pill shape */
             cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .edit-button:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
         }
-        .welcome-banner {
-            background-image: linear-gradient(135deg, #28a745, #1d7b37);
-            color: white;
-            padding: 40px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+        /* --- ML Analyzer/Pitch Section --- */
+        .ml-link-container {
             text-align: center;
+            margin: 30px 0;
         }
-        .welcome-banner h1 {
-            color: white;
-            margin: 0 0 10px 0;
-            font-size: 2.8em;
-            letter-spacing: 1px;
+        .pitch-analyzer-button {
+            background: linear-gradient(135deg, #4caf50, #2b823e);
+            color: var(--white);
+            font-size: 1rem;
             font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
         }
-        .welcome-banner p {
-            font-size: 1.3em;
+        .pitch-analyzer-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(76, 175, 80, 0.4);
+            background: linear-gradient(135deg, #38d65a, #28a745);
+        }
+        .ml-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        /* --- News Section --- */
+        .news-header {
+            color: var(--text);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+        }
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .news-card {
+            display:block;
+            text-decoration:none;
+            border-radius:12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245,250,247,0.85));
+            border: 1px solid rgba(12,17,38,0.04);
+            box-shadow: 0 6px 18px rgba(12,17,38,0.06);
+            transition: transform .3s cubic-bezier(.2,.9,.2,1), box-shadow .3s;
+            overflow: hidden;
+            height: 100%;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(12,17,38,0.12);
+            border-color: var(--accent);
+        }
+        .news-image-container {
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        .news-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .news-card:hover .news-img {
+            transform: scale(1.05);
+        }
+        .news-content {
+            padding: 15px;
+        }
+        .news-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
             margin: 0;
-            opacity: 0.9;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
-.news-section {
-    margin: 30px 0;
-    padding: 0 20px;
-}
+        .news-empty{padding:40px;text-align:center;color:var(--muted)}
 
-.news-header {
-    color: #2c3e50;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid #4caf50;
-}
+        /* Loading animation for images */
+        .news-img[src=""] {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
 
-.news-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        /* =========================
+           Dark theme overrides
+           ========================= */
+        .dark-mode{
+            --bg-1: linear-gradient(180deg,#071018 0%,#071417 100%);
+            --muted: #9fb3c6;
+            --text: #dbeafe;
+            color: var(--text);
+        }
+        .dark-mode .navbar{
+            background: linear-gradient(180deg, rgba(18,25,38,0.60), rgba(16,22,34,0.52)); /* Dark glass effect */
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .dark-mode .container,
+        .dark-mode .main-content-section,
+        .dark-mode .card,
+        .dark-mode .welcome-banner,
+        .dark-mode .news-card {
+            background: rgba(18,25,38,0.85);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 14px 50px rgba(0,0,0,0.5);
+        }
+        .dark-mode .sidebar .panel{
+            background: linear-gradient(180deg, rgba(18,25,38,0.85), rgba(16,22,34,0.7)); /* Dark sidebar panel */
+            border:1px solid rgba(255,255,255,0.08);
+        }
+        .dark-mode .card:hover {
+            box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+        }
+        .dark-mode .card h4,
+        .dark-mode .card p {
+            color: var(--text);
+        }
+        .dark-mode .card p {
+            color: var(--accent);
+        }
+        .dark-mode .welcome-banner {
+            background-image: linear-gradient(135deg, #2b9d49, #1a642e);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .dark-mode .edit-button,
+        .dark-mode .pitch-analyzer-button {
+            background: linear-gradient(180deg, #2b9d49, #1a642e);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
+            color: var(--white);
+        }
+        .dark-mode .profile-info p {
+            color: var(--text);
+        }
+        .dark-mode .profile-info p strong {
+            color: var(--text);
+        }
+        .dark-mode .news-header {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+        .dark-mode .theme-toggle{ background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15) }
+        .dark-mode .profile-icon{ background: #1a642e; color: #bff2c7 }
 
-.news-card {
-    background: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #e8e8e8;
-    position: relative;
-}
 
-.news-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-    border-color: #4caf50;
-}
+        /* Accessibility focus */
+        a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
 
-.news-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    height: 100%;
-}
-
-.news-image-container {
-    position: relative;
-    width: 100%;
-    height: 180px;
-    overflow: hidden;
-    background: #f8f9fa;
-}
-
-.news-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.3s ease;
-}
-
-.news-card:hover .news-img {
-    transform: scale(1.05);
-}
-
-.news-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.news-card:hover .news-overlay {
-    opacity: 1;
-}
-
-.news-content {
-    padding: 20px;
-    height: 100px;
-    display: flex;
-    align-items: flex-start;
-}
-
-.news-title {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: #2c3e50;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color 0.3s ease;
-}
-
-.news-card:hover .news-title {
-    color: #4caf50;
-}
-
-.news-empty {
-    text-align: center;
-    padding: 60px 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 2px dashed #ddd;
-}
-
-.news-empty p {
-    color: #6c757d;
-    font-size: 16px;
-    margin: 0;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .news-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    
-    .news-header {
-        font-size: 22px;
-    }
-}
-
-@media (max-width: 768px) {
-    .news-section {
-        padding: 0 15px;
-    }
-    
-    .news-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    
-    .news-header {
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .news-image-container {
-        height: 200px;
-    }
-    
-    .news-content {
-        padding: 16px;
-        height: 90px;
-    }
-    
-    .news-title {
-        font-size: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .news-image-container {
-        height: 180px;
-    }
-    
-    .news-content {
-        padding: 14px;
-        height: 80px;
-    }
-    
-    .news-title {
-        font-size: 14px;
-        -webkit-line-clamp: 2;
-    }
-}
-
-/* Loading animation for images */
-.news-img[src=""] {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
+        /* =========================
+           Responsive overrides
+           ========================= */
+        @media (max-width:860px){
+            .navbar{left:6px;right:6px}
+            body{padding-top:86px}
+            .page-wrap{padding:14px 12px}
+            .container{padding:18px}
+            .welcome-banner h1{font-size:2rem}
+            .summary-cards{grid-template-columns:1fr;gap:15px}
+            .sidebar{left:8px}
+        }
     </style>
 </head>
 <body>
 
-<div id="mySidebar" class="sidebar">
-    <span class="closebtn" onclick="closeNav()">×</span>
-    <a href="#"><span class="icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a>
-    <a href="#"><span class="icon"><i class="fas fa-user-circle"></i></span> My Profile</a>
-    <a href="#"><span class="icon"><i class="fas fa-chart-line"></i></span> Analytics</a>
-    <a href="/contact"><span><i class="fas fa-envelope"></i></span> Contact Us</a>
+<div id="mySidebar" class="sidebar" aria-hidden="true">
+    <div class="panel" role="navigation" aria-label="Sidebar">
+        <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
+
+        <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="#"><i class="fas fa-user-circle"></i> My Profile</a>
+        <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+        <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
+
+        <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
+            <div>Startup Ecosystem</div>
+            <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
+        </div>
+    </div>
 </div>
 
-<div id="overlay" class="overlay" onclick="closeNav()"></div>
+<div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
 
-<div class="navbar">
+<header class="navbar" role="banner">
     <div class="navbar-left">
-        <div class="hamburger" onclick="openNav()">&#9776;</div>
-        <div class="logo">Startup Ecosystem</div>
+        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
+        <div class="logo" title="Project name">Startup Ecosystem</div>
     </div>
+
     <div class="navbar-right">
-        <span class="theme-toggle" onclick="toggleTheme()">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-pressed="false" title="Toggle dark mode">
             <i class="fas fa-moon"></i>
-        </span>
-        <span class="welcome-msg">Welcome, ${startup.name}</span>
+        </button>
+
+        <div class="welcome-msg">Welcome, ${startup.name}</div>
+
         <div class="profile-dropdown">
-            <div class="profile-icon" onclick="toggleDropdown()">P</div>
-            <div id="myDropdown" class="dropdown-content">
-                <a href="/startup/profile">My Profile</a>
-                <a href="/logout">Logout</a>
+            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">P</div>
+            <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
+                <a href="/startup/profile" role="menuitem">My Profile</a>
+                <a href="/logout" role="menuitem">Logout</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="page-wrap">
+    <div class="container">
+
+        <div class="welcome-banner">
+            <h1>Hello, ${startup.name}!</h1>
+            <p>Welcome to your startup's command center.</p>
+        </div>
+
+        <div class="summary-cards">
+            <div class="card">
+                <h4><span class="section-icon"><i class="fas fa-chart-line"></i></span>Total Investments</h4>
+                <p>$0</p>
+            </div>
+            <div class="card">
+                <h4><span class="section-icon"><i class="fas fa-envelope"></i></span>Messages</h4>
+                <p>0</p>
+            </div>
+            <div class="card">
+                <h4><span class="section-icon"><i class="fas fa-eye"></i></span>Profile Views</h4>
+                <p>0</p>
             </div>
         </div>
-    </div>
-</div>
 
-<div style="margin-top: 30px; text-align: center;">
-    <a href="${pageContext.request.contextPath}/ml"
-       target="_blank"
-       style="
-           display: inline-block;
-           background: linear-gradient(135deg, #28a745, #218838);
-           color: #fff;
-           font-size: 16px;
-           font-weight: bold;
-           padding: 12px 25px;
-           border-radius: 30px;
-           text-decoration: none;
-           box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-           transition: all 0.3s ease;
-       "
-       onmouseover="this.style.background='linear-gradient(135deg,#34d058,#28a745)'"
-       onmouseout="this.style.background='linear-gradient(135deg, #28a745, #218838)'">
-       Launch Pitch Analyzer
-    </a>
-    <p style="margin-top: 10px; font-size: 14px; color: #6c757d;">
-        Analyze your pitch and get investor recommendations powered by AI.
-    </p>
-</div>
-
-
-
-<div class="container">
-    <div class="welcome-banner">
-        <h1>Hello, ${startup.name}!</h1>
-        <p>Welcome to your startup's command center.</p>
-    </div>
-
-    <div class="summary-cards">
-        <div class="card">
-            <h4><span class="section-icon"><i class="fas fa-chart-line"></i></span>Total Investments</h4>
-            <p>$0</p>
+        <div class="main-content-section">
+            <div class="section-header">
+                <h2><span class="section-icon"><i class="fas fa-rocket"></i></span>My Profile</h2>
+                <a href="/startup/profile" class="edit-button">Edit Profile</a>
+            </div>
+            <div class="profile-info">
+                <p><strong>Description:</strong> ${startup.description}</p>
+                <p><strong>Industry:</strong> ${startup.industry}</p>
+                <p><strong>Email:</strong> ${startup.email}</p>
+            </div>
         </div>
-        <div class="card">
-            <h4><span class="section-icon"><i class="fas fa-envelope"></i></span>Messages</h4>
-            <p>0</p>
-        </div>
-        <div class="card">
-            <h4><span class="section-icon"><i class="fas fa-eye"></i></span>Profile Views</h4>
-            <p>0</p>
-        </div>
-    </div>
 
-    <div class="main-content-section">
-        <div class="section-header">
-            <h2><span class="section-icon"><i class="fas fa-rocket"></i></span>My Profile</h2>
-            <button class="edit-button">Edit Profile</button>
+        <div class="ml-link-container">
+            <a href="${pageContext.request.contextPath}/ml"
+               target="_blank"
+               class="pitch-analyzer-button">
+                Launch Pitch Analyzer
+            </a>
+            <p class="ml-text">
+                Analyze your pitch and get investor recommendations powered by AI.
+            </p>
         </div>
-        <div class="profile-info">
-            <p><strong>Description:</strong> ${startup.description}</p>
-            <p><strong>Industry:</strong> ${startup.industry}</p>
-            <p><strong>Email:</strong> ${startup.email}</p>
+
+        <div class="news-section">
+            <h3 class="news-header">
+                <i class="fas fa-bullhorn"></i>Latest in ${startup.industry}
+            </h3>
+
+            <c:if test="${not empty newsList}">
+                <div class="news-grid startup-card-container">
+                    <c:forEach var="news" items="${newsList}" varStatus="status">
+                        <c:if test="${status.index < 6}">
+                            <article class="news-card" style="padding:0; box-shadow: 0 4px 12px rgba(12,17,38,0.06);">
+                                <a href="${news.url}" target="_blank" class="news-link" style="display:block; color:inherit;">
+                                    <div class="news-image-container">
+                                        <img src="${news.imageUrl}"
+                                             alt="${news.title}"
+                                             class="news-img"
+                                             onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
+
+                                        <div class="news-overlay"></div>
+                                    </div>
+                                    <div class="news-content" style="padding:15px; min-height:80px">
+                                        <h4 class="news-title">${news.title}</h4>
+                                    </div>
+                                </a>
+                            </article>
+                        </c:if>
+                    </c:forEach>
+                </div>
+            </c:if>
+            <c:if test="${empty newsList}">
+                <div class="empty-state">
+                    <p>No news articles available at the moment.</p>
+                </div>
+            </c:if>
         </div>
     </div>
-</div>
-
-<div class="news-section">
-    <h3 class="news-header">📢 Latest in ${startup.industry}</h3>
-    <c:if test="${not empty newsList}">
-        <div class="news-grid">
-            <c:forEach var="news" items="${newsList}" varStatus="status">
-                <c:if test="${status.index < 6}"> <!-- limit to 6 articles -->
-                    <article class="news-card">
-                        <a href="${news.url}" target="_blank" class="news-link">
-                            <div class="news-image-container">
-                                <img src="${news.imageUrl}" 
-                                     alt="${news.title}" 
-                                     class="news-img"
-                                    onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
-                                    
-                                <div class="news-overlay"></div>
-                            </div>
-                            <div class="news-content">
-                                <h4 class="news-title">${news.title}</h4>
-
-                            </div>
-                        </a>
-                    </article>
-                </c:if>
-            </c:forEach>
-        </div>
-    </c:if>
-    <c:if test="${empty newsList}">
-        <div class="news-empty">
-            <p>No news articles available at the moment.</p>
-        </div>
-    </c:if>
 </div>
 
 <script>
-    // Redirect to login if the session is gone
-    if ("${startup.email}" === "") {
-        window.location.href = "/login?message=You have been logged out.";
-    }
+    /* =========================
+       Keep all original function names and logic
+       ========================= */
+    document.addEventListener('DOMContentLoaded', () => {
+        // Redirect to login if the session is gone
+        if ("${startup.email}" === "") {
+            window.location.href = "/login?message=You have been logged out.";
+        }
+
+        // Year for sidebar footer
+        const yearSpan = document.getElementById('yearSpan');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+        // Theme restore
+        const savedTheme = (function(){
+            try { return localStorage.getItem('theme'); } catch(e){ return null; }
+        })() || 'light';
+        setTheme(savedTheme);
+
+        // Dynamic Profile Icon
+        const startupName = "${startup.name}";
+        const profileIcon = document.getElementById("profileIcon");
+        if (startupName && profileIcon) {
+            profileIcon.textContent = startupName.charAt(0).toUpperCase();
+            profileIcon.setAttribute('title', startupName);
+        }
+    });
 
     function openNav() {
         document.getElementById("mySidebar").classList.add("open");
-        document.getElementById("overlay").style.display = "block";
+        document.getElementById("overlay").classList.add("show");
+        document.getElementById("mySidebar").setAttribute('aria-hidden', 'false');
+        document.getElementById("overlay").setAttribute('aria-hidden', 'false');
     }
 
     function closeNav() {
         document.getElementById("mySidebar").classList.remove("open");
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay").classList.remove("show");
+        document.getElementById("mySidebar").setAttribute('aria-hidden', 'true');
+        document.getElementById("overlay").setAttribute('aria-hidden', 'true');
     }
 
     function toggleDropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
+        const dd = document.getElementById("myDropdown");
+        dd.classList.toggle("show");
+        const expanded = dd.classList.contains("show");
+        document.getElementById("profileIcon").setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        dd.setAttribute('aria-hidden', expanded ? 'false' : 'true');
     }
 
-    window.onclick = function(event) {
+    window.addEventListener('click', function(event) {
         if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
             var dropdowns = document.getElementsByClassName("dropdown-content");
             for (var i = 0; i < dropdowns.length; i++) {
                 var openDropdown = dropdowns[i];
                 if (openDropdown.classList.contains('show')) {
                     openDropdown.classList.remove('show');
+                    openDropdown.setAttribute('aria-hidden', 'true');
+                    var icon = document.getElementById("profileIcon");
+                    if (icon) icon.setAttribute('aria-expanded', 'false');
                 }
             }
         }
-    }
-    // New Theme Toggle Functions
+    });
+
     function setTheme(theme) {
+        const html = document.documentElement;
+        const toggleBtn = document.querySelector('.theme-toggle');
+
         if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+            html.classList.add('dark-mode');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+                toggleBtn.setAttribute('aria-pressed', 'true');
+            }
         } else {
-            document.body.classList.remove('dark-mode');
-            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+            html.classList.remove('dark-mode');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                toggleBtn.setAttribute('aria-pressed', 'false');
+            }
         }
-        localStorage.setItem('theme', theme);
+        try { localStorage.setItem('theme', theme); } catch(e){ /* ignore if storage blocked */ }
     }
 
     function toggleTheme() {
-        if (document.body.classList.contains('dark-mode')) {
+        const html = document.documentElement;
+        if (html.classList.contains('dark-mode')) {
             setTheme('light');
         } else {
             setTheme('dark');
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-    });
 </script>
 
 </body>

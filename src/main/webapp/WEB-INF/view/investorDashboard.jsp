@@ -7,523 +7,412 @@
     response.setDateHeader("Expires", 0); // Proxies.
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8"/>
     <title>Investor Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
-            margin: 0;
-            padding-top: 60px;
-            text-align: center;
-            animation: gradient-animation 15s ease infinite;
-        }
-        @keyframes gradient-animation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- Dark Mode Styles --- */
-        .dark-mode {
-            background: #121212;
-            color: #e0e0e0;
-        }
-        .dark-mode .navbar,
-        .dark-mode .sidebar,
-        .dark-mode .profile-container,
-        .dark-mode .dropdown-content,
-        .dark-mode .startup-card-container,
-        .dark-mode .startup-card,
-        .dark-mode .container {
-            background-color: #1e1e1e;
-        }
-        .dark-mode .navbar,
-        .dark-mode .sidebar,
-        .dark-mode .dropdown-content,
-        .dark-mode .profile-container,
-        .dark-mode .startup-card {
-            border-color: #333;
-        }
-        .dark-mode .sidebar a {
-            color: #e0e0e0;
-        }
-        .dark-mode .sidebar a:hover {
-            background-color: #333;
-            color: #5cb85c;
-        }
-        .dark-mode .welcome-msg,
-        .dark-mode h1,
-        .dark-mode h2 {
-            color: #e0e0e0;
-        }
-        .dark-mode .startup-card {
-            background-color: #2a2a2a;
-            color: #e0e0e0;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.08);
-        }
-        .dark-mode .startup-card:hover {
-            box-shadow: 0 12px 25px rgba(255, 255, 255, 0.15);
-        }
-        .dark-mode .card-header {
-            background-color: #333;
-            border-bottom: 1px solid #444;
-            color: #fff;
-        }
-        .dark-mode .card-body p {
-            color: #ccc;
-        }
-        .dark-mode .card-description {
-            color: #ccc;
-        }
-        .dark-mode .logo {
-            color: #5cb85c;
-        }
-        .dark-mode .profile-icon {
-            background-color: #5cb85c;
-        }
-        .dark-mode .dropdown-content a {
-            color: #e0e0e0;
-        }
-        .dark-mode .dropdown-content a:hover {
-            background-color: #333;
+        /* =========================
+           Variables & base reset
+           ========================= */
+        :root{
+            --accent: #28a745;
+            --accent-600: #218838;
+            --bg-1: linear-gradient(180deg,#f4fbf6 0%, #eef6f2 50%, #f7fafb 100%);
+            --glass: rgba(255,255,255,0.58);
+            --glass-2: rgba(255,255,255,0.42);
+            --muted: #6b7280;
+            --text: #0f172a;
+            --card-radius: 14px;
+            --max-page-width: 1600px; /* large full-width cap */
         }
 
-        /* Updated theme toggle button styles */
-        .theme-toggle {
-            cursor: pointer;
-            font-size: 1.2em;
-            margin-right: 15px;
-            background-color: #e0e0e0;
-            color: #333;
-            border-radius: 5px;
-            padding: 5px 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .theme-toggle:hover {
-            background-color: #d4d4d4;
-            transform: translateY(-1px);
-        }
-        .dark-mode .theme-toggle {
-            background-color: #333;
-            color: #e0e0e0;
-        }
-        .dark-mode .theme-toggle:hover {
-            background-color: #444;
-        }
-        /* End of updated styles */
-
-        /* New sexy button styles for filter */
-        .filter-toggle-button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .filter-toggle-button:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .filter-form button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .filter-form button:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .reset-button {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            margin-left: 10px;
-        }
-        .reset-button:hover {
-            background-color: #5a6268;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+        body{
+            background: var(--bg-1);
+            color: var(--text);
+            min-height:100vh;
+            /* full-width layout (content will stretch, but capped) */
+            padding-top:78px;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            transition: background 0.28s ease, color 0.28s ease;
         }
 
+        /* Thin scrollbar (modern) */
+        ::-webkit-scrollbar { height:10px; width:10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(12,17,38,0.12); border-radius:999px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        /* Firefox */
+        * { scrollbar-width: thin; scrollbar-color: rgba(12,17,38,0.12) transparent; }
 
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
+        /* =========================
+           Navbar (glass)
+           ========================= */
+        .navbar{
+            position:fixed;
+            top:10px;
+            left:10px;
+            right:10px;
+            height:64px;
+            z-index:1400;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            padding:10px 18px;
+            border-radius:14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.62));
+            backdrop-filter: blur(8px) saturate(120%);
+            border: 1px solid rgba(255,255,255,0.48);
+            box-shadow: 0 8px 28px rgba(12,17,38,0.06);
         }
-        .collapsible-content.open {
-            max-height: 500px;
-            transition: max-height 0.5s ease-in;
-        }
-        .filter-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding-top: 15px;
-        }
-        .filter-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .filter-group input,
-        .filter-group select {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .filter-form button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        .filter-form button:hover {
-            background-color: #218838;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+        .navbar-left{display:flex;gap:14px;align-items:center}
+        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
+        .navbar-right{display:flex;gap:12px;align-items:center}
 
-        /* --- Updated Card Styles --- */
-        .startup-card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-            text-align: left;
-        }
-        .startup-card {
-            background-color: #ffffff;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            overflow: hidden;
-            text-decoration: none;
-            color: #333;
-        }
-        .startup-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
-        }
-        .card-header {
-            background-color: #f0f0f0;
-            padding: 15px;
-            font-size: 1.2em;
-            font-weight: 600;
-            border-bottom: 1px solid #e0e0e0;
-            color: #444;
-        }
-        .card-body {
-            padding: 20px;
-        }
-        .card-body p {
-            margin: 0 0 8px 0;
-            font-size: 1em;
-            color: #555;
-            font-weight: 400;
-        }
-        .card-description {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-        /* --- End of Updated Card Styles --- */
+        .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
+        .profile-dropdown{position:relative}
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #ffffff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-        .navbar-left {
-            display: flex;
-            align-items: center;
-        }
-        .hamburger {
-            cursor: pointer;
-            font-size: 1.5em;
-            color: #555;
-            margin-right: 20px;
-        }
-        .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #28a745;
-            cursor: pointer;
+        /* Profile icon */
+        .profile-icon{
+            width:44px;height:44px;border-radius:12px;
+            display:flex;align-items:center;justify-content:center;font-weight:700;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84));
+            color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
+            box-shadow: 0 6px 20px rgba(12,17,38,0.06)
         }
 
-        .navbar-right {
-            display: flex;
-            align-items: center;
-        }
-        .welcome-msg {
-            margin-right: 15px;
-            font-weight: 500;
-            color: #333;
-        }
-        .profile-dropdown {
-            position: relative;
-        }
-        .profile-icon {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #28a745;
-            color: white;
-            font-size: 1.2em;
-            font-weight: bold;
-            user-select: none;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 150px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-            top: 50px;
-            right: 0;
-            border-radius: 5px;
-        }
-        .dropdown-content.show {
-            display: block;
-        }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
+        /* Theme toggle */
+        .theme-toggle{
+            cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem;
+            background: rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.5);
+            display:inline-flex;align-items:center;justify-content:center;box-shadow: 0 4px 12px rgba(12,17,38,0.04)
         }
 
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1001;
-            top: 0;
-            left: 0;
-            background-color: #ffffff;
-            overflow-x: hidden;
-            transition: 0.4s ease;
-            padding-top: 60px;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        .dropdown-content{
+            display:none; position:absolute; right:0; top:58px; min-width:170px;
+            background: linear-gradient(180deg,#ffffff,#fbffff);
+            border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04);
         }
-        .sidebar.open {
-            width: 280px;
+        .dropdown-content.show{display:block}
+        .dropdown-content a{display:block;padding:12px 14px;color:#0f172a;text-decoration:none;font-weight:600}
+        .dropdown-content a:hover{background:linear-gradient(90deg, rgba(40,167,69,0.06), transparent)}
+
+        /* =========================
+           Sidebar (collapsible)
+           ========================= */
+        .sidebar{
+            position:fixed;top:10px;left:10px;height:calc(100% - 20px);width:0;z-index:1350;padding-top:88px;
+            overflow:hidden;transition:width 320ms cubic-bezier(.2,.9,.2,1);
         }
-        .sidebar a {
-            padding: 18px 36px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            color: #333;
-            display: flex;
-            align-items: center;
-            transition: background 0.3s ease;
+        .sidebar .panel{
+            height:100%; width:280px; padding:18px; border-radius:14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.52));
+            border:1px solid rgba(255,255,255,0.45); backdrop-filter: blur(6px);
+            box-shadow: 6px 12px 30px rgba(12,17,38,0.06);
+            transform-origin:left center;
         }
-        .sidebar a:hover {
-            background-color: #f1f1f1;
-            color: #28a745;
-        }
-        .sidebar a i {
-            margin-right: 15px;
+        .sidebar.open{width:300px}
+        .sidebar.open .panel{width:300px}
+        .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:600}
+        .sidebar a i{margin-right:12px;color:var(--muted)}
+        .sidebar a:hover{background: rgba(40,167,69,0.06); color: var(--accent)}
+
+        /* overlay when sidebar open on small screens */
+        .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
+        .overlay.show{display:block}
+
+        /* =========================
+           Page wrapper + container
+           ========================= */
+        .page-wrap{width:100%;max-width:var(--max-page-width);margin:0 auto;padding:14px 22px}
+        .container{
+            width:100%; border-radius:16px; padding:28px; margin-top:6px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.60));
+            border: 1px solid rgba(255,255,255,0.48); backdrop-filter: blur(6px);
+            box-shadow: 0 14px 50px rgba(12,17,38,0.06);
+            transition: transform 0.28s ease;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
+        h1{color:var(--accent); margin:0 0 16px; font-size:1.5rem}
+
+        /* controls */
+        .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+        .left-controls{display:flex;gap:12px;align-items:center}
+        .filter-toggle-button{
+            background: linear-gradient(180deg, var(--accent), var(--accent-600)); color:white; border:none;
+            padding:10px 18px; font-weight:700; border-radius:999px; cursor:pointer; box-shadow: 0 10px 30px rgba(40,167,69,0.14)
+        }
+        .small-muted{color:var(--muted); font-weight:600; opacity:0.92}
+
+        /* filter area */
+        .collapsible-content{overflow:hidden;max-height:0;transition:max-height .42s cubic-bezier(.2,.9,.2,1);padding:0}
+        .collapsible-content.open{max-height:420px;padding:14px 0}
+        .filter-form{display:flex;flex-direction:column;gap:12px}
+        .filter-row{display:flex;gap:10px;align-items:center}
+        .filter-row input, .filter-row select{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(12,17,38,0.06);background:rgba(255,255,255,0.92);outline:none;font-weight:600}
+        .filter-actions{display:flex;gap:10px}
+
+        /* apply/reset */
+        .apply-button{background:var(--accent);color:white;border:none;padding:10px 16px;border-radius:999px;font-weight:700;cursor:pointer}
+        .reset-button{background:#6c757d;color:white;border:none;padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer}
+
+        /* =========================
+           Startups grid & cards
+           ========================= */
+        .startup-card-container{
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap:18px;
+            margin-top:12px;
         }
 
-        @media screen and (max-width: 768px) {
-            .sidebar.open {
-                width: 250px;
-            }
-            .overlay {
-                display: block;
-            }
+        .startup-card{
+            display:block;text-decoration:none;border-radius:12px;overflow:hidden;
+            background: linear-gradient(180deg, rgba(255,255,255,0.86), rgba(245,250,247,0.78));
+            border: 1px solid rgba(12,17,38,0.04);
+            box-shadow: 0 10px 30px rgba(12,17,38,0.06);
+            transition: transform .36s cubic-bezier(.2,.9,.2,1), box-shadow .36s;
+        }
+        .startup-card:hover{transform: translateY(-10px); box-shadow: 0 30px 70px rgba(12,17,38,0.12)}
+        .card-header{padding:14px 16px;background: linear-gradient(90deg, rgba(255,255,255,0.64), rgba(255,255,255,0.42));font-weight:700}
+        .card-body{padding:14px 16px;color:var(--text)}
+        .card-description{color:var(--muted); font-size:0.95rem; margin-bottom:8px}
+
+        /* empty state */
+        .empty-state{padding:24px;text-align:center;color:var(--muted)}
+
+        /* =========================
+           Responsive & overflow fixes
+           ========================= */
+        @media (max-width:1100px){
+            .page-wrap{padding-left:12px;padding-right:12px}
+            .navbar{left:8px;right:8px}
+            .sidebar.open{width:260px}
+            .sidebar .panel{width:260px}
+        }
+        @media (max-width:860px){
+            .navbar{left:6px;right:6px}
+            body{padding-top:86px}
+            .container{padding:18px}
+            .filter-row{flex-direction:column;align-items:stretch}
+            .startup-card-container{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+            .sidebar{left:8px}
+        }
+        @media (max-width:480px){
+            .navbar{left:6px;right:6px;padding:8px 12px}
+            .hamburger {font-size:1.05rem}
+            .logo{font-size:0.98rem}
+            .welcome-msg{display:none} /* save space on very small screens */
+            .profile-icon{width:40px;height:40px}
+            .page-wrap{padding-left:8px;padding-right:8px}
         }
 
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-            margin: 20px auto;
+        /* =========================
+           Dark theme overrides (toggle)
+           ========================= */
+        .dark-mode{
+            --bg-1: linear-gradient(180deg,#071018,#071417);
+            --glass: rgba(18,18,18,0.62);
+            --glass-2: rgba(28,28,28,0.5);
+            --muted: #9fb3c6;
+            --text: #dbeafe;
+            background: linear-gradient(180deg,#03050a,#071017);
+            color: var(--text);
         }
+        .dark-mode .navbar{
+            background: linear-gradient(180deg, rgba(8,12,20,0.6), rgba(6,10,16,0.55)); border: 1px solid rgba(255,255,255,0.03)
+        }
+        .dark-mode .container{
+            background: linear-gradient(180deg, rgba(10,14,18,0.55), rgba(8,12,16,0.45)); border:1px solid rgba(255,255,255,0.03)
+        }
+        .dark-mode .sidebar .panel{
+            background: linear-gradient(180deg, rgba(10,14,18,0.55), rgba(8,12,16,0.4)); border:1px solid rgba(255,255,255,0.03)
+        }
+        .dark-mode .startup-card{
+            background: linear-gradient(180deg, rgba(12,16,20,0.45), rgba(8,12,16,0.38));
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .dark-mode .profile-icon{ background: linear-gradient(180deg,#0a2f14,#0b3616); color: #bff2c7 }
+        .dark-mode .theme-toggle{ background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04) }
 
-        h1 {
-            color: #28a745;
-            margin-bottom: 20px;
-        }
+        /* Accessibility focus */
+        a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
     </style>
 </head>
 <body>
 
-<div id="mySidebar" class="sidebar">
-    <span class="closebtn" onclick="closeNav()">×</span>
-    <a href="/investor/dashboard/${investor.id}"><span><i class="fas fa-tachometer-alt"></i> Dashboard</span></a>
-    <a href="#"><span><i class="fas fa-rocket"></i> My Startups</span></a>
-    <a href="/investor/profile"><span><i class="fas fa-user-circle"></i> Settings</span></a>
-    <a href="/contact"><span><i class="fas fa-envelope"></i> Contact Us</span></a>
+<!-- Sidebar (collapsible) -->
+<div id="mySidebar" class="sidebar" aria-hidden="true">
+    <div class="panel" role="navigation" aria-label="Sidebar">
+        <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
+
+        <a href="/investor/dashboard/${investor.id}" style="margin-top:10px"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="#"><i class="fas fa-rocket"></i> My Startups</a>
+        <a href="/investor/profile"><i class="fas fa-user-circle"></i> Settings</a>
+        <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
+
+        <!-- small spacer & footer inside panel -->
+        <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
+            <div>Startup Ecosystem</div>
+            <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
+        </div>
+    </div>
 </div>
 
-<div id="overlay" class="overlay" onclick="closeNav()"></div>
+<div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
 
-<div class="navbar">
+<!-- Top navbar -->
+<header class="navbar" role="banner">
     <div class="navbar-left">
-        <div class="hamburger" onclick="openNav()">&#9776;</div>
-        <div class="logo">My Project</div>
+        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
+        <div class="logo" title="Project name">My Project</div>
     </div>
+
     <div class="navbar-right">
-        <span class="theme-toggle" onclick="toggleTheme()">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-pressed="false" title="Toggle dark mode">
             <i class="fas fa-moon"></i>
-        </span>
-        <span class="welcome-msg">Welcome, ${investor.investorName}</span>
-        <div class="profile-dropdown">
-            <div class="profile-icon" onclick="toggleDropdown()">P</div>
-            <div id="myDropdown" class="dropdown-content">
-                <a href="/investor/profile">My Profile</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <h1>Welcome to Your Dashboard!</h1>
-
-    <div style="text-align: left; margin-bottom: 20px;">
-        <button class="filter-toggle-button" onclick="toggleFilter()">
-            <i class="fas fa-filter"></i> Filter
         </button>
-    </div>
 
-    <div id="filterCollapsible" class="collapsible-content">
-        <form id="filterForm" action="/investor/dashboard" method="get" class="filter-form">
-            <div class="filter-group">
-                <input type="text" name="search" placeholder="Search by name or industry..." value="${currentSearch}">
-                <select name="industry">
-                    <option value="" ${empty currentIndustry ? 'selected' : ''}>All Industries</option>
-                    <c:forEach var="industry" items="${industries}">
-                        <option value="${industry}" ${industry eq currentIndustry ? 'selected' : ''}>${industry}</option>
-                    </c:forEach>
-                </select>
-                <div class="button-group">
-                    <button type="submit" class="apply-button">Apply Filter</button>
-                    <button type="button" class="reset-button" onclick="window.location.href='/investor/dashboard'">Reset</button>
-                </div>
-            </div>
-        </form>
-    </div>
+        <div class="welcome-msg">Welcome, ${investor.investorName}</div>
 
-    <c:if test="${not empty startups}">
-        <h2>Available Startups:</h2>
-        <div class="startup-card-container">
-            <c:forEach var="startup" items="${startups}">
-                <a href="/investor/startup/${startup.id}" class="startup-card">
-                    <div class="card-header">${startup.name}</div>
-                    <div class="card-body">
-                        <p class="card-description">${startup.description}</p>
-                        <p><strong>Industry:</strong> ${startup.industry}</p>
-                        <p><strong>Funding Ask:</strong> ${startup.fundingAsk}</p>
-                        <p><strong>Equity Offered:</strong> ${startup.equityOffered}%</p>
-                    </div>
-                </a>
-            </c:forEach>
+        <div class="profile-dropdown">
+            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">P</div>
+            <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
+                <a href="/investor/profile" role="menuitem">My Profile</a>
+                <a href="/logout" role="menuitem">Logout</a>
+            </nav>
         </div>
-    </c:if>
+    </div>
+</header>
 
-    <c:if test="${empty startups}">
-        <p>No startups found at this time.</p>
-    </c:if>
+<!-- Page content -->
+<div class="page-wrap" role="main">
+    <div class="container" id="mainContainer">
+        <h1>Welcome to Your Dashboard!</h1>
+
+        <div class="controls" aria-hidden="false">
+            <div class="left-controls">
+                <button class="filter-toggle-button" onclick="toggleFilter()" aria-expanded="false" aria-controls="filterCollapsible">
+                    <i class="fas fa-filter" style="margin-right:8px"></i> Filter
+                </button>
+                <div class="small-muted" style="margin-left:6px">Find startups quickly — refined results.</div>
+            </div>
+
+            <div class="small-muted" style="text-align:right;font-weight:700">${investor.investorName} • Investor</div>
+        </div>
+
+        <div id="filterCollapsible" class="collapsible-content" aria-hidden="true">
+            <form id="filterForm" action="/investor/dashboard" method="get" class="filter-form" role="search">
+                <div class="filter-row">
+                    <input type="text" name="search" placeholder="Search by name or industry..." value="${currentSearch}" aria-label="Search startups by name or industry">
+                    <select name="industry" aria-label="Filter by industry">
+                        <option value="" ${empty currentIndustry ? 'selected' : ''}>All Industries</option>
+                        <c:forEach var="industry" items="${industries}">
+                            <option value="${industry}" ${industry eq currentIndustry ? 'selected' : ''}>${industry}</option>
+                        </c:forEach>
+                    </select>
+
+                    <div style="display:flex;gap:8px;align-items:center">
+                        <button type="submit" class="apply-button">Apply Filter</button>
+                        <button type="button" class="reset-button" onclick="window.location.href='/investor/dashboard'">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <c:if test="${not empty startups}">
+            <h2 style="margin-top:12px;font-weight:700">Available Startups:</h2>
+
+            <div class="startup-card-container" id="startupGrid">
+                <c:forEach var="startup" items="${startups}">
+                    <a href="/investor/startup/${startup.id}" class="startup-card" aria-label="${startup.name}">
+                        <div class="card-header">${startup.name}</div>
+                        <div class="card-body">
+                            <p class="card-description">${startup.description}</p>
+                            <p><strong>Industry:</strong> ${startup.industry}</p>
+                            <p><strong>Funding Ask:</strong> ${startup.fundingAsk}</p>
+                            <p><strong>Equity Offered:</strong> ${startup.equityOffered}%</p>
+                        </div>
+                    </a>
+                </c:forEach>
+            </div>
+        </c:if>
+
+        <c:if test="${empty startups}">
+            <div class="empty-state"><p>No startups found at this time.</p></div>
+        </c:if>
+    </div>
 </div>
 
 <script>
+    /* =========================
+       Keep all original function names and logic
+       ========================= */
+
     function openNav() {
         document.getElementById("mySidebar").classList.add("open");
-        document.getElementById("overlay").style.display = "block";
+        document.getElementById("overlay").classList.add("show");
+        document.getElementById("mySidebar").setAttribute('aria-hidden', 'false');
+        document.getElementById("overlay").setAttribute('aria-hidden', 'false');
     }
 
     function closeNav() {
         document.getElementById("mySidebar").classList.remove("open");
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay").classList.remove("show");
+        document.getElementById("mySidebar").setAttribute('aria-hidden', 'true');
+        document.getElementById("overlay").setAttribute('aria-hidden', 'true');
     }
 
     function toggleDropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
+        const dd = document.getElementById("myDropdown");
+        dd.classList.toggle("show");
+        const expanded = dd.classList.contains("show");
+        document.getElementById("profileIcon").setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        dd.setAttribute('aria-hidden', expanded ? 'false' : 'true');
     }
 
-    window.onclick = function(event) {
+    // Close dropdown on outside click (kept)
+    window.addEventListener('click', function(event) {
         if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
             var dropdowns = document.getElementsByClassName("dropdown-content");
             for (var i = 0; i < dropdowns.length; i++) {
                 var openDropdown = dropdowns[i];
                 if (openDropdown.classList.contains('show')) {
                     openDropdown.classList.remove('show');
+                    openDropdown.setAttribute('aria-hidden', 'true');
+                    var icon = document.getElementById("profileIcon");
+                    if (icon) icon.setAttribute('aria-expanded', 'false');
                 }
             }
         }
-    }
-    // New Theme Toggle Functions
+    });
+
+    // Theme handling (kept names; improved persistence & accessibility)
     function setTheme(theme) {
         if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
+            document.documentElement.classList.add('dark-mode');
             document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
+            document.getElementById('themeToggleBtn').setAttribute('aria-pressed', 'true');
         } else {
-            document.body.classList.remove('dark-mode');
+            document.documentElement.classList.remove('dark-mode');
             document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
+            document.getElementById('themeToggleBtn').setAttribute('aria-pressed', 'false');
         }
-        localStorage.setItem('theme', theme);
+        try { localStorage.setItem('theme', theme); } catch(e){ /* ignore if storage blocked */ }
     }
 
     function toggleTheme() {
-        if (document.body.classList.contains('dark-mode')) {
+        if (document.documentElement.classList.contains('dark-mode')) {
             setTheme('light');
         } else {
             setTheme('dark');
@@ -531,23 +420,77 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        // theme restore
+        const savedTheme = (function(){
+            try { return localStorage.getItem('theme'); } catch(e){ return null; }
+        })() || 'light';
         setTheme(savedTheme);
 
-        // --- Dynamic Profile Icon Code ---
+        // dynamic profile icon (kept)
         const investorName = "${investor.investorName}";
         const profileIcon = document.getElementById("profileIcon");
         if (investorName && profileIcon) {
             profileIcon.textContent = investorName.charAt(0).toUpperCase();
+            profileIcon.setAttribute('title', investorName);
         }
-        // --- End of Dynamic Profile Icon Code ---
+
+        // small UX: close filter when clicking outside
+        document.addEventListener('click', function(e) {
+            const filter = document.getElementById('filterCollapsible');
+            const toggleBtn = document.querySelector('.filter-toggle-button');
+            if (!filter.contains(e.target) && !toggleBtn.contains(e.target)) {
+                if (filter.classList.contains('open')) {
+                    filter.classList.remove('open');
+                    filter.setAttribute('aria-hidden', 'true');
+                    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
+        // year for footer panel (sidebar)
+        const yearSpan = document.getElementById('yearSpan');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
     });
 
-    // New Collapsible Filter Functions
+    // Collapsible filter (kept)
     function toggleFilter() {
         const content = document.getElementById("filterCollapsible");
         content.classList.toggle("open");
+        const expanded = content.classList.contains("open");
+        content.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+        const btn = document.querySelector('.filter-toggle-button');
+        if (btn) btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
     }
+
+    /* =========================
+       Fixes for content overflow / layout stability
+       - Ensure the main container never overflows horizontally.
+       - Ensure cards wrap and have minimum width so content doesn't break out.
+       ========================= */
+    (function layoutStabilityFixes(){
+        // Force no horizontal overflow on small windows
+        document.documentElement.style.overflowX = 'hidden';
+
+        // Observe container width for dynamic adjustments (defensive)
+        try {
+            const grid = document.getElementById('startupGrid');
+            if (grid) {
+                const ensureCardMin = function(){
+                    // for extremely small widths, switch to single column
+                    if (window.innerWidth < 420) {
+                        grid.style.gridTemplateColumns = 'repeat(1, minmax(0,1fr))';
+                    } else if (window.innerWidth < 760) {
+                        grid.style.gridTemplateColumns = 'repeat(2, minmax(0,1fr))';
+                    } else {
+                        grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
+                    }
+                };
+                ensureCardMin();
+                window.addEventListener('resize', ensureCardMin);
+            }
+        } catch(e){ /* no-op */ }
+    })();
+
 </script>
 
 </body>
