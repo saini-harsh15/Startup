@@ -7,16 +7,13 @@
     response.setDateHeader("Expires", 0); // Proxies.
 %>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8"/>
     <title>Investor Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* =========================
            Variables & base reset
@@ -25,12 +22,10 @@
             --accent: #28a745;
             --accent-600: #218838;
             --bg-1: linear-gradient(180deg,#f4fbf6 0%, #eef6f2 50%, #f7fafb 100%);
-            --glass: rgba(255,255,255,0.58);
-            --glass-2: rgba(255,255,255,0.42);
             --muted: #6b7280;
             --text: #0f172a;
             --card-radius: 14px;
-            --max-page-width: 1600px; /* large full-width cap */
+            --max-page-width: 1600px;
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
@@ -39,10 +34,7 @@
             background: var(--bg-1);
             color: var(--text);
             min-height:100vh;
-            /* full-width layout (content will stretch, but capped) */
             padding-top:78px;
-            -webkit-font-smoothing:antialiased;
-            -moz-osx-font-smoothing:grayscale;
             transition: background 0.28s ease, color 0.28s ease;
         }
 
@@ -50,7 +42,6 @@
         ::-webkit-scrollbar { height:10px; width:10px; }
         ::-webkit-scrollbar-thumb { background: rgba(12,17,38,0.12); border-radius:999px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        /* Firefox */
         * { scrollbar-width: thin; scrollbar-color: rgba(12,17,38,0.12) transparent; }
 
         /* =========================
@@ -75,7 +66,7 @@
             box-shadow: 0 8px 28px rgba(12,17,38,0.06);
         }
         .navbar-left{display:flex;gap:14px;align-items:center}
-        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
         .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
         .navbar-right{display:flex;gap:12px;align-items:center}
 
@@ -88,7 +79,8 @@
             display:flex;align-items:center;justify-content:center;font-weight:700;
             background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84));
             color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 6px 20px rgba(12,17,38,0.06)
+            box-shadow: 0 6px 20px rgba(12,17,38,0.06);
+            z-index:1410;
         }
 
         /* Theme toggle */
@@ -102,6 +94,7 @@
             display:none; position:absolute; right:0; top:58px; min-width:170px;
             background: linear-gradient(180deg,#ffffff,#fbffff);
             border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04);
+            z-index: 1405;
         }
         .dropdown-content.show{display:block}
         .dropdown-content a{display:block;padding:12px 14px;color:#0f172a;text-decoration:none;font-weight:600}
@@ -140,10 +133,9 @@
             background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.60));
             border: 1px solid rgba(255,255,255,0.48); backdrop-filter: blur(6px);
             box-shadow: 0 14px 50px rgba(12,17,38,0.06);
-            transition: transform 0.28s ease;
         }
 
-        h1{color:var(--accent); margin:0 0 16px; font-size:1.5rem}
+        h1{color:var(--accent); margin:0 0 16px; font-size:1.5rem; font-weight:700;}
 
         /* controls */
         .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
@@ -187,6 +179,7 @@
         .card-header{padding:14px 16px;background: linear-gradient(90deg, rgba(255,255,255,0.64), rgba(255,255,255,0.42));font-weight:700}
         .card-body{padding:14px 16px;color:var(--text)}
         .card-description{color:var(--muted); font-size:0.95rem; margin-bottom:8px}
+        .card-body strong { color: var(--accent); }
 
         /* empty state */
         .empty-state{padding:24px;text-align:center;color:var(--muted)}
@@ -215,6 +208,10 @@
             .welcome-msg{display:none} /* save space on very small screens */
             .profile-icon{width:40px;height:40px}
             .page-wrap{padding-left:8px;padding-right:8px}
+            /* Stack filter buttons vertically */
+            .filter-actions { flex-direction: column; }
+            .filter-actions button { width: 100%; margin-left: 0 !important; }
+            .filter-row input, .filter-row select { padding: 10px; font-size: 0.9rem; }
         }
 
         /* =========================
@@ -251,7 +248,6 @@
 </head>
 <body>
 
-<!-- Sidebar (collapsible) -->
 <div id="mySidebar" class="sidebar" aria-hidden="true">
     <div class="panel" role="navigation" aria-label="Sidebar">
         <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
@@ -261,7 +257,6 @@
         <a href="/investor/profile"><i class="fas fa-user-circle"></i> Settings</a>
         <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
 
-        <!-- small spacer & footer inside panel -->
         <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
             <div>Startup Ecosystem</div>
             <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
@@ -271,7 +266,6 @@
 
 <div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
 
-<!-- Top navbar -->
 <header class="navbar" role="banner">
     <div class="navbar-left">
         <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
@@ -295,7 +289,6 @@
     </div>
 </header>
 
-<!-- Page content -->
 <div class="page-wrap" role="main">
     <div class="container" id="mainContainer">
         <h1>Welcome to Your Dashboard!</h1>
@@ -322,7 +315,7 @@
                         </c:forEach>
                     </select>
 
-                    <div style="display:flex;gap:8px;align-items:center">
+                    <div class="filter-actions">
                         <button type="submit" class="apply-button">Apply Filter</button>
                         <button type="button" class="reset-button" onclick="window.location.href='/investor/dashboard'">Reset</button>
                     </div>
@@ -340,8 +333,8 @@
                         <div class="card-body">
                             <p class="card-description">${startup.description}</p>
                             <p><strong>Industry:</strong> ${startup.industry}</p>
-                            <p><strong>Funding Ask:</strong> ${startup.fundingAsk}</p>
-                            <p><strong>Equity Offered:</strong> ${startup.equityOffered}%</p>
+                            <p><strong>Funding Ask:</strong> <strong>$${startup.fundingAsk}</strong></p>
+                            <p><strong>Equity Offered:</strong> <strong>${startup.equityOffered}%</strong></p>
                         </div>
                     </a>
                 </c:forEach>
@@ -438,7 +431,7 @@
         document.addEventListener('click', function(e) {
             const filter = document.getElementById('filterCollapsible');
             const toggleBtn = document.querySelector('.filter-toggle-button');
-            if (!filter.contains(e.target) && !toggleBtn.contains(e.target)) {
+            if (!e.target.closest('#filterCollapsible') && !e.target.closest('.filter-toggle-button')) {
                 if (filter.classList.contains('open')) {
                     filter.classList.remove('open');
                     filter.setAttribute('aria-hidden', 'true');
@@ -464,8 +457,6 @@
 
     /* =========================
        Fixes for content overflow / layout stability
-       - Ensure the main container never overflows horizontally.
-       - Ensure cards wrap and have minimum width so content doesn't break out.
        ========================= */
     (function layoutStabilityFixes(){
         // Force no horizontal overflow on small windows
@@ -476,7 +467,7 @@
             const grid = document.getElementById('startupGrid');
             if (grid) {
                 const ensureCardMin = function(){
-                    // for extremely small widths, switch to single column
+                    // Uses CSS Grid, but fallback or adjustments can be made here
                     if (window.innerWidth < 420) {
                         grid.style.gridTemplateColumns = 'repeat(1, minmax(0,1fr))';
                     } else if (window.innerWidth < 760) {

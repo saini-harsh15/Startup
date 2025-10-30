@@ -27,6 +27,7 @@
             --text: #0f172a;
             --card-radius: 14px;
             --max-page-width: 1600px;
+            --border-color: #e0e0e0;
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
@@ -67,7 +68,7 @@
             box-shadow: 0 8px 28px rgba(12,17,38,0.06);
         }
         .navbar-left{display:flex;gap:14px;align-items:center}
-        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
         .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
         .navbar-right{display:flex;gap:12px;align-items:center}
 
@@ -80,7 +81,8 @@
             display:flex;align-items:center;justify-content:center;font-weight:700;
             background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84));
             color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 6px 20px rgba(12,17,38,0.06)
+            box-shadow: 0 6px 20px rgba(12,17,38,0.06);
+            z-index:1410;
         }
 
         /* Theme toggle */
@@ -94,6 +96,7 @@
             display:none; position:absolute; right:0; top:58px; min-width:170px;
             background: linear-gradient(180deg,#ffffff,#fbffff);
             border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04);
+            z-index: 1405;
         }
         .dropdown-content.show{display:block}
         .dropdown-content a{display:block;padding:12px 14px;color:#0f172a;text-decoration:none;font-weight:600}
@@ -118,6 +121,7 @@
         .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:600}
         .sidebar a i{margin-right:12px;color:var(--muted)}
         .sidebar a:hover{background: rgba(40,167,69,0.06); color: var(--accent)}
+        .sidebar .closebtn{z-index:1400}
 
         /* overlay when sidebar open on small screens */
         .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
@@ -441,7 +445,7 @@
         <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
 
         <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="#"><i class="fas fa-user-circle"></i> My Profile</a>
+        <a href="/startup/profile"><i class="fas fa-user-circle"></i> My Profile</a>
         <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
         <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
 
