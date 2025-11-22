@@ -15,16 +15,28 @@ public interface InvestorRepository extends JpaRepository<Investor, Long> {
 
     Optional<Investor> findByEmail(String email);
 
-    // Original search method (without sorting)
+    // Standard method inherited from JpaRepository, often added for clarity.
+    Optional<Investor> findById(Long id);
+
+    /**
+     * Searches investors by name, preferred domain, or investor type.
+     * Logic Fix: Simplified the WHERE clause to remove redundant NULL checks.
+     */
     @Query("SELECT i FROM Investor i WHERE " +
-            "(:search IS NULL OR :search = '' OR LOWER(i.investorName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(i.preferredDomains) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
-            "(:search IS NULL OR :search = '' OR LOWER(i.investorType) LIKE LOWER(CONCAT('%', :search, '%')))")
+            "(:search IS NULL OR :search = '' OR " +
+            "LOWER(i.investorName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(i.preferredDomains) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(i.investorType) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<Investor> findBySearchCriteria(@Param("search") String search);
 
-    // New overloaded method for search with sorting
+    /**
+     * Searches investors with sorting applied.
+     */
     @Query("SELECT i FROM Investor i WHERE " +
-            "(:search IS NULL OR :search = '' OR LOWER(i.investorName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(i.preferredDomains) LIKE LOWER(CONCAT('%', :search, '%'))) OR " +
-            "(:search IS NULL OR :search = '' OR LOWER(i.investorType) LIKE LOWER(CONCAT('%', :search, '%')))")
+            "(:search IS NULL OR :search = '' OR " +
+            "LOWER(i.investorName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(i.preferredDomains) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+            "LOWER(i.investorType) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<Investor> findBySearchCriteria(@Param("search") String search, Sort sort);
 
     @Query("SELECT DISTINCT i.preferredDomains FROM Investor i")

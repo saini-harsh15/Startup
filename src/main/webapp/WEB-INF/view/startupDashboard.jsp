@@ -179,6 +179,13 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
             border: 1px solid rgba(12,17,38,0.04);
+            cursor: pointer; /* Added cursor for clickable cards */
+        }
+        .card-link { /* Style for making the whole card clickable */
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
         }
         .card:hover {
             transform: translateY(-8px);
@@ -495,8 +502,10 @@
                 <p>$0</p>
             </div>
             <div class="card">
-                <h4><span class="section-icon"><i class="fas fa-envelope"></i></span>Messages</h4>
-                <p>0</p>
+                <a href="/startup/messages" class="card-link">
+                    <h4><span class="section-icon"><i class="fas fa-envelope"></i></span>Messages</h4>
+                    <p>0</p>
+                </a>
             </div>
             <div class="card">
                 <h4><span class="section-icon"><i class="fas fa-eye"></i></span>Profile Views</h4>

@@ -4,7 +4,7 @@ import org.example.startupecosystem.entity.Investor;
 import org.example.startupecosystem.repository.InvestorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Sort; // <-- Add this import
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +17,14 @@ public class InvestorService {
 
     public Optional<Investor> getInvestorById(Long id) {
         return investorRepository.findById(id);
+    }
+
+    /**
+     * Retrieves an unfiltered list of all Investor entities.
+     * This is useful for populating partner lists (like in the chat feature).
+     */
+    public List<Investor> findAll() {
+        return investorRepository.findAll();
     }
 
     // Updated method for more flexible search and sort
@@ -35,8 +43,16 @@ public class InvestorService {
             return investorRepository.findBySearchCriteria(search, Sort.unsorted());
         }
 
-        // Default: return all investors without any filters or sorting
-        return investorRepository.findAll();
+        // Default: return all investors without any filters or sorting (using the new method)
+        return findAll();
+    }
+
+    /**
+     * Backward-compatible search method used by existing controllers.
+     * Delegates to repository to filter investors by search string.
+     */
+    public List<Investor> searchInvestors(String search) {
+        return investorRepository.findBySearchCriteria(search);
     }
 
     public List<String> getDistinctPreferredDomains() {

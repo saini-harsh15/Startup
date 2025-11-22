@@ -1,16 +1,21 @@
 package org.example.startupecosystem.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.startupecosystem.entity.ChatMessage;
 import org.example.startupecosystem.entity.Startup;
+import org.example.startupecosystem.entity.Investor;
 import org.example.startupecosystem.repository.StartupRepository;
+import org.example.startupecosystem.service.ChatService;
 import org.example.startupecosystem.service.NewsService;
 import org.example.startupecosystem.service.StartupService;
+import org.example.startupecosystem.service.InvestorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -22,9 +27,15 @@ public class StartupController {
 
     @Autowired
     private StartupService startupService;
-    
+
     @Autowired
     private NewsService newsService;
+
+    @Autowired
+    private ChatService chatService;
+
+    @Autowired
+    private InvestorService investorService;
 
     @GetMapping("/dashboard/{id}")
     public String showStartupDashboard(@PathVariable("id") Long id, Model model, HttpSession session) {
@@ -42,14 +53,65 @@ public class StartupController {
             model.addAttribute("totalMessages", 0);
             model.addAttribute("profileViews", 0);
 
-            // --- ✅ Add News Fetching ---
-            String industry = startup.getIndustry();   // assuming you have an `industry` field in Startup entity
+            // --- News Fetching Logic ---
+            String industry = startup.getIndustry();
             model.addAttribute("newsList", newsService.fetchNews(industry));
 
-            return "startupDashboard"; // maps to startupDashboard.jsp
+            return "startupDashboard";
         } else {
             return "redirect:/";
         }
+    }
+
+    /**
+     * Handles the request for the real-time messaging page, loads chat history, and handles partner search.
+     */
+    @GetMapping("/messages")
+    public String showMessagesPage(
+            @RequestParam(value = "search", required = false) String search,
+            Model model, HttpSession session) {
+
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        if (userIdObj == null || !"Startup".equals(session.getAttribute("loggedInRole"))) {
+            return "redirect:/login";
+        }
+
+        Long startupId;
+        try {
+            // Safely cast/parse the userId from session
+            startupId = (userIdObj instanceof String) ? Long.parseLong((String) userIdObj) : (Long) userIdObj;
+        } catch (Exception e) {
+            return "redirect:/login";
+        }
+
+        // Fetch startup object (needed for name in the navbar)
+        Optional<Startup> startupOptional = startupRepository.findById(startupId);
+        if (startupOptional.isPresent()) {
+            model.addAttribute("startup", startupOptional.get());
+        } else {
+            return "redirect:/login";
+        }
+
+        // --- 1. Fetch Investor Partners (Filtered or All) ---
+        List<Investor> investors;
+        if (search != null && !search.trim().isEmpty()) {
+            investors = investorService.searchInvestors(search.trim());
+        } else {
+            investors = investorService.findAll();
+        }
+
+        // --- 2. Chat History (Initial Load - Setting a safe, empty list) ---
+        // History will be loaded dynamically on the client, but we ensure the model attribute exists.
+        // We initialize the history to null or an empty list if no partner is selected by default.
+        List<ChatMessage> chatHistory = null;
+
+        // Pass all necessary data to the JSP
+        model.addAttribute("startupId", startupId);
+        model.addAttribute("investorsList", investors);
+        model.addAttribute("searchTerm", search);
+        model.addAttribute("chatHistory", chatHistory);
+
+        return "startupMessages";
     }
 
     @GetMapping("/profile")
