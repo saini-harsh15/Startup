@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>${startup.name} - Messages</title>
+    <title>${investor.investorName} - Messages</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,7 +93,7 @@
 
 <header class="navbar" role="banner">
     <div class="navbar-left">
-        <div class="hamburger" onclick="window.location.href='/startup/dashboard/${startup.id}'" aria-label="Back to dashboard" title="Back to dashboard">&#8592;</div>
+        <div class="hamburger" onclick="window.location.href='/investor/dashboard'" aria-label="Back to dashboard" title="Back to dashboard">&#8592;</div>
         <div class="logo" title="Project name">Startup Ecosystem</div>
     </div>
 
@@ -102,12 +102,12 @@
             <i class="fas fa-moon"></i>
         </button>
 
-        <div class="welcome-msg">Welcome, ${startup.name}</div>
+        <div class="welcome-msg">Welcome, ${investor.investorName}</div>
 
         <div class="profile-dropdown">
-            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">S</div>
+            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">I</div>
             <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
-                <a href="/startup/profile" role="menuitem">My Profile</a>
+                <a href="/investor/profile" role="menuitem">My Profile</a>
                 <a href="/logout" role="menuitem">Logout</a>
             </nav>
         </div>
@@ -118,32 +118,32 @@
     <div class="container">
 
         <div class="chat-list">
-            <div class="chat-list-header">Investor Conversations</div>
+            <div class="chat-list-header">Startup Conversations</div>
 
             <div class="search-container">
-                <form id="searchForm" action="/startup/messages" method="GET">
-                    <input type="search" name="search" placeholder="Search investor name or domain..."
+                <form id="searchForm" action="/investor/messages" method="GET">
+                    <input type="search" name="search" placeholder="Search startup name or industry..."
                            value="${searchTerm}" onchange="this.form.submit()">
                 </form>
             </div>
 
-            <div id="investorList">
+            <div id="startupList">
                 <c:choose>
-                    <c:when test="${not empty investorsList}">
-                        <c:forEach var="investor" items="${investorsList}">
-                            <div id="partner${investor.id}"
+                    <c:when test="${not empty startupsList}">
+                        <c:forEach var="startup" items="${startupsList}">
+                            <div id="partner${startup.id}"
                                  class="chat-item"
-                                 onclick="loadChat(${investor.id}, '${investor.investorName}', event)">
-                                <div class="chat-name">${investor.investorName}</div>
-                                <div class="chat-time text-sm text-muted">Firm: ${investor.investmentFirm}</div>
+                                 onclick="loadChat(${startup.id}, '${startup.name}', event)">
+                                <div class="chat-name">${startup.name}</div>
+                                <div class="chat-time text-sm text-muted">Industry: ${startup.industry}</div>
                             </div>
                         </c:forEach>
                     </c:when>
                     <c:when test="${not empty searchTerm}">
-                        <p style="padding: 15px; color: var(--muted);">No investors found matching "${searchTerm}".</p>
+                        <p style="padding: 15px; color: var(--muted);">No startups found matching "${searchTerm}".</p>
                     </c:when>
                     <c:otherwise>
-                        <p style="padding: 15px; color: var(--muted);">Select an investor to start chatting.</p>
+                        <p style="padding: 15px; color: var(--muted);">Select a startup to start chatting.</p>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -152,13 +152,13 @@
         <div class="chat-window">
             <div class="chat-history" id="chatHistory">
                 <c:forEach var="msg" items="${chatHistory}">
-                    <div class="message <c:out value='${msg.senderId == startupId ? "sent" : "received"}' />">
+                    <div class="message <c:out value='${msg.senderId == investorId ? "sent" : "received"}' />">
                         <c:out value="${msg.content}" />
                     </div>
                 </c:forEach>
 
                 <p id="initialPrompt" style="text-align: center; color: var(--muted); margin-top: 50px;">
-                    Select an investor from the left panel to view history and start chatting.
+                    Select a startup from the left panel to view history and start chatting.
                 </p>
             </div>
             <div class="chat-input-area">
@@ -172,8 +172,8 @@
 
 <script>
     var stompClient = null;
-    var currentStartupId = ${startup.id};
-    var currentReceiverId = null; // selected investorId
+    var currentInvestorId = ${investor.id};
+    var currentReceiverId = null; // selected startupId
 
     function scrollToBottom() {
         const historyDiv = document.getElementById('chatHistory');
@@ -185,24 +185,24 @@
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             console.log('Connected to WebSocket: ' + frame);
-            stompClient.subscribe('/topic/messages/' + currentStartupId, function (message) {
-                showMessage(JSON.parse(message.body), currentStartupId);
+            stompClient.subscribe('/topic/messages/' + currentInvestorId, function (message) {
+                showMessage(JSON.parse(message.body), currentInvestorId);
             });
             scrollToBottom();
         });
     }
 
-    function loadChat(investorId, investorName, event) {
-        currentReceiverId = investorId;
+    function loadChat(startupId, startupName, event) {
+        currentReceiverId = startupId;
         const historyDiv = document.getElementById('chatHistory');
         document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
         if (event && event.currentTarget) {
             event.currentTarget.classList.add('active');
         } else {
-            const el = document.getElementById('partner' + investorId);
+            const el = document.getElementById('partner' + startupId);
             if (el) el.classList.add('active');
         }
-        historyDiv.innerHTML = '<p style="text-align: center; color: var(--muted);">Loading chat history with ' + investorName + '...</p>';
+        historyDiv.innerHTML = '<p style="text-align: center; color: var(--muted);">Loading chat history with ' + startupName + '...</p>';
         setTimeout(() => {
             historyDiv.innerHTML = '<p style="text-align: center; color: var(--muted);">Conversation started. You can now chat!</p>';
             scrollToBottom();
@@ -230,14 +230,14 @@
         const content = input.value.trim();
         if (content !== '' && stompClient && currentReceiverId) {
             var chatMessage = {
-                senderId: currentStartupId,
+                senderId: currentInvestorId,
                 receiverId: currentReceiverId,
                 content: content,
             };
             stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
             input.value = '';
         } else if (!currentReceiverId) {
-            alert('Please select an investor from the list to start chatting.');
+            alert('Please select a startup from the list to start chatting.');
         }
     }
 
@@ -260,16 +260,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        if ("${startup.email}" === "") {
+        if ("${investor.email}" === "") {
             window.location.href = "/login?message=You have been logged out.";
         }
         const savedTheme = (function(){ try { return localStorage.getItem('theme'); } catch(e){ return null; } })() || 'light';
         setTheme(savedTheme);
-        const startupName = "${startup.name}";
+        const investorName = "${investor.investorName}";
         const profileIcon = document.getElementById("profileIcon");
-        if (startupName && profileIcon) {
-            profileIcon.textContent = startupName.charAt(0).toUpperCase();
-            profileIcon.setAttribute('title', startupName);
+        if (investorName && profileIcon) {
+            profileIcon.textContent = investorName.charAt(0).toUpperCase();
+            profileIcon.setAttribute('title', investorName);
         }
         connect();
     });

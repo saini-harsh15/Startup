@@ -55,7 +55,9 @@ public class StartupController {
 
             // --- News Fetching Logic ---
             String industry = startup.getIndustry();
-            model.addAttribute("newsList", newsService.fetchNews(industry));
+            String topic = (industry != null && !industry.trim().isEmpty()) ? industry.trim() : "startup";
+            model.addAttribute("newsTopic", topic);
+            model.addAttribute("newsList", newsService.fetchNews(topic));
 
             return "startupDashboard";
         } else {

@@ -25,6 +25,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // The endpoint the client connects to for the WebSocket handshake.
         // withSockJS() provides fallback options for browsers that don't natively support WebSockets.
-        registry.addEndpoint("/ws-chat").withSockJS();
+        // setAllowedOriginPatterns("*") ensures the WS handshake isn't blocked by origin checks
+        // when accessed from different hosts/ports or behind proxies during development.
+        registry.addEndpoint("/ws-chat").setAllowedOriginPatterns("*").withSockJS();
     }
 }

@@ -1,11 +1,13 @@
 package org.example.startupecosystem.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.startupecosystem.entity.ChatMessage;
 import org.example.startupecosystem.entity.Investor;
 import org.example.startupecosystem.entity.Startup;
 import org.example.startupecosystem.repository.InvestorRepository;
 import org.example.startupecosystem.service.InvestorService;
 import org.example.startupecosystem.service.StartupService;
+import org.example.startupecosystem.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,9 @@ public class InvestorController {
 
     @Autowired
     private InvestorService investorService;
+
+    @Autowired
+    private NewsService newsService;
 
     @GetMapping({"/dashboard", "/dashboard/{id}"})
     public String showInvestorDashboard(
@@ -61,7 +66,69 @@ public class InvestorController {
         model.addAttribute("currentSearch", search);
         model.addAttribute("currentIndustry", industry);
 
+        // --- News Section for Investor ---
+        Investor investor = investorOptional.get();
+        String topic;
+        if (industry != null && !industry.trim().isEmpty()) {
+            topic = industry.trim();
+        } else if (investor.getPreferredDomains() != null && !investor.getPreferredDomains().trim().isEmpty()) {
+            topic = investor.getPreferredDomains().split(",")[0].trim();
+        } else if (investor.getInvestmentPreferences() != null && !investor.getInvestmentPreferences().trim().isEmpty()) {
+            topic = investor.getInvestmentPreferences().trim();
+        } else {
+            topic = "startup";
+        }
+        model.addAttribute("newsTopic", topic);
+        model.addAttribute("newsList", newsService.fetchNews(topic));
+
         return "investorDashboard";
+    }
+
+    /**
+     * Investor Message Center page - mirrors startup's messages page
+     */
+    @GetMapping("/messages")
+    public String showInvestorMessages(
+            @RequestParam(value = "search", required = false) String search,
+            Model model, HttpSession session) {
+
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        if (userIdObj == null || !"Investor".equals(session.getAttribute("loggedInRole"))) {
+            return "redirect:/login";
+        }
+
+        Long investorId;
+        try {
+            investorId = (userIdObj instanceof String) ? Long.parseLong((String) userIdObj) : (Long) userIdObj;
+        } catch (Exception e) {
+            return "redirect:/login";
+        }
+
+        Optional<Investor> investorOptional = investorRepository.findById(investorId);
+        if (investorOptional.isPresent()) {
+            model.addAttribute("investor", investorOptional.get());
+        } else {
+            return "redirect:/login";
+        }
+
+        // 1. Fetch Startup partners (filtered or all)
+        List<Startup> startupsList;
+        if (search != null && !search.trim().isEmpty()) {
+            startupsList = startupService.findStartupsByCriteria(search.trim(), null);
+        } else {
+            startupsList = startupService.findStartupsByCriteria(null, null);
+        }
+
+        // 2. Initial chat history placeholder
+        List<ChatMessage> chatHistory = null;
+
+        // 3. Model attributes
+        model.addAttribute("investorId", investorId);
+        model.addAttribute("startupsList", startupsList);
+        model.addAttribute("searchTerm", search);
+        model.addAttribute("chatHistory", chatHistory);
+
+        return "investorMessages";
     }
 
     // New method to show the list of all investors
