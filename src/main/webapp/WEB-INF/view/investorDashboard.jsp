@@ -27,6 +27,7 @@
             --card-radius: 14px;
             --max-page-width: 1600px;
             --white: #ffffff;
+            --border-color: #e0e0e0;
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
@@ -106,7 +107,7 @@
         }
         .dropdown-content.show{display:block}
         .dropdown-content a{display:block;padding:12px 14px;color:var(--dark-text);text-decoration:none;font-weight:500}
-        .dropdown-content a:hover{background: rgba(40,167,69,0.06); color: var(--accent); font-weight:600}
+        .dropdown-content a:hover{background:rgba(40,167,69,0.06); color: var(--accent); font-weight:600}
 
         /* =========================
            Sidebar (collapsible)
@@ -150,7 +151,7 @@
         .left-controls{display:flex;gap:12px;align-items:center}
 
         /* Message/Filter Button Styles */
-        .filter-toggle-button, .message-center-button {
+        .filter-toggle-button, .message-center-button { /* Applied uniform styling */
             background: linear-gradient(180deg, var(--accent), var(--accent-600)); color:white; border:none;
             padding:10px 18px; font-weight:600; border-radius:999px; cursor:pointer;
             box-shadow: 0 8px 20px rgba(40,167,69,0.25);
@@ -184,7 +185,7 @@
            ========================= */
         .startup-card-container{
             display:grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr); /* Default 4 Columns */
             gap:25px;
             margin-top:20px;
         }
@@ -202,8 +203,87 @@
         .card-description{color:var(--muted); font-size:0.95rem; margin-bottom:8px}
         .card-body strong { color: var(--accent); font-weight: 700; }
 
+        /* Single-card fix: center and constrain width so a single result doesn't stretch awkwardly */
+        .startup-card-container.single-card {
+            grid-template-columns: 1fr;      /* one column */
+            justify-items: center;          /* center the grid item */
+        }
+        .startup-card-container.single-card .startup-card {
+            max-width: 720px;               /* constrain width for nicer layout */
+            width: 100%;
+        }
+
         /* empty state */
         .empty-state{padding:24px;text-align:center;color:var(--muted)}
+
+        /* --- News Section (mirrors startupDashboard) --- */
+        .news-header {
+            color: var(--text);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 22px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+        }
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .news-card {
+            display:block;
+            text-decoration:none;
+            border-radius:12px;
+            background: var(--white);
+            border: 1px solid rgba(12,17,38,0.04);
+            box-shadow: 0 6px 18px rgba(12,17,38,0.06);
+            transition: transform .3s cubic-bezier(.2,.9,.2,1), box-shadow .3s;
+            overflow: hidden;
+            height: 100%;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(12,17,38,0.12);
+            border-color: var(--accent);
+        }
+        .news-image-container {
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        .news-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .news-card:hover .news-img { transform: scale(1.05); }
+        .news-content { padding: 15px; }
+        .news-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text);
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .news-empty{padding:40px;text-align:center;color:var(--muted)}
+        .news-img[src=""] {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
 
         /* =========================
            Responsive & overflow fixes
@@ -251,93 +331,8 @@
         .dark-mode .profile-icon{ background: linear-gradient(180deg,#0a2f14,#0b3616); color: #bff2c7 }
         .dark-mode .theme-toggle{ background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04) }
 
-        /* Dark mode overrides for News Section */
-        .dark-mode .news-card{
-            background: linear-gradient(180deg, rgba(12,16,20,0.45), rgba(8,12,16,0.38));
-            border: 1px solid rgba(255,255,255,0.03);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-        }
-        .dark-mode .news-card:hover {
-            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-            border-color: rgba(40,167,69,0.5);
-        }
-        .dark-mode .news-image-container { background: #0c111a; }
-        .dark-mode .news-content { color: var(--text); }
-        .dark-mode .news-title { color: var(--text); }
-        .dark-mode .news-header { color: var(--text); border-bottom: 2px solid var(--accent); }
-        .dark-mode .news-empty { color: var(--muted); }
-
         /* Accessibility focus */
         a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
-
-        /* --- News Section (mirrors startupDashboard) --- */
-        .news-header {
-            color: var(--text);
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 22px 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--accent);
-        }
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        .news-card {
-            display:block;
-            text-decoration:none;
-            border-radius:12px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245,250,247,0.85));
-            border: 1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 6px 18px rgba(12,17,38,0.06);
-            transition: transform .3s cubic-bezier(.2,.9,.2,1), box-shadow .3s;
-            overflow: hidden;
-            height: 100%;
-        }
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(12,17,38,0.12);
-            border-color: var(--accent);
-        }
-        .news-image-container {
-            width: 100%;
-            height: 160px;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-        .news-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .news-card:hover .news-img { transform: scale(1.05); }
-        .news-content { padding: 15px; }
-        .news-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.3;
-            color: var(--text);
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .news-empty{padding:40px;text-align:center;color:var(--muted)}
-        .news-img[src=""] {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
     </style>
 </head>
 <body>
@@ -443,17 +438,16 @@
             <div class="empty-state"><p>No startups found at this time.</p></div>
         </c:if>
 
-        <!-- News Section -->
         <div class="news-section">
             <h3 class="news-header">
                 <i class="fas fa-bullhorn"></i>Latest in ${newsTopic}
             </h3>
 
             <c:if test="${not empty newsList}">
-                <div class="news-grid">
+                <div class="news-grid startup-card-container">
                     <c:forEach var="news" items="${newsList}" varStatus="status">
                         <c:if test="${status.index < 6}">
-                            <article class="news-card" style="padding:0; box-shadow: 0 4px 12px rgba(12,17,38,0.06);">
+                            <article class="news-card">
                                 <a href="${news.url}" target="_blank" class="news-link" style="display:block; color:inherit;">
                                     <div class="news-image-container">
                                         <img src="${news.imageUrl}"
@@ -462,7 +456,7 @@
                                              onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
                                         <div class="news-overlay"></div>
                                     </div>
-                                    <div class="news-content" style="padding:15px; min-height:80px">
+                                    <div class="news-content">
                                         <h4 class="news-title">${news.title}</h4>
                                     </div>
                                 </a>
@@ -472,7 +466,7 @@
                 </div>
             </c:if>
             <c:if test="${empty newsList}">
-                <div class="news-empty">
+                <div class="empty-state">
                     <p>No news articles available at the moment.</p>
                 </div>
             </c:if>
@@ -572,6 +566,20 @@
                 }
             }
         });
+
+        // If there's only one startup card, add a class for nicer centering/width control
+        (function handleSingleStartupCard(){
+            try {
+                const grid = document.getElementById('startupGrid');
+                if (!grid) return;
+                const cards = grid.getElementsByClassName('startup-card');
+                if (cards.length === 1) {
+                    grid.classList.add('single-card');
+                } else {
+                    grid.classList.remove('single-card');
+                }
+            } catch(e){ /* no-op */ }
+        })();
 
         // year for footer panel (sidebar)
         const yearSpan = document.getElementById('yearSpan');

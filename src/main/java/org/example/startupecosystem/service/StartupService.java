@@ -18,6 +18,14 @@ public class StartupService {
         return startupRepository.findById(id);
     }
 
+    /**
+     * Retrieves an unfiltered list of all Startup entities.
+     * This is useful for general listings (like on the Investor dashboard load).
+     */
+    public List<Startup> findAll() {
+        return startupRepository.findAll();
+    }
+
     public List<Startup> findStartupsByCriteria(String search, String industry) {
         return startupRepository.findBySearchCriteria(search, industry);
     }

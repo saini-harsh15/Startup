@@ -37,13 +37,41 @@ public class StartupController {
     @Autowired
     private InvestorService investorService;
 
-    @GetMapping("/dashboard/{id}")
-    public String showStartupDashboard(@PathVariable("id") Long id, Model model, HttpSession session) {
-        if (session.getAttribute("loggedInUserId") == null || !"Startup".equals(session.getAttribute("loggedInRole"))) {
-            return "redirect:/login";
+    // --- Helper method for robust session ID retrieval (FIX) ---
+    private Optional<Long> getUserIdFromSession(HttpSession session, String expectedRole, RedirectAttributes redirectAttributes) {
+        Object userIdObj = session.getAttribute("loggedInUserId");
+        String role = (String) session.getAttribute("loggedInRole");
+
+        if (userIdObj == null || !expectedRole.equals(role)) {
+            return Optional.empty(); // Fails authentication
         }
 
-        Optional<Startup> startupOptional = startupRepository.findById(id);
+        try {
+            // Safely parse the ID regardless of whether Spring stored it as String or Long.
+            Long userId = (userIdObj instanceof String) ? Long.parseLong((String) userIdObj) : (Long) userIdObj;
+            return Optional.of(userId);
+        } catch (NumberFormatException | ClassCastException e) {
+            // Session corruption detected: invalidate and redirect
+            session.invalidate();
+            if (redirectAttributes != null) {
+                redirectAttributes.addFlashAttribute("error", "Authentication error. Please log in again.");
+            }
+            return Optional.empty();
+        }
+    }
+    // ----------------------------------------------------
+
+
+    @GetMapping("/dashboard/{id}")
+    public String showStartupDashboard(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        // Use helper to validate session
+        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+        Long userId = userIdOpt.get();
+
+        Optional<Startup> startupOptional = startupRepository.findById(userId);
         if (startupOptional.isPresent()) {
             Startup startup = startupOptional.get();
             model.addAttribute("startup", startup);
@@ -56,7 +84,6 @@ public class StartupController {
             // --- News Fetching Logic ---
             String industry = startup.getIndustry();
             String topic = (industry != null && !industry.trim().isEmpty()) ? industry.trim() : "startup";
-            model.addAttribute("newsTopic", topic);
             model.addAttribute("newsList", newsService.fetchNews(topic));
 
             return "startupDashboard";
@@ -71,22 +98,15 @@ public class StartupController {
     @GetMapping("/messages")
     public String showMessagesPage(
             @RequestParam(value = "search", required = false) String search,
-            Model model, HttpSession session) {
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
-        Object userIdObj = session.getAttribute("loggedInUserId");
-        if (userIdObj == null || !"Startup".equals(session.getAttribute("loggedInRole"))) {
+        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
+        Long startupId = userIdOpt.get();
 
-        Long startupId;
-        try {
-            // Safely cast/parse the userId from session
-            startupId = (userIdObj instanceof String) ? Long.parseLong((String) userIdObj) : (Long) userIdObj;
-        } catch (Exception e) {
-            return "redirect:/login";
-        }
-
-        // Fetch startup object (needed for name in the navbar)
+        // Fetch startup object (for navbar context)
         Optional<Startup> startupOptional = startupRepository.findById(startupId);
         if (startupOptional.isPresent()) {
             model.addAttribute("startup", startupOptional.get());
@@ -102,9 +122,8 @@ public class StartupController {
             investors = investorService.findAll();
         }
 
-        // --- 2. Chat History (Initial Load - Setting a safe, empty list) ---
-        // History will be loaded dynamically on the client, but we ensure the model attribute exists.
-        // We initialize the history to null or an empty list if no partner is selected by default.
+        // --- 2. Chat History (Initial Load) ---
+        // NOTE: We do not load history here, as the client needs to click a user first.
         List<ChatMessage> chatHistory = null;
 
         // Pass all necessary data to the JSP
@@ -118,23 +137,11 @@ public class StartupController {
 
     @GetMapping("/profile")
     public String showProfile(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        Object userIdObj = session.getAttribute("loggedInUserId");
-        if (userIdObj == null || !"Startup".equals(session.getAttribute("loggedInRole"))) {
-            redirectAttributes.addFlashAttribute("error", "Your session has expired. Please log in again.");
+        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
-
-        Long userId;
-        try {
-            if (userIdObj instanceof String) {
-                userId = Long.parseLong((String) userIdObj);
-            } else {
-                userId = (Long) userIdObj;
-            }
-        } catch (NumberFormatException | ClassCastException e) {
-            redirectAttributes.addFlashAttribute("error", "An authentication error occurred. Please log in again.");
-            return "redirect:/login";
-        }
+        Long userId = userIdOpt.get();
 
         Optional<Startup> startupOptional = startupRepository.findById(userId);
         if (startupOptional.isPresent()) {
@@ -154,23 +161,11 @@ public class StartupController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        Object userIdObj = session.getAttribute("loggedInUserId");
-        if (userIdObj == null || !"Startup".equals(session.getAttribute("loggedInRole"))) {
-            redirectAttributes.addFlashAttribute("error", "Your session has expired. Please log in again.");
+        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
-
-        Long userId;
-        try {
-            if (userIdObj instanceof String) {
-                userId = Long.parseLong((String) userIdObj);
-            } else {
-                userId = (Long) userIdObj;
-            }
-        } catch (NumberFormatException | ClassCastException e) {
-            redirectAttributes.addFlashAttribute("error", "An authentication error occurred. Please log in again.");
-            return "redirect:/login";
-        }
+        Long userId = userIdOpt.get();
 
         try {
             Startup updatedStartup = startupService.updateStartupProfile(userId, name, description, industry);
