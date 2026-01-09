@@ -14,8 +14,7 @@ public class ChatService {
     private ChatMessageRepository chatMessageRepository;
 
     public List<ChatMessage> getConversationHistory(Long userId1, Long userId2) {
-        // Use the complex query to get all messages where (Sender=A AND Receiver=B) OR (Sender=B AND Receiver=A)
-        return chatMessageRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderIdOrderByTimestampAsc(
-            userId1, userId2, userId2, userId1);
+        // Fetch all messages where (sender=A AND receiver=B) OR (sender=B AND receiver=A), ordered by timestamp ASC
+        return chatMessageRepository.findConversationBetween(userId1, userId2);
     }
 }
