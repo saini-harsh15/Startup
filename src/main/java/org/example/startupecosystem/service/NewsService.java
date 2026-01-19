@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class NewsService {
 
-    private static final String API_KEY = "214e6d80fc81454dd83ac558dffc5d95"; // 🚀 Replace with your GNews key
+    private static final String API_KEY = "214e6d80fc81454dd83ac558dffc5d95";
     private static final String BASE_URL = "https://gnews.io/api/v4/search";
 
     private final RestTemplate restTemplate;
@@ -42,7 +42,7 @@ public class NewsService {
                     .builder()
                     .queryParam("q", query)
                     .queryParam("lang", "en")
-                    .queryParam("max", max) // max articles per request
+                    .queryParam("max", max) 
                     .queryParam("apikey", API_KEY)
                     .build();
 
