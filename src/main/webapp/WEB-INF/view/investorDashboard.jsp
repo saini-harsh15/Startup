@@ -1,628 +1,417 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
-    // Prevent caching of this page to fix the back button issue
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-    response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-    response.setDateHeader("Expires", 0); // Proxies.
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Investor Dashboard</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* =========================
-           Variables & base reset
-           ========================= */
+        /* ================= THEME ================= */
         :root{
-            --accent: #28a745;
-            --accent-600: #218838;
-            --bg-1: linear-gradient(180deg,#f8fbfd 0%, #eef6f9 100%); /* Lighter, cleaner base */
-            --muted: #6b7280;
-            --text: #0f172a;
-            --card-radius: 14px;
-            --max-page-width: 1600px;
-            --white: #ffffff;
-            --border-color: #e0e0e0;
+            --accent:#28a745;
+            --accent-soft:rgba(40,167,69,.12);
+
+            --bg:#f3f6f9;
+            --card:#ffffff;
+            --text:#0f172a;
+            --muted:#64748b;
+
+            --border:1px solid rgba(15,23,42,.06);
+            --shadow-sm:0 6px 14px rgba(0,0,0,.06);
+            --shadow-md:0 22px 40px rgba(0,0,0,.10);
+        }
+
+        .dark-mode{
+            --bg:#0b1220;
+            --card:#111827;
+            --text:#e5e7eb;
+            --muted:#9ca3af;
+            --border:1px solid rgba(255,255,255,.08);
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
-        html,body{height:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+
         body{
-            background: var(--bg-1);
-            color: var(--text);
-            min-height:100vh;
-            /* full-width layout (content will stretch, but capped) */
-            padding-top:78px;
-            transition: background 0.28s ease, color 0.28s ease;
+            font-family:'Poppins',sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            padding-top:90px;
+            transition:.3s ease;
         }
 
-        /* Thin scrollbar (modern) */
-        ::-webkit-scrollbar { height:10px; width:10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(12,17,38,0.12); border-radius:999px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        /* Firefox */
-        * { scrollbar-width: thin; scrollbar-color: rgba(12,17,38,0.12) transparent; }
-
-        /* =========================
-           Navbar (glass)
-           ========================= */
+        /* ================= NAVBAR ================= */
         .navbar{
             position:fixed;
-            top:10px;
-            left:10px;
-            right:10px;
-            height:64px;
-            z-index:1400;
+            top:14px;left:14px;right:14px;
+            height:68px;
+            padding:0 26px;
+            background:rgba(255,255,255,.85);
+            backdrop-filter:blur(14px);
+            border:var(--border);
+            border-radius:18px;
             display:flex;
-            align-items:center;
             justify-content:space-between;
-            gap:12px;
-            padding:10px 18px;
-            border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); /* More opaque glass */
-            backdrop-filter: blur(10px) saturate(150%);
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 8px 30px rgba(12,17,38,0.1); /* Sharper, cleaner shadow */
+            align-items:center;
+            z-index:1000;
         }
-        .navbar-left{display:flex;gap:14px;align-items:center}
-        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
-        .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
-        .navbar-right{display:flex;gap:12px;align-items:center}
+        .dark-mode .navbar{background:rgba(17,24,39,.9)}
 
-        .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
-        .profile-dropdown{position:relative}
+        .nav-left{display:flex;align-items:center;gap:16px}
+        .logo{font-weight:800;font-size:1.35rem;color:var(--accent)}
+        .logo span{color:var(--text)}
+        .hamburger{font-size:1.2rem;cursor:pointer;color:var(--muted)}
 
-        /* Profile icon */
+        .nav-right{display:flex;align-items:center;gap:14px}
+        .theme-toggle{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted)}
+
         .profile-icon{
-            width:44px;height:44px;border-radius:12px;
-            display:flex;align-items:center;justify-content:center;font-weight:700;
-            background: linear-gradient(180deg, var(--accent), var(--accent-600));
-            color:var(--white); cursor:pointer;
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
-            transition: transform 0.2s ease;
-            z-index:1410;
-        }
-        .profile-icon:hover { transform: translateY(-1px); }
-
-        /* Theme toggle */
-        .theme-toggle{
-            cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem;
-            background: rgba(0,0,0,0.05); /* Soft dark background */
-            border:1px solid rgba(0,0,0,0.05);
-            display:inline-flex;align-items:center;justify-content:center;
-            transition: all 0.2s ease;
+            width:42px;height:42px;border-radius:12px;
+            background:linear-gradient(135deg,var(--accent),#34d058);
+            color:white;display:flex;align-items:center;justify-content:center;
+            font-weight:700;cursor:pointer;
         }
 
+        /* ================= DROPDOWN ================= */
+        .dropdown{position:relative}
         .dropdown-content{
-            display:none; position:absolute; right:0; top:58px; min-width:170px;
-            background: var(--white);
-            border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.12);
-            border:1px solid rgba(12,17,38,0.04);
-            z-index: 1405;
+            display:none;position:absolute;right:0;top:56px;
+            min-width:180px;background:var(--card);
+            border:var(--border);border-radius:14px;
+            box-shadow:var(--shadow-md);overflow:hidden;
         }
         .dropdown-content.show{display:block}
-        .dropdown-content a{display:block;padding:12px 14px;color:var(--dark-text);text-decoration:none;font-weight:500}
-        .dropdown-content a:hover{background:rgba(40,167,69,0.06); color: var(--accent); font-weight:600}
-
-        /* =========================
-           Sidebar (collapsible)
-           ========================= */
-        .sidebar{
-            position:fixed;top:10px;left:10px;height:calc(100% - 20px);width:0;z-index:1350;padding-top:88px;
-            overflow:hidden;transition:width 320ms cubic-bezier(.2,.9,.2,1);
+        .dropdown-content a{
+            display:block;padding:14px 16px;text-decoration:none;
+            color:var(--text);font-weight:500;
         }
-        .sidebar .panel{
-            height:100%; width:280px; padding:18px; border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
-            border:1px solid rgba(255,255,255,0.7); backdrop-filter: blur(10px);
-            box-shadow: 6px 12px 30px rgba(12,17,38,0.1);
-            transform-origin:left center;
+        .dropdown-content a:hover{
+            background:var(--accent-soft);color:var(--accent);
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar{
+            position:fixed;top:14px;left:14px;
+            height:calc(100% - 28px);
+            width:0;overflow:hidden;
+            transition:.35s cubic-bezier(.4,0,.2,1);
+            z-index:1100;
         }
         .sidebar.open{width:300px}
-        .sidebar.open .panel{width:300px}
-        .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:500}
-        .sidebar a i{margin-right:12px;color:var(--accent)}
-        .sidebar a:hover{background: rgba(40,167,69,0.08); color: var(--accent); font-weight:600;}
 
-        /* overlay when sidebar open on small screens */
-        .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
-        .overlay.show{display:block}
-
-        /* =========================
-           Page wrapper + container
-           ========================= */
-        .page-wrap{width:100%;max-width:var(--max-page-width);margin:0 auto;padding:14px 22px}
-        .container{
-            width:100%; border-radius:16px; padding:35px; margin-top:6px;
-            background: var(--white);
-            border: none;
-            box-shadow: 0 14px 50px rgba(12,17,38,0.06);
-        }
-
-        h1{color:var(--accent); margin:0 0 16px; font-size:1.8rem; font-weight:700;}
-
-        /* controls */
-        .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
-        .left-controls{display:flex;gap:12px;align-items:center}
-
-        /* Message/Filter Button Styles */
-        .filter-toggle-button, .message-center-button { /* Applied uniform styling */
-            background: linear-gradient(180deg, var(--accent), var(--accent-600)); color:white; border:none;
-            padding:10px 18px; font-weight:600; border-radius:999px; cursor:pointer;
-            box-shadow: 0 8px 20px rgba(40,167,69,0.25);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-        .filter-toggle-button:hover, .message-center-button:hover {
-            box-shadow: 0 12px 35px rgba(40,167,69,0.4);
-            transform: translateY(-2px);
-            background: var(--accent-600);
-        }
-        .small-muted{color:var(--muted); font-weight:500; opacity:0.92}
-
-        /* filter area */
-        .collapsible-content{overflow:hidden;max-height:0;transition:max-height .42s cubic-bezier(.2,.9,.2,1);padding:0}
-        .collapsible-content.open{max-height:420px;padding:14px 0}
-        .filter-form{display:flex;flex-direction:column;gap:12px}
-        .filter-row{display:flex;gap:10px;align-items:center}
-        .filter-row input, .filter-row select{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(12,17,38,0.1);background:rgba(255,255,255,0.92);outline:none;font-weight:500}
-        .filter-actions{display:flex;gap:10px}
-
-        /* apply/reset */
-        .apply-button{background:var(--accent);color:white;border:none;padding:10px 16px;border-radius:999px;font-weight:600;cursor:pointer}
-        .reset-button{background:#6c757d;color:white;border:none;padding:10px 14px;border-radius:999px;font-weight:600;cursor:pointer}
-
-        /* =========================
-           Startups grid & cards (Cleaner and sharper)
-           ========================= */
-        .startup-card-container{
-            display:grid;
-            grid-template-columns: repeat(4, 1fr); /* Default 4 Columns */
-            gap:25px;
-            margin-top:20px;
-        }
-
-        .startup-card{
-            display:block;text-decoration:none;border-radius:var(--card-radius);overflow:hidden;
-            background: var(--white);
-            border: 1px solid rgba(12,17,38,0.06);
-            box-shadow: 0 4px 20px rgba(12,17,38,0.08);
-            transition: transform .3s cubic-bezier(.2,.9,.2,1), box-shadow .3s;
-        }
-        .startup-card:hover{transform: translateY(-8px); box-shadow: 0 16px 40px rgba(12,17,38,0.18)}
-        .card-header{padding:16px;background: #fafafa;font-weight:700;font-size:1.1rem; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom: 1px solid #eee; color: var(--dark-text)}
-        .card-body{padding:18px 16px;color:var(--text)}
-        .card-description{color:var(--muted); font-size:0.95rem; margin-bottom:8px}
-        .card-body strong { color: var(--accent); font-weight: 700; }
-
-        /* Single-card fix: center and constrain width so a single result doesn't stretch awkwardly */
-        .startup-card-container.single-card {
-            grid-template-columns: 1fr;      /* one column */
-            justify-items: center;          /* center the grid item */
-        }
-        .startup-card-container.single-card .startup-card {
-            max-width: 720px;               /* constrain width for nicer layout */
-            width: 100%;
-        }
-
-        /* empty state */
-        .empty-state{padding:24px;text-align:center;color:var(--muted)}
-
-        /* --- News Section (mirrors startupDashboard) --- */
-        .news-header {
-            color: var(--text);
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin: 22px 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--accent);
-        }
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        .news-card {
-            display:block;
-            text-decoration:none;
-            border-radius:12px;
-            background: var(--white);
-            border: 1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 6px 18px rgba(12,17,38,0.06);
-            transition: transform .3s cubic-bezier(.2,.9,.2,1), box-shadow .3s;
-            overflow: hidden;
-            height: 100%;
-        }
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(12,17,38,0.12);
-            border-color: var(--accent);
-        }
-        .news-image-container {
-            width: 100%;
-            height: 160px;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-        .news-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        .news-card:hover .news-img { transform: scale(1.05); }
-        .news-content { padding: 15px; }
-        .news-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.3;
-            color: var(--text);
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .news-empty{padding:40px;text-align:center;color:var(--muted)}
-        .news-img[src=""] {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        /* =========================
-           Responsive & overflow fixes
-           ========================= */
-        @media (max-width:860px){
-            .navbar{left:6px;right:6px}
-            body{padding-top:86px}
-            .container{padding:18px}
-            .filter-row{flex-direction:column;align-items:stretch}
-            .startup-card-container{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-            .sidebar{left:8px}
-        }
-        @media (max-width:480px){
-            .navbar{left:6px;right:6px;padding:8px 12px}
-            .welcome-msg{display:none}
-            .filter-actions { flex-direction: column; }
-            .filter-actions button { width: 100%; margin-left: 0 !important; }
-        }
-
-        /* =========================
-           Dark theme overrides (toggle)
-           ========================= */
-        .dark-mode{
-            --bg-1: linear-gradient(180deg,#071018,#071417);
-            --muted: #9fb3c6;
-            --text: #dbeafe;
-            background: linear-gradient(180deg,#03050a,#071017);
-            color: var(--text);
-        }
-        .dark-mode .navbar{
-            background: linear-gradient(180deg, rgba(8,12,20,0.6), rgba(6,10,16,0.55)); border: 1px solid rgba(255,255,255,0.03)
-        }
-        .dark-mode .container{
-            background: linear-gradient(180deg, rgba(10,14,18,0.55), rgba(8,12,16,0.45)); border:1px solid rgba(255,255,255,0.03)
+        .sidebar .panel{
+            width:300px;height:100%;
+            padding:26px 22px;
+            background:linear-gradient(180deg,var(--card),rgba(255,255,255,.96));
+            border:var(--border);border-radius:18px;
+            box-shadow:12px 0 35px rgba(0,0,0,.12);
+            position:relative;
         }
         .dark-mode .sidebar .panel{
-            background: linear-gradient(180deg, rgba(10,14,18,0.55), rgba(8,12,16,0.4)); border:1px solid rgba(255,255,255,0.03)
+            background:linear-gradient(180deg,var(--card),rgba(17,24,39,.95));
         }
-        .dark-mode .startup-card{
-            background: linear-gradient(180deg, rgba(12,16,20,0.45), rgba(8,12,16,0.38));
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .dark-mode .startup-card:hover{box-shadow: 0 20px 50px rgba(0,0,0,0.4)}
-        .dark-mode .card-header{background: rgba(20,28,40,0.8); border-bottom: 1px solid #444; color: var(--text)}
-        .dark-mode .profile-icon{ background: linear-gradient(180deg,#0a2f14,#0b3616); color: #bff2c7 }
-        .dark-mode .theme-toggle{ background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04) }
 
-        /* Accessibility focus */
-        a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
+        .sidebar-logo{
+            display:flex;align-items:center;gap:10px;
+            font-size:1.45rem;font-weight:800;
+            color:var(--accent);margin-bottom:28px;
+        }
+        .sidebar-logo i{
+            background:var(--accent);color:white;
+            width:38px;height:38px;border-radius:12px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .sidebar-logo span{color:var(--text)}
+
+        .sidebar a{
+            display:flex;align-items:center;gap:14px;
+            padding:14px 16px;margin-bottom:8px;
+            border-radius:14px;text-decoration:none;
+            color:var(--text);font-weight:500;
+            position:relative;transition:.25s ease;
+        }
+        .sidebar a::before{
+            content:"";position:absolute;left:0;top:50%;
+            transform:translateY(-50%);
+            width:4px;height:0;background:var(--accent);
+            border-radius:4px;transition:.25s ease;
+        }
+        .sidebar a:hover::before{height:60%}
+        .sidebar a:hover{
+            background:var(--accent-soft);color:var(--accent);
+            padding-left:22px;
+        }
+
+        .sidebar-footer{
+            position:absolute;bottom:22px;left:22px;right:22px;
+            text-align:center;font-size:.8rem;color:var(--muted);
+        }
+
+        /* ================= OVERLAY ================= */
+        .overlay{
+            display:none;position:fixed;inset:0;
+            background:rgba(0,0,0,.35);z-index:1000;
+        }
+        .overlay.show{display:block}
+
+        /* ================= PAGE ================= */
+        .page-wrap{max-width:1400px;margin:auto;padding:24px}
+
+        .header-section{
+            display:flex;justify-content:space-between;
+            align-items:flex-end;margin-bottom:32px;
+        }
+        .header-section h1{font-size:2rem}
+
+        .controls-bar{
+            background:var(--card);border:var(--border);
+            border-radius:18px;padding:18px 24px;
+            display:flex;gap:14px;box-shadow:var(--shadow-sm);
+            margin-bottom:26px;
+        }
+        .btn-primary{
+            background:var(--accent);color:white;
+            border:none;padding:11px 22px;
+            border-radius:10px;font-weight:600;
+            cursor:pointer;text-decoration:none;
+        }
+
+        .filter-panel{
+            background:var(--card);border:var(--border);
+            border-radius:18px;overflow:hidden;
+            max-height:0;transition:.4s ease;
+            margin-bottom:26px;
+        }
+        .filter-panel.open{max-height:240px;padding:22px}
+
+        /* Startup cards */
+        .grid-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+            gap:26px;
+        }
+        .startup-card{
+            background:var(--card);border:var(--border);
+            border-radius:22px;padding:26px;
+            text-decoration:none;color:inherit;
+            box-shadow:var(--shadow-sm);transition:.3s ease;
+        }
+        .startup-card:hover{
+            transform:translateY(-12px);
+            box-shadow:var(--shadow-md);
+            border-color:var(--accent);
+        }
+        .industry-tag{
+            background:var(--accent-soft);color:var(--accent);
+            padding:6px 14px;border-radius:20px;
+            font-size:.75rem;font-weight:700;
+        }
+        .startup-name{font-size:1.25rem;font-weight:700;margin:14px 0 8px}
+        .startup-desc{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+        .stats-grid{
+            display:grid;grid-template-columns:1fr 1fr;
+            border-top:var(--border);padding-top:14px;
+        }
+        .stat-item span{font-size:.75rem;color:var(--muted)}
+        .stat-item strong{color:var(--accent)}
+
+        .dark-mode .startup-card{
+            box-shadow:
+                    0 0 0 1px rgba(255,255,255,.06),
+                    0 22px 55px rgba(255,255,255,.10);
+        }
+
+        /* ================= NEWS ================= */
+        .news-section{margin-top:60px}
+        .news-header{
+            font-size:1.5rem;margin-bottom:20px;
+            border-left:5px solid var(--accent);
+            padding-left:14px;
+        }
+        .news-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:22px;
+        }
+        .news-card{
+            background:var(--card);
+            border:var(--border);
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:var(--shadow-sm);
+            transition:.3s ease;
+        }
+        .news-card:hover{
+            transform:translateY(-8px);
+            box-shadow:var(--shadow-md);
+            border-color:var(--accent);
+        }
+        .news-img{width:100%;height:160px;object-fit:cover}
+        .news-content{padding:16px}
+        .news-title{font-size:.95rem;font-weight:600}
+
+        /* ================= RESPONSIVE ================= */
+        @media(max-width:768px){
+            .header-section{flex-direction:column;align-items:flex-start;gap:14px}
+            .grid-container,.news-grid{grid-template-columns:1fr}
+        }
     </style>
 </head>
+
 <body>
 
-<div id="mySidebar" class="sidebar" aria-hidden="true">
-    <div class="panel" role="navigation" aria-label="Sidebar">
-        <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
+<!-- SIDEBAR -->
+<div id="mySidebar" class="sidebar">
+    <div class="panel">
+        <div class="sidebar-logo">
+            <i class="fas fa-leaf"></i>
+            ECO<span>TRACK</span>
+        </div>
 
-        <a href="/investor/dashboard/${investor.id}" style="margin-top:10px"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="#"><i class="fas fa-rocket"></i> My Startups</a>
-        <a href="/investor/profile"><i class="fas fa-user-circle"></i> Settings</a>
-        <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
+        <a href="/investor/dashboard/${investor.id}">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a href="#"><i class="fas fa-chart-line"></i> Portfolio</a>
+        <a href="/investor/profile"><i class="fas fa-cog"></i> Settings</a>
+        <a href="/contact"><i class="fas fa-headset"></i> Support</a>
 
-        <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
-            <div>Startup Ecosystem</div>
-            <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
+        <div class="sidebar-footer">
+            © <span id="yearSpan"></span> EcoTrack
         </div>
     </div>
 </div>
 
-<div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
+<div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<header class="navbar" role="banner">
-    <div class="navbar-left">
-        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
-        <div class="logo" title="Project name">My Project</div>
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-left">
+        <i class="fas fa-bars hamburger" onclick="openNav()"></i>
+        <div class="logo">ECO<span>TRACK</span></div>
     </div>
 
-    <div class="navbar-right">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-pressed="false" title="Toggle dark mode">
+    <div class="nav-right">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">
             <i class="fas fa-moon"></i>
         </button>
-
-        <div class="welcome-msg">Welcome, ${investor.investorName}</div>
-
-        <div class="profile-dropdown">
-            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">P</div>
-            <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
-                <a href="/investor/profile" role="menuitem">My Profile</a>
-                <a href="/logout" role="menuitem">Logout</a>
-            </nav>
+        <div class="dropdown">
+            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">P</div>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="/investor/profile">Profile</a>
+                <a href="/logout">Logout</a>
+            </div>
         </div>
     </div>
 </header>
 
-<div class="page-wrap" role="main">
-    <div class="container" id="mainContainer">
-        <h1>Welcome to Your Dashboard!</h1>
+<!-- CONTENT -->
+<div class="page-wrap">
 
-        <div class="controls" aria-hidden="false">
-            <div class="left-controls">
-                <a href="/investor/messages" class="message-center-button" title="Go to Message Center">
-                    <i class="fas fa-comments" style="margin-right:8px"></i> Message Center
-                </a>
-
-                <button class="filter-toggle-button" onclick="toggleFilter()" aria-expanded="false" aria-controls="filterCollapsible" style="margin-left: 10px;">
-                    <i class="fas fa-filter" style="margin-right:8px"></i> Filter
-                </button>
-                <div class="small-muted" style="margin-left:12px">Find startups quickly — refined results.</div>
-            </div>
-
-            <div class="small-muted" style="text-align:right;font-weight:700">${investor.investorName} • Investor</div>
+    <div class="header-section">
+        <div>
+            <p style="color:var(--muted)">Welcome back,</p>
+            <h1>${investor.investorName}</h1>
         </div>
+        <span class="industry-tag">Verified Investor</span>
+    </div>
 
-        <div id="filterCollapsible" class="collapsible-content" aria-hidden="true">
-            <form id="filterForm" action="/investor/dashboard" method="get" class="filter-form" role="search">
-                <div class="filter-row">
-                    <input type="text" name="search" placeholder="Search by name or industry..." value="${currentSearch}" aria-label="Search startups by name or industry">
-                    <select name="industry" aria-label="Filter by industry">
-                        <option value="" ${empty currentIndustry ? 'selected' : ''}>All Industries</option>
-                        <c:forEach var="industry" items="${industries}">
-                            <option value="${industry}" ${industry eq currentIndustry ? 'selected' : ''}>${industry}</option>
-                        </c:forEach>
-                    </select>
+    <div class="controls-bar">
+        <a href="/investor/messages" class="btn-primary">
+            <i class="fas fa-comment-dots" style="margin-right:8px"></i> Messages
+        </a>
+        <button class="btn-primary" style="background:#e2e8f0;color:#475569" onclick="toggleFilter()">
+            <i class="fas fa-sliders-h" style="margin-right:8px"></i> Filters
+        </button>
+    </div>
 
-                    <div class="filter-actions">
-                        <button type="submit" class="apply-button">Apply Filter</button>
-                        <button type="button" class="reset-button" onclick="window.location.href='/investor/dashboard'">Reset</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <c:if test="${not empty startups}">
-            <h2 style="margin-top:12px;font-weight:700">Available Startups:</h2>
-
-            <div class="startup-card-container" id="startupGrid">
-                <c:forEach var="startup" items="${startups}">
-                    <a href="/investor/startup/${startup.id}" class="startup-card" aria-label="${startup.name}">
-                        <div class="card-header">${startup.name}</div>
-                        <div class="card-body">
-                            <p class="card-description">${startup.description}</p>
-                            <p><strong>Industry:</strong> ${startup.industry}</p>
-                            <p><strong>Funding Ask:</strong> <strong>$${startup.fundingAsk}</strong></p>
-                            <p><strong>Equity Offered:</strong> <strong>${startup.equityOffered}%</strong></p>
-                        </div>
-                    </a>
+    <div id="filterPanel" class="filter-panel">
+        <form action="/investor/dashboard" method="get" style="display:flex;gap:14px;align-items:center">
+            <input type="text" name="search" placeholder="Search startups..." value="${currentSearch}"
+                   style="flex:2;padding:10px;border-radius:10px;border:var(--border)">
+            <select name="industry" style="flex:1;padding:10px;border-radius:10px;border:var(--border)">
+                <option value="">All Industries</option>
+                <c:forEach var="ind" items="${industries}">
+                    <option value="${ind}" ${ind eq currentIndustry ? 'selected' : ''}>${ind}</option>
                 </c:forEach>
-            </div>
-        </c:if>
+            </select>
+            <button type="submit" class="btn-primary">Apply</button>
+            <button type="button" class="btn-primary" style="background:#6c757d"
+                    onclick="window.location.href='/investor/dashboard'">Reset</button>
+        </form>
+    </div>
 
-        <c:if test="${empty startups}">
-            <div class="empty-state"><p>No startups found at this time.</p></div>
-        </c:if>
+    <c:if test="${not empty startups}">
+        <div class="grid-container">
+            <c:forEach var="startup" items="${startups}">
+                <a href="/investor/startup/${startup.id}" class="startup-card">
+                    <span class="industry-tag">${startup.industry}</span>
+                    <h3 class="startup-name">${startup.name}</h3>
+                    <p class="startup-desc">${startup.description}</p>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span>Funding Ask</span>
+                            <strong>$${startup.fundingAsk}</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Equity</span>
+                            <strong>${startup.equityOffered}%</strong>
+                        </div>
+                    </div>
+                </a>
+            </c:forEach>
+        </div>
+    </c:if>
 
-        <div class="news-section">
-            <h3 class="news-header">
-                <i class="fas fa-bullhorn"></i>Latest in ${newsTopic}
-            </h3>
+    <!-- NEWS SECTION -->
+    <div class="news-section">
+        <h3 class="news-header">Market Insights: ${newsTopic}</h3>
 
-            <c:if test="${not empty newsList}">
-                <div class="news-grid startup-card-container">
-                    <c:forEach var="news" items="${newsList}" varStatus="status">
-                        <c:if test="${status.index < 6}">
-                            <article class="news-card">
-                                <a href="${news.url}" target="_blank" class="news-link" style="display:block; color:inherit;">
-                                    <div class="news-image-container">
-                                        <img src="${news.imageUrl}"
-                                             alt="${news.title}"
-                                             class="news-img"
-                                             onerror="this.src='https://via.placeholder.com/300x200/f0f0f0/999999?text=No+Image'">
-                                        <div class="news-overlay"></div>
-                                    </div>
-                                    <div class="news-content">
-                                        <h4 class="news-title">${news.title}</h4>
-                                    </div>
-                                </a>
-                            </article>
-                        </c:if>
-                    </c:forEach>
-                </div>
-            </c:if>
-            <c:if test="${empty newsList}">
-                <div class="empty-state">
-                    <p>No news articles available at the moment.</p>
-                </div>
-            </c:if>
+        <div class="news-grid">
+            <c:forEach var="news" items="${newsList}" varStatus="status">
+                <c:if test="${status.index < 4}">
+                    <div class="news-card">
+                        <img src="${news.imageUrl}" class="news-img"
+                             onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80'">
+                        <div class="news-content">
+                            <a href="${news.url}" target="_blank" style="text-decoration:none;color:inherit">
+                                <div class="news-title">${news.title}</div>
+                            </a>
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
+
 </div>
 
 <script>
-    /* =========================
-       Keep all original function names and logic
-       ========================= */
-
-    function openNav() {
-        document.getElementById("mySidebar").classList.add("open");
-        document.getElementById("overlay").classList.add("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'false');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'false');
-    }
-
-    function closeNav() {
-        document.getElementById("mySidebar").classList.remove("open");
-        document.getElementById("overlay").classList.remove("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'true');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'true');
-    }
-
-    function toggleDropdown() {
-        const dd = document.getElementById("myDropdown");
-        dd.classList.toggle("show");
-        const expanded = dd.classList.contains("show");
-        document.getElementById("profileIcon").setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        dd.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-    }
-
-    // Close dropdown on outside click (kept)
-    window.addEventListener('click', function(event) {
-        if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                    openDropdown.setAttribute('aria-hidden', 'true');
-                    var icon = document.getElementById("profileIcon");
-                    if (icon) icon.setAttribute('aria-expanded', 'false');
-                }
-            }
-        }
+    document.addEventListener('DOMContentLoaded',()=>{
+        document.getElementById("yearSpan").textContent=new Date().getFullYear();
+        const name="${investor.investorName}";
+        if(name)profileIcon.textContent=name.charAt(0).toUpperCase();
+        if(localStorage.getItem("theme")==="dark")
+            document.documentElement.classList.add("dark-mode");
     });
-
-    // Theme handling (kept names; improved persistence & accessibility)
-    function setTheme(theme) {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-sun"></i>';
-            document.getElementById('themeToggleBtn').setAttribute('aria-pressed', 'true');
-        } else {
-            document.documentElement.classList.remove('dark-mode');
-            document.querySelector('.theme-toggle').innerHTML = '<i class="fas fa-moon"></i>';
-            document.getElementById('themeToggleBtn').setAttribute('aria-pressed', 'false');
-        }
-        try { localStorage.setItem('theme', theme); } catch(e){ /* ignore if storage blocked */ }
+    function openNav(){mySidebar.classList.add("open");overlay.classList.add("show")}
+    function closeNav(){mySidebar.classList.remove("open");overlay.classList.remove("show")}
+    function toggleDropdown(){myDropdown.classList.toggle("show")}
+    function toggleFilter(){filterPanel.classList.toggle("open")}
+    function toggleTheme(){
+        document.documentElement.classList.toggle("dark-mode");
+        localStorage.setItem("theme",
+            document.documentElement.classList.contains("dark-mode")?"dark":"light");
     }
-
-    function toggleTheme() {
-        if (document.documentElement.classList.contains('dark-mode')) {
-            setTheme('light');
-        } else {
-            setTheme('dark');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // theme restore
-        const savedTheme = (function(){
-            try { return localStorage.getItem('theme'); } catch(e){ return null; }
-        })() || 'light';
-        setTheme(savedTheme);
-
-        // dynamic profile icon (kept)
-        const investorName = "${investor.investorName}";
-        const profileIcon = document.getElementById("profileIcon");
-        if (investorName && profileIcon) {
-            profileIcon.textContent = investorName.charAt(0).toUpperCase();
-            profileIcon.setAttribute('title', investorName);
-        }
-
-        // small UX: close filter when clicking outside
-        document.addEventListener('click', function(e) {
-            const filter = document.getElementById('filterCollapsible');
-            const toggleBtn = document.querySelector('.filter-toggle-button');
-            if (!e.target.closest('#filterCollapsible') && !e.target.closest('.filter-toggle-button')) {
-                if (filter.classList.contains('open')) {
-                    filter.classList.remove('open');
-                    filter.setAttribute('aria-hidden', 'true');
-                    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
-                }
-            }
-        });
-
-        // If there's only one startup card, add a class for nicer centering/width control
-        (function handleSingleStartupCard(){
-            try {
-                const grid = document.getElementById('startupGrid');
-                if (!grid) return;
-                const cards = grid.getElementsByClassName('startup-card');
-                if (cards.length === 1) {
-                    grid.classList.add('single-card');
-                } else {
-                    grid.classList.remove('single-card');
-                }
-            } catch(e){ /* no-op */ }
-        })();
-
-        // year for footer panel (sidebar)
-        const yearSpan = document.getElementById('yearSpan');
-        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-    });
-
-    // Collapsible filter (kept)
-    function toggleFilter() {
-        const content = document.getElementById("filterCollapsible");
-        content.classList.toggle("open");
-        const expanded = content.classList.contains("open");
-        content.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-        const btn = document.querySelector('.filter-toggle-button');
-        if (btn) btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-    }
-
-    /* =========================
-       Fixes for content overflow / layout stability
-       ========================= */
-    (function layoutStabilityFixes(){
-        // Force no horizontal overflow on small windows
-        document.documentElement.style.overflowX = 'hidden';
-
-        // Observe container width for dynamic adjustments (defensive)
-        try {
-            const grid = document.getElementById('startupGrid');
-            if (grid) {
-                const ensureCardMin = function(){
-                    // Uses CSS Grid, but fallback or adjustments can be made here
-                    if (window.innerWidth < 420) {
-                        grid.style.gridTemplateColumns = 'repeat(1, minmax(0,1fr))';
-                    } else if (window.innerWidth < 760) {
-                        grid.style.gridTemplateColumns = 'repeat(2, minmax(0,1fr))';
-                    } else {
-                        grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(260px, 1fr))';
-                    }
-                };
-                ensureCardMin();
-                window.addEventListener('resize', ensureCardMin);
-            }
-        } catch(e){ /* no-op */ }
-    })();
-
 </script>
 
 </body>

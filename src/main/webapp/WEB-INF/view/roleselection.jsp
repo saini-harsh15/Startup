@@ -5,154 +5,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Your Role - Startup Ecosystem</title>
+    <title>Select Your Role | EcoTrack</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ================= THEME ================= */
         :root {
-            --primary-green: #28a745;
-            --secondary-green: #218838;
-            --white: #ffffff;
-            --light-bg: #f4f7f6;
-            --dark-text: #333;
+            --accent: #28a745;
+            --accent-soft: rgba(40,167,69,0.15);
+
+            --bg: #f3f6f9;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+
+            --border: 1px solid rgba(15,23,42,0.06);
+            --shadow-sm: 0 6px 18px rgba(0,0,0,0.08);
+            --shadow-md: 0 24px 48px rgba(0,0,0,0.14);
         }
 
-        body, html {
-            height: 100%;
-            margin: 0;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--light-bg), #e0e0e0);
+            background:
+                    radial-gradient(1200px 600px at top left, rgba(40,167,69,0.12), transparent),
+                    radial-gradient(1000px 500px at bottom right, rgba(40,167,69,0.08), transparent),
+                    var(--bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
         }
 
+        /* ================= CONTAINER ================= */
         .signup-container {
-            max-width: 550px;
             width: 100%;
-            background: var(--white);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            animation: fadeIn 1s ease-in-out;
+            max-width: 560px;
+            background: var(--card);
+            border-radius: 26px;
+            padding: 42px 38px;
+            border: var(--border);
+            box-shadow: var(--shadow-md);
+            animation: fadeUp .8s ease;
+            text-align: center;
         }
 
-        @keyframes fadeIn {
+        @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ================= BRAND ================= */
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .brand i {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .brand span {
+            color: var(--text);
+        }
+
+        /* ================= HEADINGS ================= */
         h1 {
-            color: var(--primary-green);
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 2.2rem;
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
         }
 
         .sub-heading {
-            color: var(--subtle-text);
-            margin-bottom: 30px;
+            color: var(--muted);
             font-size: 1rem;
+            margin-bottom: 36px;
         }
 
-        /* --- Role Card Styles --- */
+        /* ================= ROLE CARDS ================= */
         .role-card-group {
-            display: flex;
-            gap: 20px;
-            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 36px;
         }
 
         .role-card {
-            flex-basis: 50%;
-            padding: 30px 20px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
+            padding: 32px 22px;
+            border-radius: 22px;
+            border: 2px solid transparent;
+            background: #f9fbfa;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: .3s ease;
+            position: relative;
             text-align: center;
-            background-color: #f9f9f9;
+        }
+
+        .role-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--accent), #1f7f3a);
+            opacity: 0;
+            transition: .3s ease;
+            z-index: 0;
         }
 
         .role-card:hover {
-            border-color: var(--primary-green);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .role-card.selected::before {
+            opacity: 0.08;
         }
 
         .role-card.selected {
-            border-color: var(--primary-green);
-            background-color: #e6f5e6;
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            border-color: var(--accent);
+            box-shadow: 0 18px 40px rgba(40,167,69,0.35);
+        }
+
+        .role-card * {
+            position: relative;
+            z-index: 1;
         }
 
         .role-card i {
-            font-size: 2.5rem;
-            color: var(--primary-green);
-            margin-bottom: 10px;
+            font-size: 2.6rem;
+            color: var(--accent);
+            margin-bottom: 14px;
         }
 
         .role-card h3 {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--dark-text);
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
-        /* Hide default radio button */
-        .role-card input[type="radio"] {
+        .role-card p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .role-card input {
             display: none;
         }
 
-        /* --- Button Styles --- */
+        /* ================= BUTTON ================= */
         .btn-custom {
-            background-color: var(--primary-green);
-            border: none;
-            padding: 12px 0;
-            border-radius: 50px; /* Pill shape */
-            font-weight: 600;
-            color: var(--white);
             width: 100%;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            background: linear-gradient(135deg, var(--accent), #1f7f3a);
+            color: white;
+            border: none;
+            padding: 14px 0;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 999px;
             cursor: pointer;
+            transition: .3s ease;
+            box-shadow: 0 10px 26px rgba(40,167,69,0.45);
         }
 
         .btn-custom:hover {
-            background-color: var(--secondary-green);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+            box-shadow: 0 14px 36px rgba(40,167,69,0.55);
         }
 
-        .btn-custom:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
+        /* ================= LOGIN LINK ================= */
         .login-link {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: var(--subtle-text);
+            margin-top: 32px;
+            font-size: 0.9rem;
+            color: var(--muted);
         }
 
         .login-link a {
-            color: var(--primary-green);
+            color: var(--accent);
             font-weight: 600;
             text-decoration: none;
-            transition: text-decoration 0.2s ease;
         }
 
         .login-link a:hover {
             text-decoration: underline;
         }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 600px) {
+            .role-card-group {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-container {
+                padding: 34px 26px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
+
 <body>
 
 <div class="signup-container">
+
+    <div class="brand">
+        <i class="fas fa-leaf"></i>
+        ECO<span>TRACK</span>
+    </div>
+
     <h1>Select Your Role</h1>
-    <p class="sub-heading">Get started by telling us who you are.</p>
+    <p class="sub-heading">Tell us who you are to get started.</p>
 
     <form id="roleForm" action="/selectRole" method="POST">
 
@@ -160,61 +245,44 @@
 
             <label class="role-card" for="startupRole">
                 <i class="fas fa-rocket"></i>
-                <h3>I am a Startup</h3>
-                <p class="text-sm text-gray-500 mt-2">I am looking for funding and growth opportunities.</p>
-                <input type="radio" id="startupRole" name="role" value="Startup" onclick="selectRole(this)" <c:if test="${param.role == 'Startup' || empty param.role}">checked</c:if>>
+                <h3>Startup</h3>
+                <p>Looking for funding, growth, and investor connections.</p>
+                <input type="radio" id="startupRole" name="role" value="Startup"
+                       onclick="selectRole(this)"
+                       <c:if test="${param.role == 'Startup' || empty param.role}">checked</c:if>>
             </label>
 
             <label class="role-card" for="investorRole">
                 <i class="fas fa-hand-holding-usd"></i>
-                <h3>I am an Investor</h3>
-                <p class="text-sm text-gray-500 mt-2">I am looking to discover and invest in ventures.</p>
-                <input type="radio" id="investorRole" name="role" value="Investor" onclick="selectRole(this)" <c:if test="${param.role == 'Investor'}">checked</c:if>>
+                <h3>Investor</h3>
+                <p>Discover, evaluate, and invest in promising startups.</p>
+                <input type="radio" id="investorRole" name="role" value="Investor"
+                       onclick="selectRole(this)"
+                       <c:if test="${param.role == 'Investor'}">checked</c:if>>
             </label>
+
         </div>
 
-        <button type="submit" id="continueButton" class="btn-custom">
-            Continue
-        </button>
+        <button type="submit" class="btn-custom">Continue</button>
     </form>
 
     <p class="login-link">
-        Already Signed Up? <a href="/login">Here's the login page.</a>
+        Already have an account? <a href="/login">Login here</a>
     </p>
 
 </div>
 
 <script>
-    const continueButton = document.getElementById('continueButton');
     const roleCards = document.querySelectorAll('.role-card');
-    const startupRadio = document.getElementById('startupRole');
-    const investorRadio = document.getElementById('investorRole');
 
     function selectRole(radio) {
-        // Remove 'selected' class from all cards
         roleCards.forEach(card => card.classList.remove('selected'));
-
-        // Add 'selected' class to the clicked card
-        radio.parentElement.classList.add('selected');
-
-        // The button is always enabled in your original simple design,
-        // so we don't need to disable it unless you want to add that logic back.
-        // continueButton.disabled = false;
+        radio.closest('.role-card').classList.add('selected');
     }
 
-    // Initialize state on page load based on current selection (or default)
     document.addEventListener('DOMContentLoaded', () => {
-        let checkedRadio = document.querySelector('input[name="role"]:checked');
-
-        if (!checkedRadio) {
-            // Default to Startup if none is checked (based on your original JSP logic)
-            startupRadio.checked = true;
-            checkedRadio = startupRadio;
-        }
-
-        if (checkedRadio) {
-            selectRole(checkedRadio);
-        }
+        const checked = document.querySelector('input[name="role"]:checked');
+        if (checked) selectRole(checked);
     });
 </script>
 

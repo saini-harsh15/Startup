@@ -3,368 +3,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Signup - Startup Ecosystem</title>
+    <title>Create Account | EcoTrack</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        :root {
-            --primary-color: #28a745; /* Consistent Green */
-            --secondary-color: #1d7b37;
-            --white: #ffffff;
-            --light-bg: #f4f7f6;
-            --dark-text: #333;
-            --border-color: #ddd;
+        /* ================= THEME ================= */
+        :root{
+            --accent:#28a745;
+            --accent-dark:#1d7b37;
+
+            --bg:#f3f6f9;
+            --card:#ffffff;
+            --text:#0f172a;
+            --muted:#64748b;
+
+            --border:1px solid rgba(15,23,42,.08);
+            --shadow-sm:0 6px 18px rgba(0,0,0,.08);
+            --shadow-md:0 24px 50px rgba(0,0,0,.18);
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8, #e4e7eb);
-            margin: 0;
-            padding-top: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        *{box-sizing:border-box}
+
+        body{
+            font-family:'Poppins',sans-serif;
+            background:
+                    radial-gradient(1200px 600px at top left, rgba(40,167,69,.12), transparent),
+                    radial-gradient(900px 500px at bottom right, rgba(40,167,69,.08), transparent),
+                    var(--bg);
+            min-height:100vh;
+            padding-top:72px;
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
         }
 
-        /* --- Registration Card (Same as Login container style) --- */
-        .card-custom {
-            max-width: 600px;
-            width: 90%;
-            background: var(--white);
-            padding: 40px;
-            border-radius: 18px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.8s ease-in-out;
-            margin-top: 30px;
-            margin-bottom: 30px;
-            overflow-y: auto;
-            max-height: 90vh;
+        /* ================= NAVBAR ================= */
+        .navbar{
+            background:rgba(255,255,255,.9)!important;
+            backdrop-filter:blur(12px);
+            border-bottom:var(--border);
+        }
+        .navbar-brand{
+            font-weight:800;
+            color:var(--accent)!important;
+            font-size:1.25rem;
+            letter-spacing:-.4px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ================= CARD ================= */
+        .card-custom{
+            width:100%;
+            max-width:680px;
+            background:var(--card);
+            border-radius:26px;
+            padding:44px 42px;
+            margin:28px 16px;
+            border:var(--border);
+            box-shadow:var(--shadow-md);
+            animation:fadeUp .8s ease;
         }
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
+        @keyframes fadeUp{
+            from{opacity:0;transform:translateY(20px)}
+            to{opacity:1;transform:translateY(0)}
         }
 
-        .role-message {
-            color: var(--dark-text);
-            font-weight: 600;
-            display: block;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1rem;
+        h1{
+            text-align:center;
+            font-weight:800;
+            font-size:2.3rem;
+            color:var(--accent);
+            margin-bottom:8px;
         }
 
-        .role-message .role-accent {
-            color: var(--dark-text) !important;
-            background-color: transparent !important;
-            padding: 0;
-            border-radius: 0;
-            font-weight: 700 !important;
-            font-size: 1em;
-            display: inline;
-            box-shadow: none !important;
+        .role-message{
+            text-align:center;
+            font-weight:600;
+            color:var(--muted);
+            margin-bottom:32px;
         }
 
-        /* --- Form Elements --- */
-        label {
-            font-weight: 600;
-            color: var(--dark-text);
-            margin-bottom: 5px;
-            display: block;
-            font-size: 0.95rem;
-            margin-top: 15px;
+        /* ================= FORM ================= */
+        label{
+            font-weight:600;
+            font-size:.9rem;
+            margin-top:18px;
+            color:var(--text);
         }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="date"],
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            font-size: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        input,textarea{
+            width:100%;
+            padding:12px 14px;
+            border-radius:12px;
+            border:var(--border);
+            font-size:.95rem;
+            transition:.25s ease;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
+        textarea{min-height:90px;resize:vertical}
+
+        input:focus,textarea:focus{
+            outline:none;
+            border-color:var(--accent);
+            box-shadow:0 0 0 3px rgba(40,167,69,.2);
         }
 
-        input:focus,
-        textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        /* ================= PASSWORD ================= */
+        .password-container{position:relative}
+        .toggle-password{
+            position:absolute;
+            right:14px;
+            top:50%;
+            transform:translateY(-50%);
+            cursor:pointer;
+            color:var(--muted);
+        }
+        .toggle-password:hover{color:var(--accent)}
+
+        #password,#confirmPassword{padding-right:42px}
+
+        /* ================= SECTION HEADERS ================= */
+        .detail-header{
+            margin-top:40px;
+            margin-bottom:18px;
+            font-size:1.35rem;
+            font-weight:800;
+            color:var(--accent);
+            border-bottom:2px solid var(--accent);
+            padding-bottom:8px;
+            text-align:center;
         }
 
-        /* Password Toggle Styling */
-        .password-container {
-            position: relative;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #666;
-            transition: color 0.2s ease;
-            z-index: 10;
-        }
-        .toggle-password:hover {
-            color: var(--primary-color);
+        /* ================= BUTTON ================= */
+        .btn-custom{
+            width:100%;
+            margin-top:36px;
+            padding:14px;
+            border:none;
+            border-radius:999px;
+            font-size:1.05rem;
+            font-weight:700;
+            background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+            color:white;
+            cursor:pointer;
+            box-shadow:0 12px 28px rgba(40,167,69,.45);
+            transition:.3s ease;
         }
 
-        #password, #confirmPassword {
-            padding-right: 40px;
+        .btn-custom:hover{
+            transform:translateY(-2px);
+            box-shadow:0 18px 40px rgba(40,167,69,.6);
         }
 
-        /* --- Button Style (Pill-shaped) --- */
-        .btn-custom {
-            width: 100%;
-            padding: 14px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            background: var(--primary-color);
-            border: none;
-            color: var(--white);
-            border-radius: 50px; /* Pill shape */
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
-            margin-top: 30px;
-        }
+        .hidden{display:none!important}
 
-        .btn-custom:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.6);
+        /* ================= RESPONSIVE ================= */
+        @media(max-width:600px){
+            .card-custom{padding:34px 26px}
+            h1{font-size:1.9rem}
         }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: var(--white) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 0.5rem 1.5rem;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Detail Headers for Startup/Investor sections - FIXED */
-        .detail-header {
-            background-color: transparent; /* Changed to transparent */
-            color: var(--primary-color); /* Changed text color to primary green */
-            padding: 10px 0; /* Adjusted padding */
-            border-radius: 0; /* Removed border-radius */
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-weight: 700; /* Made it bolder for a heading look */
-            font-size: 1.5rem; /* Increased font size */
-            text-align: center;
-            border-bottom: 2px solid var(--primary-color); /* Added a subtle line */
-        }
-
     </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+<nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid px-4">
         <a class="navbar-brand" href="/">
-            Startup Ecosystem
+            ECO<span style="color:#0f172a">TRACK</span>
         </a>
     </div>
 </nav>
 
 <div class="card-custom">
-    <div class="card-header-custom">
-        <h1>Create Your Account</h1>
 
-        <p class="role-message">You are registering as a
-            <span class="role-accent">${selectedRole}</span>. Complete the form below.
-        </p>
-    </div>
+    <h1>Create Your Account</h1>
+    <p class="role-message">
+        You are registering as a <strong>${selectedRole}</strong>. Complete the form below.
+    </p>
 
     <c:if test="${not empty error}">
-        <div class="alert alert-danger" role="alert">${error}</div>
+        <div class="alert alert-danger">${error}</div>
     </c:if>
 
     <c:choose>
         <c:when test="${selectedRole == 'Startup'}">
-            <c:set var="startupClass" value="" />
-            <c:set var="investorClass" value="hidden" />
+            <c:set var="startupClass" value=""/>
+            <c:set var="investorClass" value="hidden"/>
         </c:when>
         <c:when test="${selectedRole == 'Investor'}">
-            <c:set var="startupClass" value="hidden" />
-            <c:set var="investorClass" value="" />
+            <c:set var="startupClass" value="hidden"/>
+            <c:set var="investorClass" value=""/>
         </c:when>
         <c:otherwise>
-            <c:set var="startupClass" value="hidden" />
-            <c:set var="investorClass" value="hidden" />
+            <c:set var="startupClass" value="hidden"/>
+            <c:set var="investorClass" value="hidden"/>
         </c:otherwise>
     </c:choose>
 
     <form action="/completeSignup" method="post" onsubmit="return validateForm()">
         <input type="hidden" name="userType" value="${selectedRole}">
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required class="form-control">
+        <label>Email</label>
+        <input type="email" name="email" required>
 
-        <label for="password">Password:</label>
+        <label>Password</label>
         <div class="password-container">
-            <input type="password" id="password" name="password" required class="form-control">
-            <span class="toggle-password" onclick="togglePasswordVisibility('password', 'eyeIcon1')">
-                <i id="eyeIcon1" class="fas fa-eye-slash"></i>
+            <input type="password" id="password" name="password" required>
+            <span class="toggle-password" onclick="togglePasswordVisibility('password','eye1')">
+                <i id="eye1" class="fas fa-eye-slash"></i>
             </span>
         </div>
 
-        <label for="confirmPassword">Confirm Password:</label>
+        <label>Confirm Password</label>
         <div class="password-container">
-            <input type="password" id="confirmPassword" name="confirmPassword" required class="form-control">
-            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')">
-                <i id="eyeIcon2" class="fas fa-eye-slash"></i>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword','eye2')">
+                <i id="eye2" class="fas fa-eye-slash"></i>
             </span>
         </div>
 
+        <!-- Startup -->
         <div id="startupFields" class="${startupClass}">
             <div class="detail-header">Startup Details</div>
-            <label for="industry">Industry:</label>
-            <input type="text" id="industry" name="industry" class="form-control">
+            <label>Industry</label>
+            <input type="text" name="industry">
 
-            <label for="companyName">Company Name (for verification):</label>
-            <input type="text" id="companyName" name="companyName" class="form-control">
+            <label>Company Name</label>
+            <input type="text" name="companyName">
 
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" class="form-control"></textarea>
+            <label>Description</label>
+            <textarea name="description"></textarea>
 
-            <label for="registrationNumber">Registration Number:</label>
-            <input type="text" id="registrationNumber" name="registrationNumber" class="form-control">
+            <label>Registration Number</label>
+            <input type="text" name="registrationNumber">
 
-            <label for="governmentId">Government ID:</label>
-            <input type="text" id="governmentId" name="governmentId" class="form-control">
+            <label>Government ID</label>
+            <input type="text" name="governmentId">
 
-            <label for="foundingDate">Founding Date:</label>
-            <input type="date" id="foundingDate" name="foundingDate" class="form-control">
+            <label>Founding Date</label>
+            <input type="date" name="foundingDate">
         </div>
 
+        <!-- Investor -->
         <div id="investorFields" class="${investorClass}">
             <div class="detail-header">Investor Details</div>
-            <label for="investorName">Investor Name:</label>
-            <input type="text" id="investorName" name="investorName" class="form-control">
+            <label>Investor Name</label>
+            <input type="text" name="investorName">
 
-            <label for="investmentFirm">Investment Firm:</label>
-            <input type="text" id="investmentFirm" name="investmentFirm" class="form-control">
+            <label>Investment Firm</label>
+            <input type="text" name="investmentFirm">
 
-            <label for="investorType">Investor Type:</label>
-            <input type="text" id="investorType" name="investorType" class="form-control">
+            <label>Investor Type</label>
+            <input type="text" name="investorType">
 
-            <label for="preferredDomains">Preferred Domains (comma-separated):</label>
-            <input type="text" id="preferredDomains" name="preferredDomains" class="form-control">
+            <label>Preferred Domains</label>
+            <input type="text" name="preferredDomains">
 
-            <label for="fundingStages">Funding Stages (comma-separated):</label>
-            <input type="text" id="fundingStages" name="fundingStages" class="form-control">
+            <label>Funding Stages</label>
+            <input type="text" name="fundingStages">
 
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" class="form-control">
+            <label>Location</label>
+            <input type="text" name="location">
 
-            <label for="website">Website:</label>
-            <input type="text" id="website" name="website" class="form-control">
+            <label>Website</label>
+            <input type="text" name="website">
 
-            <label for="investmentRangeUsd">Investment Range (USD):</label>
-            <input type="text" id="investmentRangeUsd" name="investmentRangeUsd" class="form-control">
+            <label>Investment Range (USD)</label>
+            <input type="text" name="investmentRangeUsd">
 
-            <label for="linkedin">LinkedIn Profile URL:</label>
-            <input type="text" id="linkedin" name="linkedin" class="form-control">
+            <label>LinkedIn</label>
+            <input type="text" name="linkedin">
         </div>
 
-        <button type="submit" class="btn-custom">Sign Up</button>
+        <button type="submit" class="btn-custom">Create Account</button>
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function togglePasswordVisibility(fieldId, iconId) {
-        const passwordField = document.getElementById(fieldId);
-        const eyeIcon = document.getElementById(iconId);
-
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        } else {
-            passwordField.type = 'password';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        }
+    function togglePasswordVisibility(id,eye){
+        const f=document.getElementById(id);
+        const i=document.getElementById(eye);
+        if(f.type==="password"){f.type="text";i.classList.replace("fa-eye-slash","fa-eye")}
+        else{f.type="password";i.classList.replace("fa-eye","fa-eye-slash")}
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const startupFields = document.getElementById('startupFields');
-        const investorFields = document.getElementById('investorFields');
-        const userTypeInput = document.querySelector('input[name="userType"]');
-
-        function toggleRequiredAttributes(role) {
-            const isStartup = (role === 'Startup');
-
-            // Apply 'required' only to the visible fields
-            startupFields.querySelectorAll('input, textarea').forEach(field => {
-                field.required = isStartup;
-            });
-            investorFields.querySelectorAll('input, textarea').forEach(field => {
-                field.required = !isStartup;
-            });
-        }
-
-        // Initial setup on page load
-        const roleValue = userTypeInput ? userTypeInput.value : '';
-        if (roleValue) {
-            toggleRequiredAttributes(roleValue);
-        }
-    });
-
-    function validateForm() {
-        var password = document.getElementById("password").value;
-        var confirmPassword = document.getElementById("confirmPassword").value;
-
-        if (password !== confirmPassword) {
-            alert("Passwords do not match. Please try again.");
+    function validateForm(){
+        if(password.value!==confirmPassword.value){
+            alert("Passwords do not match");
             return false;
         }
-
         return true;
     }
 </script>
+
 </body>
 </html>
