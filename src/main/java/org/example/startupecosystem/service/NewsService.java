@@ -71,7 +71,7 @@ public class NewsService {
         map.put("ai", "(AI OR \"artificial intelligence\" OR machine learning OR ML)");
         map.put("fintech", "(fintech OR \"financial technology\" OR payments OR banking)");
         map.put("healthcare", "(healthtech OR healthcare OR \"digital health\")");
-        // (keep all other industry mappings)
+    
 
         String industryTerms = map.getOrDefault(key, "(\"" + escape(key) + "\" OR " + escape(key) + ")");
         String startupContext = "(startup OR startups OR venture OR funding OR \"series a\" OR seed)";

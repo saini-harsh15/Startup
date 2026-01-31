@@ -286,5 +286,35 @@
     });
 </script>
 
+<!-- SweetAlert2 for toast notifications -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<c:if test="${not empty message}">
+    <script>
+        (function(){
+            function showLogoutToast(){
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'You have been logged out successfully.',
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true
+                    });
+                } else {
+                    // Fallback if CDN didn't load
+                    try { alert('You have been logged out successfully.'); } catch(e) {}
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', showLogoutToast);
+            } else {
+                showLogoutToast();
+            }
+        })();
+    </script>
+</c:if>
+
 </body>
 </html>

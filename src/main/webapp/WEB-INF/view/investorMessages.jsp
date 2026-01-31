@@ -46,14 +46,20 @@
         .navbar-left{display:flex;gap:14px;align-items:center}
         .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
         .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
-        .navbar-right{display:flex;gap:12px;align-items:center}
+        .navbar-right{display:flex;gap:18px;align-items:center}
         .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
         .profile-dropdown{position:relative}
         .profile-icon{ width:44px;height:44px;border-radius:12px; display:flex;align-items:center;justify-content:center;font-weight:700;
             background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84)); color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
             box-shadow: 0 6px 20px rgba(12,17,38,0.06); z-index:1410; }
-        .theme-toggle{ cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem; background: rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.5);
-            display:inline-flex;align-items:center;justify-content:center;box-shadow: 0 4px 12px rgba(12,17,38,0.04) }
+        .theme-toggle{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted);transition:transform .2s ease,color .2s ease,filter .2s ease;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:6px 8px}
+        .theme-toggle:hover{transform:translateY(-1px) scale(1.06);color:var(--accent);filter:drop-shadow(0 2px 6px rgba(40,167,69,.25))}
+        .theme-toggle:active{transform:scale(0.92)}
+        .theme-toggle i{transition:transform .25s ease}
+        .theme-toggle:hover i{transform:rotate(-15deg) scale(1.08)}
+        @keyframes pulsePop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+        .icon-pulse{animation:pulsePop .35s ease}
+        @media (prefers-reduced-motion: reduce){.theme-toggle,.theme-toggle i{transition:none !important}.theme-toggle:hover,.theme-toggle:active{transform:none !important;filter:none !important}.icon-pulse{animation:none !important}}
         .dropdown-content{ display:none; position:absolute; right:0; top:58px; min-width:170px; background: linear-gradient(180deg,#ffffff,#fbffff);
             border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04); z-index: 1405; }
         .dropdown-content.show{display:block}
@@ -67,11 +73,13 @@
         .chat-list-header{ font-weight:700; font-size:1rem; color:var(--text); padding:8px 10px; }
         .search-container{ padding:10px; }
         .search-container input{ width:100%; padding:10px 12px; border:1px solid rgba(12,17,38,0.08); border-radius:10px; outline:none; font-size:0.95rem; }
-        .chat-item{ padding:12px; border-radius:10px; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
+        .chat-item{ padding:10px 12px; border-radius:12px; cursor:pointer; display:flex; flex-direction:column; gap:6px; transition:.2s ease; }
         .chat-item:hover{ background: linear-gradient(90deg, rgba(40,167,69,0.06), transparent) }
-        .chat-item.active{ background: linear-gradient(90deg, rgba(40,167,69,0.10), transparent) }
+        .chat-item.active{ background: linear-gradient(90deg, rgba(40,167,69,0.12), transparent); box-shadow: 0 6px 16px rgba(12,17,38,0.06); }
         .chat-name{ font-weight:700 }
         .text-muted{ color:var(--muted) }
+        .chat-row .avatar{ width:36px; height:36px; border-radius:10px; background: linear-gradient(135deg, rgba(40,167,69,0.15), rgba(40,167,69,0.08)); color: var(--accent); display:inline-flex; align-items:center; justify-content:center; font-weight:800; letter-spacing:.5px; text-transform:uppercase; border:1px solid rgba(12,17,38,0.06); }
+        [data-theme="dark"] .chat-row .avatar{ background: linear-gradient(135deg, rgba(40,167,69,0.25), rgba(17,24,39,0.85)); border-color: rgba(255,255,255,0.08); color:#a7f3d0; }
 
         .chat-window{ background: linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.52));
             border:1px solid rgba(255,255,255,0.45); backdrop-filter: blur(6px); box-shadow: 6px 12px 30px rgba(12,17,38,0.06);
@@ -161,13 +169,49 @@
         [data-theme="dark"] .back-btn, [data-theme="dark"] .icon-btn{ background: rgba(17,24,39,0.72); border-color: rgba(255,255,255,0.08); color: var(--text); }
         [data-theme="dark"] .chat-header{ border-bottom-color: rgba(255,255,255,0.08); }
         [data-theme="dark"] .chat-input-area input{ background:#0b1220; border-color: rgba(255,255,255,0.12); color: var(--text); }
+        /* === Skeleton loaders (shimmer) === */
+        .skeleton{position:relative;overflow:hidden;background:rgba(15,23,42,0.06)}
+        .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);transform:translateX(-100%);animation:shimmer 1.2s infinite}
+        @keyframes shimmer{to{transform:translateX(100%)}}
+        @media (prefers-reduced-motion: reduce){.skeleton::after{animation:none}}
+        .list-skeleton{padding:10px}
+        .list-skeleton .item{display:flex;align-items:center;gap:10px;padding:10px 12px}
+        .list-skeleton .avatar{width:36px;height:36px;border-radius:10px}
+        .list-skeleton .lines{flex:1}
+        .list-skeleton .line{height:10px;border-radius:8px;margin:6px 0}
+        .history-skeleton{padding:12px;display:none}
+        .history-skeleton .bubble{width:60%;height:48px;border-radius:14px;margin:10px 0}
+        .history-skeleton .bubble.right{margin-left:auto}
+        /* Sidebar + overlay to match dashboard */
+        .ms-sidebar{position:fixed;top:14px;left:14px;height:calc(100% - 28px);width:0;overflow:hidden;transition:.35s ease;z-index:1100}
+        .ms-sidebar.open{width:300px}
+        .ms-sidebar .panel{width:300px;height:100%;padding:26px 22px;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.96));border:1px solid rgba(15,23,42,.06);border-radius:18px;box-shadow:12px 0 35px rgba(0,0,0,.12)}
+        [data-theme="dark"] .ms-sidebar .panel{background:linear-gradient(180deg,#0f172a,rgba(17,24,39,.95));border-color:rgba(255,255,255,.08)}
+        .ms-sidebar .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:#28a745;margin-bottom:22px}
+        .ms-sidebar .logo i{background:#28a745;color:#fff;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+        .ms-sidebar a{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:14px;text-decoration:none;color:inherit;transition:.25s ease}
+        .ms-sidebar a:hover{background:rgba(40,167,69,.12);color:#28a745;padding-left:20px}
+        .ms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000}
+        .ms-overlay.show{display:block}
     </style>
 </head>
 <body>
 
+<!-- Sidebar + overlay (dashboard-aligned) -->
+<div id="msSidebar" class="ms-sidebar">
+  <div class="panel">
+    <div class="logo"><i class="fas fa-leaf"></i> ECO<span>TRACK</span></div>
+    <a href="/investor/dashboard/${investor.id}"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="/investor/profile"><i class="fas fa-user"></i> My Profile</a>
+    <a href="/investor/messages"><i class="fas fa-comment-dots"></i> Messages</a>
+    <a href="/contact"><i class="fas fa-headset"></i> Support</a>
+  </div>
+</div>
+<div id="msOverlay" class="ms-overlay" onclick="closeNav()"></div>
+
 <header class="navbar" role="banner">
     <div class="navbar-left">
-        <div class="hamburger" onclick="window.location.href='/investor/dashboard'" aria-label="Back to dashboard" title="Back to dashboard">&#8592;</div>
+        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu"><i class="fas fa-bars"></i></div>
         <div class="logo" title="Project name">Startup Ecosystem</div>
     </div>
 
@@ -201,15 +245,44 @@
                 </form>
             </div>
 
+            <div id="listSkeleton" class="list-skeleton">
+                <div class="item">
+                    <div class="avatar skeleton"></div>
+                    <div class="lines">
+                        <div class="line skeleton" style="width:60%"></div>
+                        <div class="line skeleton" style="width:40%"></div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="avatar skeleton"></div>
+                    <div class="lines">
+                        <div class="line skeleton" style="width:70%"></div>
+                        <div class="line skeleton" style="width:50%"></div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="avatar skeleton"></div>
+                    <div class="lines">
+                        <div class="line skeleton" style="width:55%"></div>
+                        <div class="line skeleton" style="width:35%"></div>
+                    </div>
+                </div>
+            </div>
             <div id="startupList">
                 <c:choose>
                     <c:when test="${not empty startupsList}">
                         <c:forEach var="startup" items="${startupsList}">
                             <div id="partner${startup.id}"
                                  class="chat-item"
+                                 data-name="${startup.name}"
                                  onclick="loadChat(${startup.id}, '${startup.name}', event)">
-                                <div class="chat-name">${startup.name}</div>
-                                <div class="chat-time text-sm text-muted">Industry: ${startup.industry}</div>
+                                <div class="chat-row" style="display:flex;align-items:center;gap:10px;">
+                                    <span class="avatar" aria-hidden="true"></span>
+                                    <div class="chat-meta">
+                                        <div class="chat-name">${startup.name}</div>
+                                        <div class="chat-time text-sm text-muted">Industry: ${startup.industry}</div>
+                                    </div>
+                                </div>
                             </div>
                         </c:forEach>
                     </c:when>
@@ -224,6 +297,12 @@
         </div>
 
         <div class="chat-window">
+            <div id="historySkeleton" class="history-skeleton">
+                <div class="bubble skeleton" style="width:48%"></div>
+                <div class="bubble skeleton right" style="width:60%"></div>
+                <div class="bubble skeleton" style="width:40%"></div>
+                <div class="bubble skeleton right" style="width:55%"></div>
+            </div>
             <div class="chat-header">
                 <button class="back-btn" id="backBtn" onclick="showListOnMobile()" title="Back to chats" aria-label="Back to chats"><i class="fas fa-arrow-left"></i></button>
                 <div class="partner-meta">
@@ -323,6 +402,8 @@
         // Reset last date separator for this chat
         lastRenderedDateKey = null;
 
+        // Show skeleton while loading
+        var hs = document.getElementById('historySkeleton'); if(hs) hs.style.display='block';
         // Show a simple loading indicator (not a fake conversation message)
         historyDiv.innerHTML = '<p style="text-align: center; color: var(--muted);">Loading chat history with ' + startupName + '...</p>';
 
@@ -338,6 +419,7 @@
                 if (currentReceiverId !== startupId) {
                     return; // user switched partner; ignore this result
                 }
+                if (hs) hs.style.display = 'none';
                 historyDiv.innerHTML = '';
                 if (!messages || messages.length === 0) {
                     const p = document.createElement('p');
@@ -376,7 +458,8 @@
             })
             .catch(err => {
                 console.error(err);
-                historyDiv.innerHTML = '<p style="text-align:center;color:#ef4444;">Error loading history. Please try again.</p>';
+                if (hs) hs.style.display = 'none';
+                historyDiv.innerHTML = '<p style=\"text-align:center;color:#ef4444;\">Error loading history. Please try again.</p>';
             });
     }
 
@@ -449,6 +532,14 @@
     function toggleTheme(){
         const current = document.documentElement.getAttribute('data-theme') || 'light';
         setTheme(current === 'light' ? 'dark' : 'light');
+        // click pulse animation on icon
+        var iconEl = document.querySelector('#themeToggleBtn i');
+        if(iconEl){
+            iconEl.classList.remove('icon-pulse');
+            void iconEl.offsetWidth; // restart animation
+            iconEl.classList.add('icon-pulse');
+            setTimeout(function(){ iconEl.classList.remove('icon-pulse'); }, 400);
+        }
     }
 
     // --- Attachment rendering, emoji picker, typing indicator helpers ---
@@ -569,6 +660,19 @@
         }
         connect();
 
+        // Hide chat list skeleton once DOM is ready
+        try{ var ls = document.getElementById('listSkeleton'); if(ls) ls.style.display='none'; }catch(e){}
+
+        // Populate avatars initials in the chat list
+        try{
+            document.querySelectorAll('#startupList .chat-item').forEach(function(item){
+                var name = item.getAttribute('data-name') || '';
+                var initial = (name.trim().charAt(0) || '').toUpperCase();
+                var avatar = item.querySelector('.avatar');
+                if (avatar && initial) { avatar.textContent = initial; }
+            });
+        }catch(e){}
+
         // Improve search UX: submit on Enter only
         const searchInput = document.getElementById('searchInput');
         const searchForm = document.getElementById('searchForm');
@@ -659,6 +763,46 @@
             });
         }
     });
+// Sidebar open/close
+    function openNav(){ try{ document.getElementById('msSidebar').classList.add('open'); document.getElementById('msOverlay').classList.add('show'); }catch(e){} }
+    function closeNav(){ try{ document.getElementById('msSidebar').classList.remove('open'); document.getElementById('msOverlay').classList.remove('show'); }catch(e){} }
+</script>
+
+<!-- SweetAlert2 for logout confirm -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    (function(){
+        function attachLogoutConfirm(){
+            var links = document.querySelectorAll('a.logout-link, a[href="/logout"]');
+            links.forEach(function(link){
+                link.addEventListener('click', function(e){
+                    e.preventDefault();
+                    var href = link.getAttribute('href') || '/logout';
+                    if (typeof Swal === 'undefined') {
+                        if (confirm('Are you sure you want to log out?')) {
+                            window.location.href = href;
+                        }
+                        return;
+                    }
+                    Swal.fire({
+                        title: 'Log out?',
+                        text: 'You will need to log in again to access your dashboard.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#28a745',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Yes, log me out',
+                        cancelButtonText: 'Stay logged in'
+                    }).then(function(result){
+                        if (result.isConfirmed){ window.location.href = href; }
+                    });
+                });
+            });
+        }
+        if (document.readyState === 'loading'){
+            document.addEventListener('DOMContentLoaded', attachLogoutConfirm);
+        } else { attachLogoutConfirm(); }
+    })();
 </script>
 
 </body>

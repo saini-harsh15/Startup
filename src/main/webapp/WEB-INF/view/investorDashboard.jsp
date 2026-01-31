@@ -72,8 +72,15 @@
         .logo span{color:var(--text)}
         .hamburger{font-size:1.2rem;cursor:pointer;color:var(--muted)}
 
-        .nav-right{display:flex;align-items:center;gap:14px}
-        .theme-toggle{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted)}
+        .nav-right{display:flex;align-items:center;gap:18px}
+        .theme-toggle{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted);transition:transform .2s ease,color .2s ease,filter .2s ease;border-radius:10px}
+        .theme-toggle:hover{transform:translateY(-1px) scale(1.06);color:var(--accent);filter:drop-shadow(0 2px 6px rgba(40,167,69,.25))}
+        .theme-toggle:active{transform:scale(0.92)}
+        .theme-toggle i{transition:transform .25s ease}
+        .theme-toggle:hover i{transform:rotate(-15deg) scale(1.08)}
+        @keyframes pulsePop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+        .icon-pulse{animation:pulsePop .35s ease}
+        @media (prefers-reduced-motion: reduce){.theme-toggle,.theme-toggle i{transition:none !important}.theme-toggle:hover,.theme-toggle:active{transform:none !important;filter:none !important}.icon-pulse{animation:none !important}}
 
         .profile-icon{
             width:42px;height:42px;border-radius:12px;
@@ -308,7 +315,7 @@
             <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">P</div>
             <div id="myDropdown" class="dropdown-content">
                 <a href="/investor/profile">Profile</a>
-                <a href="/logout">Logout</a>
+                <a href="/logout" class="logout-link">Logout</a>
             </div>
         </div>
     </div>
@@ -400,17 +407,41 @@
         document.getElementById("yearSpan").textContent=new Date().getFullYear();
         const name="${investor.investorName}";
         if(name)profileIcon.textContent=name.charAt(0).toUpperCase();
-        if(localStorage.getItem("theme")==="dark")
+        // Apply saved theme on load
+        const savedTheme = localStorage.getItem("theme");
+        if(savedTheme === "dark"){
             document.documentElement.classList.add("dark-mode");
+        }
+        updateThemeIcon();
     });
     function openNav(){mySidebar.classList.add("open");overlay.classList.add("show")}
     function closeNav(){mySidebar.classList.remove("open");overlay.classList.remove("show")}
     function toggleDropdown(){myDropdown.classList.toggle("show")}
     function toggleFilter(){filterPanel.classList.toggle("open")}
+    function updateThemeIcon(){
+        var iconEl = document.querySelector('.theme-toggle i');
+        if(!iconEl) return;
+        if(document.documentElement.classList.contains('dark-mode')){
+            iconEl.classList.remove('fa-moon');
+            iconEl.classList.add('fa-sun');
+        } else {
+            iconEl.classList.remove('fa-sun');
+            iconEl.classList.add('fa-moon');
+        }
+    }
     function toggleTheme(){
         document.documentElement.classList.toggle("dark-mode");
         localStorage.setItem("theme",
             document.documentElement.classList.contains("dark-mode")?"dark":"light");
+        updateThemeIcon();
+        // click pulse animation on icon
+        var iconEl = document.querySelector('.theme-toggle i');
+        if(iconEl){
+            iconEl.classList.remove('icon-pulse');
+            void iconEl.offsetWidth; // restart animation
+            iconEl.classList.add('icon-pulse');
+            setTimeout(function(){ iconEl.classList.remove('icon-pulse'); }, 400);
+        }
     }
 </script>
 
