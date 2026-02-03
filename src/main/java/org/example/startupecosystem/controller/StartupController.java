@@ -5,6 +5,7 @@ import org.example.startupecosystem.entity.ChatMessage;
 import org.example.startupecosystem.entity.Startup;
 import org.example.startupecosystem.entity.Investor;
 import org.example.startupecosystem.repository.StartupRepository;
+import org.example.startupecosystem.repository.StartupProfileViewRepository;
 import org.example.startupecosystem.service.ChatService;
 import org.example.startupecosystem.service.NewsService;
 import org.example.startupecosystem.service.StartupService;
@@ -37,121 +38,163 @@ public class StartupController {
     @Autowired
     private InvestorService investorService;
 
-    // --- Helper method for robust session ID retrieval (FIX) ---
-    private Optional<Long> getUserIdFromSession(HttpSession session, String expectedRole, RedirectAttributes redirectAttributes) {
+    @Autowired
+    private StartupProfileViewRepository startupProfileViewRepository;
+
+    // ---------------- SESSION HELPER (UNCHANGED) ----------------
+    private Optional<Long> getUserIdFromSession(
+            HttpSession session,
+            String expectedRole,
+            RedirectAttributes redirectAttributes) {
+
         Object userIdObj = session.getAttribute("loggedInUserId");
         String role = (String) session.getAttribute("loggedInRole");
 
         if (userIdObj == null || !expectedRole.equals(role)) {
-            return Optional.empty(); // Fails authentication
+            return Optional.empty();
         }
 
         try {
-            // Safely parse the ID regardless of whether Spring stored it as String or Long.
-            Long userId = (userIdObj instanceof String) ? Long.parseLong((String) userIdObj) : (Long) userIdObj;
+            Long userId = (userIdObj instanceof String)
+                    ? Long.parseLong((String) userIdObj)
+                    : (Long) userIdObj;
             return Optional.of(userId);
         } catch (NumberFormatException | ClassCastException e) {
-            // Session corruption detected: invalidate and redirect
             session.invalidate();
             if (redirectAttributes != null) {
-                redirectAttributes.addFlashAttribute("error", "Authentication error. Please log in again.");
+                redirectAttributes.addFlashAttribute(
+                        "error", "Authentication error. Please log in again.");
             }
             return Optional.empty();
         }
     }
-    // ----------------------------------------------------
+    // ------------------------------------------------------------
 
 
+    /* ============================================================
+       ✅ OPTION B: DASHBOARD WITH ID (SECURE + CORRECT)
+       ============================================================ */
     @GetMapping("/dashboard/{id}")
-    public String showStartupDashboard(@PathVariable("id") Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        // Use helper to validate session
-        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+    public String showStartupDashboard(
+            @PathVariable("id") Long id,
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
         if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
-        Long userId = userIdOpt.get();
 
-        Optional<Startup> startupOptional = startupRepository.findById(userId);
-        if (startupOptional.isPresent()) {
-            Startup startup = startupOptional.get();
-            model.addAttribute("startup", startup);
+        Long loggedInStartupId = userIdOpt.get();
 
-            // --- Dashboard metrics (placeholder) ---
-            model.addAttribute("totalInvestments", 0);
-            model.addAttribute("totalMessages", 0);
-            model.addAttribute("profileViews", 0);
-
-            // --- News Fetching Logic ---
-            String industry = startup.getIndustry();
-            String topic = (industry != null && !industry.trim().isEmpty()) ? industry.trim() : "startup";
-            model.addAttribute("newsList", newsService.fetchNews(topic));
-
-            return "startupDashboard";
-        } else {
-            return "redirect:/";
+        // 🔒 SECURITY CHECK (CRITICAL)
+        if (!loggedInStartupId.equals(id)) {
+            return "redirect:/login";
         }
+
+        Optional<Startup> startupOptional =
+                startupRepository.findById(id);
+
+        if (startupOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Startup startup = startupOptional.get();
+        model.addAttribute("startup", startup);
+
+        // ---------- DASHBOARD METRICS ----------
+        model.addAttribute("totalInvestments", 0);
+        model.addAttribute("totalMessages", 0);
+
+        long profileViews =
+                startupProfileViewRepository.countByStartupId(id);
+        model.addAttribute("profileViews", profileViews);
+        // ---------------------------------------
+
+        // ---------- NEWS ----------
+        String industry = startup.getIndustry();
+        String topic = (industry != null && !industry.trim().isEmpty())
+                ? industry.trim()
+                : "startup";
+
+        model.addAttribute("newsList", newsService.fetchNews(topic));
+        // --------------------------
+
+        return "startupDashboard";
     }
 
-    /**
-     * Handles the request for the real-time messaging page, loads chat history, and handles partner search.
-     */
+
+    /* ===================== MESSAGES ===================== */
     @GetMapping("/messages")
     public String showMessagesPage(
             @RequestParam(value = "search", required = false) String search,
-            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
-        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
         if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
+
         Long startupId = userIdOpt.get();
 
-        // Fetch startup object (for navbar context)
-        Optional<Startup> startupOptional = startupRepository.findById(startupId);
-        if (startupOptional.isPresent()) {
-            model.addAttribute("startup", startupOptional.get());
-        } else {
+        Optional<Startup> startupOptional =
+                startupRepository.findById(startupId);
+
+        if (startupOptional.isEmpty()) {
             return "redirect:/login";
         }
 
-        // --- 1. Fetch Investor Partners (Filtered or All) ---
-        List<Investor> investors;
-        if (search != null && !search.trim().isEmpty()) {
-            investors = investorService.searchInvestors(search.trim());
-        } else {
-            investors = investorService.findAll();
-        }
+        model.addAttribute("startup", startupOptional.get());
 
-        // --- 2. Chat History (Initial Load) ---
-        // NOTE: We do not load history here, as the client needs to click a user first.
-        List<ChatMessage> chatHistory = null;
+        List<Investor> investors =
+                (search != null && !search.trim().isEmpty())
+                        ? investorService.searchInvestors(search.trim())
+                        : investorService.findAll();
 
-        // Pass all necessary data to the JSP
         model.addAttribute("startupId", startupId);
         model.addAttribute("investorsList", investors);
         model.addAttribute("searchTerm", search);
-        model.addAttribute("chatHistory", chatHistory);
+        model.addAttribute("chatHistory", null);
 
         return "startupMessages";
     }
 
+
+    /* ===================== PROFILE ===================== */
     @GetMapping("/profile")
-    public String showProfile(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+    public String showProfile(
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
         if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
-        Long userId = userIdOpt.get();
 
-        Optional<Startup> startupOptional = startupRepository.findById(userId);
-        if (startupOptional.isPresent()) {
-            model.addAttribute("startup", startupOptional.get());
-            return "startupProfile";
-        } else {
+        Long startupId = userIdOpt.get();
+
+        Optional<Startup> startupOptional =
+                startupRepository.findById(startupId);
+
+        if (startupOptional.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Profile not found.");
-            return "redirect:/startup/dashboard/" + userId;
+            return "redirect:/startup/dashboard/" + startupId;
         }
+
+        model.addAttribute("startup", startupOptional.get());
+        return "startupProfile";
     }
+
 
     @PostMapping("/profile/save")
     public String saveProfile(
@@ -161,19 +204,25 @@ public class StartupController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        Optional<Long> userIdOpt = getUserIdFromSession(session, "Startup", redirectAttributes);
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
         if (userIdOpt.isEmpty()) {
             return "redirect:/login";
         }
-        Long userId = userIdOpt.get();
+
+        Long startupId = userIdOpt.get();
 
         try {
-            Startup updatedStartup = startupService.updateStartupProfile(userId, name, description, industry);
-            redirectAttributes.addFlashAttribute("message", "Profile updated successfully!");
+            startupService.updateStartupProfile(
+                    startupId, name, description, industry);
+            redirectAttributes.addFlashAttribute(
+                    "message", "Profile updated successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "An error occurred while saving your profile.");
+            redirectAttributes.addFlashAttribute(
+                    "error", "An error occurred while saving your profile.");
         }
 
-        return "redirect:/startup/dashboard/" + userId;
+        return "redirect:/startup/dashboard/" + startupId;
     }
 }

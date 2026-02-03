@@ -248,6 +248,7 @@
 
             <label>Founding Date</label>
             <input type="date" name="foundingDate">
+            
         </div>
 
         <!-- Investor -->

@@ -354,8 +354,10 @@
         </a>
         <div class="summary-card">
             <span>Profile Views</span>
-            <h2>0</h2>
+            <h2 id="profileViewsCount">${profileViews}</h2>
         </div>
+
+
         <div class="summary-card">
             <span>Total Investment</span>
             <h2>0</h2>
@@ -481,6 +483,37 @@
         }
     })();
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script>
+    (function () {
+        const startupId = ${startup.id};
+        let stompClient = null;
+
+        function connectProfileViewSocket() {
+            const socket = new SockJS('/ws-chat');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function () {
+                stompClient.subscribe(
+                    '/topic/startup/profile-views/' + startupId,
+                    function (message) {
+                        const data = JSON.parse(message.body);
+                        const el = document.getElementById('profileViewsCount');
+                        if (el && data.totalViews !== undefined) {
+                            el.textContent = data.totalViews;
+                        }
+                    }
+                );
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', connectProfileViewSocket);
+    })();
+</script>
+
 
 </body>
 </html>
