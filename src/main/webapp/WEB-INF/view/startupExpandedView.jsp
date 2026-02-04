@@ -2,431 +2,323 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
     // Prevent caching of this page to fix the back button issue
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-    response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-    response.setDateHeader("Expires", 0); // Proxies.
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response.setHeader("Pragma", "no-cache");
+    response.setDateHeader("Expires", 0);
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>${startup.name} - Expanded View</title>
+    <meta charset="UTF-8">
+    <title>${startup.name} - Detailed View</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* =========================
-           Variables & base reset
-           ========================= */
         :root{
-            --accent: #28a745;
-            --accent-600: #218838;
-            --bg-1: linear-gradient(180deg,#f8fbfd 0%, #eef6f9 100%);
-            --muted: #6b7280;
-            --text: #0f172a;
-            --card-radius: 14px;
-            --max-page-width: 1600px;
-            --white: #ffffff;
+            --accent:#28a745;
+            --accent-soft:rgba(40,167,69,.12);
+            --bg:#f3f6f9;
+            --card:#ffffff;
+            --text:#0f172a;
+            --muted:#64748b;
+            --border:1px solid rgba(15,23,42,.06);
+            --shadow-sm:0 6px 14px rgba(0,0,0,.06);
+            --shadow-md:0 22px 40px rgba(0,0,0,.10);
+        }
+
+        .dark-mode{
+            --bg:#0b1220;
+            --card:#111827;
+            --text:#e5e7eb;
+            --muted:#9ca3af;
+            --border:1px solid rgba(255,255,255,.08);
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
-        html,body{height:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
         body{
-            background: var(--bg-1);
-            color: var(--text);
-            min-height:100vh;
-            padding-top:78px; /* Space for fixed navbar */
-            transition: background 0.28s ease, color 0.28s ease;
-            text-align: center;
+            font-family:'Poppins',sans-serif;
+            background:var(--bg);
+            color:var(--text);
+            padding-top:90px;
+            transition: background 0.3s ease;
         }
 
-        /* =========================
-           Navbar (glass)
-           ========================= */
+        /* ================= NAVBAR ================= */
         .navbar{
-            position:fixed;
-            top:10px;
-            left:10px;
-            right:10px;
-            height:64px;
-            z-index:1400;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-            padding:10px 18px;
-            border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85)); /* Glass effect */
-            backdrop-filter: blur(10px) saturate(150%);
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 8px 30px rgba(12,17,38,0.1);
+            position:fixed; top:14px; left:14px; right:14px;
+            height:68px; padding:0 26px;
+            background:rgba(255,255,255,.85);
+            backdrop-filter:blur(14px);
+            border:var(--border); border-radius:18px;
+            display:flex; justify-content:space-between; align-items:center;
+            z-index:1000;
         }
-        .navbar-left{display:flex;gap:14px;align-items:center}
-        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
-        .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
-        .navbar-right{display:flex;gap:12px;align-items:center}
+        .dark-mode .navbar{background:rgba(17,24,39,.9)}
 
-        .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
-        .profile-dropdown{position:relative}
+        .nav-left{display:flex;align-items:center;gap:16px}
+        .logo{font-weight:800;font-size:1.35rem;color:var(--accent)}
+        .logo span{color:var(--text)}
+        .hamburger{font-size:1.2rem;cursor:pointer;color:var(--muted)}
 
-        /* Profile icon */
-        .profile-icon{
-            width:44px;height:44px;border-radius:12px;
-            display:flex;align-items:center;justify-content:center;font-weight:700;
-            background: linear-gradient(180deg, var(--accent), var(--accent-600));
-            color:var(--white); cursor:pointer;
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
-            transition: transform 0.2s ease;
-            z-index:1410;
-        }
-
-        /* Theme toggle */
+        .nav-right{display:flex;align-items:center;gap:18px}
         .theme-toggle{
-            cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem;
-            background: rgba(0,0,0,0.05);
-            border:1px solid rgba(0,0,0,0.05);
-            display:inline-flex;align-items:center;justify-content:center;
-            transition: all 0.2s ease;
+            background:none; border:none; font-size:1.1rem; cursor:pointer;
+            color:var(--muted); transition:0.2s; border-radius:10px;
+        }
+        .theme-toggle:hover{color:var(--accent); transform:scale(1.1)}
+
+        .profile-icon{
+            width:42px; height:42px; border-radius:12px;
+            background:linear-gradient(135deg,var(--accent),#34d058);
+            color:white; display:flex; align-items:center; justify-content:center;
+            font-weight:700; cursor:pointer;
         }
 
-        .dropdown-content{
-            display:none; position:absolute; right:0; top:58px; min-width:170px;
-            background: var(--white);
-            border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.12);
-            border:1px solid rgba(12,17,38,0.04);
-            z-index: 1405;
-        }
-        .dropdown-content.show{display:block}
-        .dropdown-content a{display:block;padding:12px 14px;color:var(--text);text-decoration:none;font-weight:500}
-        .dropdown-content a:hover{background: rgba(40,167,69,0.08); color: var(--accent); font-weight:600}
-
-        /* =========================
-           Sidebar (collapsible)
-           ========================= */
+        /* ================= SIDEBAR ================= */
         .sidebar{
-            position:fixed;top:10px;left:10px;height:calc(100% - 20px);width:0;z-index:1350;padding-top:88px;
-            overflow:hidden;transition:width 320ms cubic-bezier(.2,.9,.2,1);
-        }
-        .sidebar .panel{
-            height:100%; width:280px; padding:18px; border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
-            border:1px solid rgba(255,255,255,0.7); backdrop-filter: blur(10px);
-            box-shadow: 6px 12px 30px rgba(12,17,38,0.1);
-            transform-origin:left center;
+            position:fixed; top:14px; left:14px; height:calc(100% - 28px);
+            width:0; overflow:hidden; transition:.35s ease; z-index:1100;
         }
         .sidebar.open{width:300px}
-        .sidebar.open .panel{width:300px}
-        .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:500}
-        .sidebar a i{margin-right:12px;color:var(--accent)}
-        .sidebar a:hover{background: rgba(40,167,69,0.08); color: var(--accent); font-weight:600;}
+        .sidebar .panel{
+            width:300px; height:100%; padding:26px 22px;
+            background:var(--card); border:var(--border); border-radius:18px;
+            box-shadow:12px 0 35px rgba(0,0,0,.12);
+        }
+        .sidebar a{
+            display:flex; align-items:center; gap:14px; padding:14px 16px;
+            margin-bottom:8px; border-radius:14px; text-decoration:none;
+            color:var(--text); font-weight:500; transition:.25s ease;
+        }
+        .sidebar a:hover{background:var(--accent-soft); color:var(--accent); padding-left:22px}
 
-        /* overlay when sidebar open on small screens */
-        .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000}
         .overlay.show{display:block}
 
-        /* =========================
-           Profile Container (Page content)
-           ========================= */
-        .page-wrap{width:100%;max-width:var(--max-page-width);margin:0 auto;padding:14px 22px}
-        .container{
-            max-width: 900px; /* Increased max width for content */
-            width:100%; border-radius:16px; padding:40px; margin: 20px auto;
-            background: var(--white);
-            border: 1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 14px 50px rgba(12,17,38,0.06);
-            text-align: left;
+        /* ================= PAGE CONTENT ================= */
+        .page-wrap{max-width:1000px; margin:auto; padding:24px}
+
+        .header-section{
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:32px;
         }
 
-        h1{color:var(--accent); margin:0 0 16px; font-size:1.8rem; font-weight:700; display: flex; align-items: center;}
-        h1 i { margin-right: 15px; }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-        .profile-header h1 {
-            flex-grow: 1;
-            margin: 0;
+        .industry-tag{
+            background:var(--accent-soft); color:var(--accent);
+            padding:6px 14px; border-radius:20px; font-size:.75rem; font-weight:700;
         }
 
-        .profile-details p {
-            font-size: 1.1rem;
-            margin: 10px 0;
-            color: var(--text);
-        }
-        .profile-details p strong {
-            color: var(--text);
+        .card{
+            background:var(--card); border:var(--border);
+            border-radius:22px; padding:40px;
+            box-shadow:var(--shadow-sm); transition:0.3s;
         }
 
-        /* --- Button Styling --- */
-        .back-button, .apply-button {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-        }
-        .back-button {
-            background: var(--muted);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-right: 10px;
-        }
-        .back-button:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-        .apply-button {
-            background: var(--accent);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.3);
-        }
-        .apply-button:hover {
-            background: var(--accent-600);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
-        }
-        .apply-form {
-            display: inline-block;
+        .action-bar{
+            display:flex; gap:12px; margin-bottom:24px;
         }
 
-        /* --- Alerts --- */
-        .alert-message {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
+        /* ================= BUTTONS ================= */
+        .btn{
+            padding:12px 24px; border-radius:12px; font-weight:600;
+            cursor:pointer; text-decoration:none; display:inline-flex;
+            align-items:center; transition:0.2s; border:none; gap:8px;
         }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .btn-primary{
+            background:var(--accent); color:white;
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.2);
+        }
+        .btn-primary:hover{opacity:0.9; transform:translateY(-2px)}
 
-        /* =========================
-           Dark theme overrides
-           ========================= */
-        .dark-mode{
-            --bg-1: linear-gradient(180deg,#071018 0%,#071417 100%);
-            --muted: #9fb3c6;
-            --text: #dbeafe;
-            color: var(--text);
+        .btn-muted{
+            background:var(--accent-soft); color:var(--accent);
         }
-        .dark-mode .navbar{
-            background: linear-gradient(180deg, rgba(18,25,38,0.60), rgba(16,22,34,0.52));
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .dark-mode .container{
-            background: rgba(18,25,38,0.85);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 14px 50px rgba(0,0,0,0.5);
-        }
-        .dark-mode .sidebar .panel{
-            background: linear-gradient(180deg, rgba(18,25,38,0.85), rgba(16,22,34,0.7));
-            border:1px solid rgba(255,255,255,0.08);
-        }
-        .dark-mode .profile-details p {
-            color: var(--text);
-        }
-        .dark-mode .profile-details p strong {
-            color: var(--text);
-        }
-        .dark-mode .apply-button {
-            background: linear-gradient(180deg, #2b9d49, #1a642e);
-        }
-        .dark-mode .back-button {
-            background: #4a5568;
-        }
+        .btn-muted:hover{background:rgba(40,167,69,0.2)}
 
-        /* Accessibility focus */
-        a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
-
-        /* Responsive */
-        @media (max-width:860px){
-            .navbar{left:6px;right:6px}
-            body{padding-top:86px}
-            .page-wrap{padding:14px 12px}
+        /* ================= DETAILS ================= */
+        .details-grid{
+            display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap:24px; margin-top:30px;
         }
-        @media (max-width:480px){
-            .container { padding: 25px 15px; }
-            h1 { font-size: 1.5rem; }
-            .profile-header { flex-direction: column; align-items: stretch; }
-            .profile-header div { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
-            .back-button, .apply-button { flex: 1; margin-right: 0; }
+        .detail-box{
+            padding:20px; border-radius:16px; background:var(--bg); border:var(--border);
+        }
+        .detail-box label{
+            display:block; font-size:0.75rem; color:var(--muted);
+            text-transform:uppercase; font-weight:700; margin-bottom:6px;
+        }
+        .detail-box span{ font-size:1.1rem; font-weight:600; }
+
+        .description-box{ margin-top:30px; line-height:1.7; color:var(--text); opacity:0.9; }
+
+        /* ================= ALERTS ================= */
+        .alert{
+            padding:16px; border-radius:14px; margin-bottom:24px; font-weight:600;
+        }
+        .alert-success{ background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
+        .alert-danger{ background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+
+        .dropdown-content{
+            display:none; position:absolute; right:0; top:56px;
+            min-width:180px; background:var(--card);
+            border:var(--border); border-radius:14px; box-shadow:var(--shadow-md);
+        }
+        .dropdown-content.show{display:block}
+        .dropdown-content a{ display:block; padding:14px 16px; color:var(--text); text-decoration:none; font-weight:500; }
+        .dropdown-content a:hover{ background:var(--accent-soft); color:var(--accent); }
+
+        @media(max-width:600px){
+            .header-section{ flex-direction:column; align-items:flex-start; gap:16px; }
+            .action-bar{ width:100%; flex-direction:column; }
+            .btn{ width:100%; justify-content:center; }
         }
     </style>
 </head>
 <body>
 
-<div id="mySidebar" class="sidebar" aria-hidden="true">
-    <div class="panel" role="navigation" aria-label="Sidebar">
-        <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
-
-        <a href="/investor/dashboard/${investor.id}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+<div id="mySidebar" class="sidebar">
+    <div class="panel">
+        <div class="logo" style="margin-bottom:30px">
+            <i class="fas fa-leaf"></i> ECO<span>TRACK</span>
+        </div>
+        <a href="/investor/dashboard/${investor.id}"><i class="fas fa-th-large"></i> Dashboard</a>
         <a href="#"><i class="fas fa-rocket"></i> My Startups</a>
         <a href="/investor/profile"><i class="fas fa-user-circle"></i> Settings</a>
-        <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
+        <a href="/contact"><i class="fas fa-headset"></i> Support</a>
 
-        <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
-            <div>Startup Ecosystem</div>
-            <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
+        <div style="position:absolute; bottom:24px; left:24px; color:var(--muted); font-size:0.8rem">
+            © <span id="yearSpan"></span> EcoTrack
         </div>
     </div>
 </div>
 
-<div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
+<div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<header class="navbar" role="banner">
-    <div class="navbar-left">
-        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
-        <div class="logo" title="Project name">Startup Ecosystem</div>
+<header class="navbar">
+    <div class="nav-left">
+        <i class="fas fa-bars hamburger" onclick="openNav()"></i>
+        <div class="logo">ECO<span>TRACK</span></div>
     </div>
 
-    <div class="navbar-right">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-pressed="false" title="Toggle dark mode">
+    <div class="nav-right">
+        <button class="theme-toggle" onclick="toggleTheme()">
             <i class="fas fa-moon"></i>
         </button>
-
-        <div class="welcome-msg">Welcome, ${investor.investorName}</div>
-
-        <div class="profile-dropdown">
-            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">P</div>
-            <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
-                <a href="/investor/profile" role="menuitem">My Profile</a>
-                <a href="/logout" role="menuitem">Logout</a>
-            </nav>
+        <div class="welcome-msg" style="margin: 0 10px; font-weight:600; font-size:0.9rem">Hello, ${investor.investorName}</div>
+        <div class="profile-dropdown" style="position:relative">
+            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">P</div>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="/investor/profile">My Profile</a>
+                <a href="/logout">Logout</a>
+            </div>
         </div>
     </div>
 </header>
 
 <div class="page-wrap">
-    <div class="container">
-        <h1><i class="fas fa-building"></i> ${startup.name}</h1>
 
-        <c:if test="${not empty message}">
-            <div class="alert-message alert-success">${message}</div>
-        </c:if>
-        <c:if test="${not empty error}">
-            <div class="alert-message alert-danger">${error}</div>
-        </c:if>
+    <c:if test="${not empty message}">
+        <div class="alert alert-success"><i class="fas fa-check-circle"></i> ${message}</div>
+    </c:if>
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ${error}</div>
+    </c:if>
 
-        <div class="profile-header">
-            <div style="flex-grow: 1; display: none;"></div>
-            <div>
-                <a href="/investor/dashboard" class="back-button">Back to Dashboard</a>
-                <form action="/investor/apply-for-investment" method="post" class="apply-form">
-                    <input type="hidden" name="startupId" value="${startup.id}">
-                    <button type="submit" class="apply-button">Apply for Investment</button>
-                </form>
-            </div>
+    <div class="header-section">
+        <div>
+            <h1 style="font-size:2.2rem; font-weight:800">${startup.name}</h1>
+            <p style="color:var(--muted)">Explore startup potential and funding details</p>
+        </div>
+        <span class="industry-tag">${startup.industry}</span>
+    </div>
+
+    <div class="card">
+        <div class="action-bar">
+            <a href="/investor/dashboard" class="btn btn-muted">
+                <i class="fas fa-arrow-left"></i> Back to Feed
+            </a>
+            <form action="/investor/apply-for-investment" method="post" style="display:inline">
+                <input type="hidden" name="startupId" value="${startup.id}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-hand-holding-usd"></i> Apply for Investment
+                </button>
+            </form>
         </div>
 
-        <div class="profile-details">
-            <p><strong>Description:</strong> ${startup.description}</p>
-            <p><strong>Industry:</strong> ${startup.industry}</p>
-            <p><strong>Funding Ask:</strong> ${startup.fundingAsk}</p>
-            <p><strong>Equity Offered:</strong> ${startup.equityOffered}%</p>
+        <div class="description-box">
+            <h3 style="margin-bottom:12px">About the Venture</h3>
+            <p>${startup.description}</p>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-box">
+                <label>Funding Goal</label>
+                <span>${startup.fundingAsk}</span>
+            </div>
+            <div class="detail-box">
+                <label>Equity Offered</label>
+                <span>${startup.equityOffered}%</span>
+            </div>
+            <div class="detail-box">
+                <label>Industry Segment</label>
+                <span>${startup.industry}</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    /* =========================
-       Keep all original function names and logic
-       ========================= */
     document.addEventListener('DOMContentLoaded', () => {
-        // Redirect to login if the session is gone
         if ("${investor.email}" === "") {
             window.location.href = "/login?message=You have been logged out.";
         }
 
-        // Year for sidebar footer
         const yearSpan = document.getElementById('yearSpan');
         if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
-        // Theme restore
-        const savedTheme = (function(){
-            try { return localStorage.getItem('theme'); } catch(e){ return null; }
-        })() || 'light';
-        setTheme(savedTheme);
+        const name = "${investor.investorName}";
+        if (name) document.getElementById("profileIcon").textContent = name.charAt(0).toUpperCase();
 
-        // Dynamic Profile Icon
-        const investorName = "${investor.investorName}";
-        const profileIcon = document.getElementById("profileIcon");
-        if (investorName && profileIcon) {
-            profileIcon.textContent = investorName.charAt(0).toUpperCase();
-            profileIcon.setAttribute('title', investorName);
-        }
+        const savedTheme = localStorage.getItem("theme") || 'light';
+        if(savedTheme === "dark") document.documentElement.classList.add("dark-mode");
+        updateThemeIcon();
     });
 
-    function openNav() {
+    function openNav(){
         document.getElementById("mySidebar").classList.add("open");
         document.getElementById("overlay").classList.add("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'false');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'false');
     }
-
-    function closeNav() {
+    function closeNav(){
         document.getElementById("mySidebar").classList.remove("open");
         document.getElementById("overlay").classList.remove("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'true');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'true');
     }
+    function toggleDropdown(){ document.getElementById("myDropdown").classList.toggle("show"); }
 
-    function toggleDropdown() {
-        const dd = document.getElementById("myDropdown");
-        dd.classList.toggle("show");
-        const expanded = dd.classList.contains("show");
-        document.getElementById("profileIcon").setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        dd.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-    }
-
-    window.addEventListener('click', function(event) {
-        if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
+    window.onclick = function(event) {
+        if (!event.target.matches('.profile-icon')) {
             var dropdowns = document.getElementsByClassName("dropdown-content");
             for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                    openDropdown.setAttribute('aria-hidden', 'true');
-                    var icon = document.getElementById("profileIcon");
-                    if (icon) icon.setAttribute('aria-expanded', 'false');
-                }
+                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
             }
         }
-    });
-
-    function setTheme(theme) {
-        const html = document.documentElement;
-        const toggleBtn = document.querySelector('.theme-toggle');
-
-        if (theme === 'dark') {
-            html.classList.add('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-                toggleBtn.setAttribute('aria-pressed', 'true');
-            }
-        } else {
-            html.classList.remove('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-                toggleBtn.setAttribute('aria-pressed', 'false');
-            }
-        }
-        try { localStorage.setItem('theme', theme); } catch(e){ /* ignore if storage blocked */ }
     }
 
-    function toggleTheme() {
-        if (document.documentElement.classList.contains('dark-mode')) {
-            setTheme('light');
+    function toggleTheme(){
+        document.documentElement.classList.toggle("dark-mode");
+        const isDark = document.documentElement.classList.contains("dark-mode");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        updateThemeIcon();
+    }
+
+    function updateThemeIcon(){
+        const icon = document.querySelector('.theme-toggle i');
+        if(document.documentElement.classList.contains("dark-mode")){
+            icon.className = 'fas fa-sun';
         } else {
-            setTheme('dark');
+            icon.className = 'fas fa-moon';
         }
     }
 </script>

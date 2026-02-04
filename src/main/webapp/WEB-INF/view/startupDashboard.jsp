@@ -27,6 +27,8 @@
             --border:1px solid rgba(15,23,42,.06);
             --shadow-sm:0 6px 14px rgba(0,0,0,.06);
             --shadow-md:0 22px 40px rgba(0,0,0,.10);
+            --warning-soft: rgba(255, 193, 7, 0.15);
+            --warning-text: #856404;
         }
 
         .dark-mode{
@@ -35,6 +37,7 @@
             --text:#e5e7eb;
             --muted:#9ca3af;
             --border:1px solid rgba(255,255,255,.08);
+            --warning-soft: rgba(255, 193, 7, 0.1);
         }
 
         *{box-sizing:border-box;margin:0;padding:0}
@@ -44,6 +47,7 @@
             background:var(--bg);
             color:var(--text);
             padding-top:90px;
+            scroll-behavior: smooth;
         }
 
         /* ================= NAVBAR ================= */
@@ -76,7 +80,6 @@
         .theme-toggle:hover i{transform:rotate(-15deg) scale(1.08)}
         @keyframes pulsePop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
         .icon-pulse{animation:pulsePop .35s ease}
-        @media (prefers-reduced-motion: reduce){.theme-toggle,.theme-toggle i{transition:none !important}.theme-toggle:hover,.theme-toggle:active{transform:none !important;filter:none !important}.icon-pulse{animation:none !important}}
 
         .profile-icon{
             width:42px;height:42px;border-radius:12px;
@@ -195,7 +198,28 @@
             font-weight:600;
             cursor:pointer;
             text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            transition: opacity .2s;
         }
+        .btn-primary:hover{opacity: 0.9;}
+
+        .btn-outline{
+            background:transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding:9px 20px;
+            border-radius:10px;
+            font-weight:600;
+            cursor:pointer;
+            text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            transition: .2s;
+        }
+        .btn-outline:hover{background: var(--accent-soft);}
 
         /* ================= SUMMARY ================= */
         .summary-grid{
@@ -215,6 +239,7 @@
             text-decoration:none;
             color:inherit;
             cursor:pointer;
+            display:block;
         }
 
         .summary-card:hover{
@@ -225,6 +250,83 @@
 
         .summary-card span{color:var(--muted);font-size:.85rem}
         .summary-card h2{color:var(--accent);margin-top:8px;font-size:2rem}
+
+        /* ================= INVESTMENT REQUESTS ================= */
+        .investment-section {
+            margin-bottom: 50px;
+        }
+
+        .request-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .request-card {
+            background: var(--card);
+            border: var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: .3s ease;
+        }
+
+        .request-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .investor-info h4 { font-size: 1.1rem; font-weight: 700; }
+
+        .status-badge {
+            background: var(--warning-soft);
+            color: var(--warning-text);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .request-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .detail-item { display: flex; justify-content: space-between; }
+        .detail-item span:first-child { color: var(--muted); }
+
+        .request-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* Refined Subtle Empty State Styling */
+        .empty-state {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        .empty-state i {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
 
         /* ================= PROFILE ================= */
         .profile-section{
@@ -277,46 +379,37 @@
 
         @media(max-width:768px){
             .header-section{flex-direction:column;align-items:flex-start;gap:14px}
-            .summary-grid,.news-grid{grid-template-columns:1fr}
+            .summary-grid,.news-grid,.request-grid{grid-template-columns:1fr}
             .controls-bar{flex-direction:column}
+            .request-actions{grid-template-columns:1fr}
         }
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div id="mySidebar" class="sidebar">
     <div class="panel">
         <div class="sidebar-logo">
-            <i class="fas fa-leaf"></i>
-            ECO<span>TRACK</span>
+            <i class="fas fa-leaf"></i> ECO<span>TRACK</span>
         </div>
-
         <a href="/startup/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
         <a href="/startup/profile"><i class="fas fa-user"></i> My Profile</a>
         <a href="/startup/messages"><i class="fas fa-comment-dots"></i> Messages</a>
         <a href="/contact"><i class="fas fa-headset"></i> Support</a>
-
-        <div class="sidebar-footer">
-            © <span id="yearSpan"></span> EcoTrack
-        </div>
+        <div class="sidebar-footer"> © <span id="yearSpan"></span> EcoTrack </div>
     </div>
 </div>
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-left">
         <i class="fas fa-bars hamburger" onclick="openNav()"></i>
         <div class="logo">ECO<span>TRACK</span></div>
     </div>
-
     <div class="nav-right">
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
-        </button>
+        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
         <div class="dropdown">
             <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">S</div>
             <div id="myDropdown" class="dropdown-content">
@@ -327,9 +420,7 @@
     </div>
 </header>
 
-<!-- CONTENT -->
 <div class="page-wrap">
-
     <div class="header-section">
         <div>
             <p style="color:var(--muted)">Welcome back,</p>
@@ -338,15 +429,12 @@
         <span class="industry-tag">${startup.industry}</span>
     </div>
 
-    <!-- CONTROLS -->
     <div class="controls-bar">
         <a href="${pageContext.request.contextPath}/ml" target="_blank" class="btn-primary">
-            <i class="fas fa-rocket" style="margin-right:8px"></i>
-            Launch Pitch Analyzer
+            <i class="fas fa-rocket" style="margin-right:8px"></i> Launch Pitch Analyzer
         </a>
     </div>
 
-    <!-- SUMMARY -->
     <div class="summary-grid">
         <a href="/startup/messages" class="summary-card">
             <span>Investor Messages</span>
@@ -356,38 +444,70 @@
             <span>Profile Views</span>
             <h2 id="profileViewsCount">${profileViews}</h2>
         </div>
-
-
+        <div class="summary-card" onclick="document.getElementById('investment-workflow').scrollIntoView();">
+            <span>Pending Investment Requests</span>
+            <h2>${pendingRequestCount != null ? pendingRequestCount : 0}</h2>
+        </div>
         <div class="summary-card">
             <span>Total Investment</span>
-            <h2>0</h2>
+            <h2>${totalInvestment != null ? totalInvestment : 0}</h2>
         </div>
     </div>
 
-    <!-- PROFILE -->
+    <div class="investment-section" id="investment-workflow">
+        <h3 class="news-header">Investment Requests</h3>
+
+        <c:choose>
+            <c:when test="${not empty investmentRequests}">
+                <div class="request-grid">
+                    <c:forEach var="req" items="${investmentRequests}" varStatus="status">
+                        <c:if test="${status.index < 5}">
+                            <div class="request-card">
+                                <div class="request-header">
+                                    <div class="investor-info">
+                                        <h4>${req.investorName}</h4>
+                                        <p style="font-size:0.8rem; color:var(--muted)">Received via EcoTrack</p>
+                                    </div>
+                                    <span class="status-badge">${req.status}</span>
+                                </div>
+                                <div class="request-details">
+                                    <div class="detail-item"><span>Amount:</span><span style="font-weight:600; color:var(--accent)">$${req.amount}</span></div>
+                                    <div class="detail-item"><span>Funding Stage:</span><span>${req.fundingStage}</span></div>
+                                </div>
+                                <div class="request-actions">
+                                    <a href="/startup/chat?investorId=${req.investorId}" class="btn-outline"><i class="fas fa-comment" style="margin-right:8px"></i> Chat</a>
+                                    <a href="/startup/review-request?id=${req.id}" class="btn-primary">Review</a>
+                                </div>
+                            </div>
+                        </c:if>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="empty-state">
+                    <i class="fas fa-circle-info"></i>
+                    No investment requests yet.
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+
     <div class="profile-section">
         <div class="section-header">
             <h2>Startup Overview</h2>
-            <a href="/startup/profile" class="btn-primary" style="font-size:.85rem">
-                <i class="fas fa-pen" style="margin-right:6px"></i>
-                Edit Profile
-            </a>
+            <a href="/startup/profile" class="btn-primary" style="font-size:.85rem"><i class="fas fa-pen" style="margin-right:6px"></i> Edit Profile</a>
         </div>
-
         <p><strong>Description:</strong> ${startup.description}</p>
         <p><strong>Email:</strong> ${startup.email}</p>
     </div>
 
-    <!-- NEWS -->
     <div class="news-section">
         <h3 class="news-header">Market Insights</h3>
-
         <div class="news-grid">
             <c:forEach var="news" items="${newsList}" varStatus="status">
                 <c:if test="${status.index < 4}">
                     <div class="news-card">
-                        <img src="${news.imageUrl}" class="news-img"
-                             onerror="this.src='https://via.placeholder.com/400x200'">
+                        <img src="${news.imageUrl}" class="news-img" onerror="this.src='https://via.placeholder.com/400x200'">
                         <div class="news-content">
                             <a href="${news.url}" target="_blank" style="text-decoration:none;color:inherit">
                                 <div class="news-title">${news.title}</div>
@@ -398,7 +518,6 @@
             </c:forEach>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -406,11 +525,8 @@
         document.getElementById("yearSpan").textContent=new Date().getFullYear();
         const name="${startup.name}";
         if(name)profileIcon.textContent=name.charAt(0).toUpperCase();
-        // Apply saved theme on load and sync icon
         const savedTheme = localStorage.getItem("theme");
-        if(savedTheme === "dark"){
-            document.documentElement.classList.add("dark-mode");
-        }
+        if(savedTheme === "dark") document.documentElement.classList.add("dark-mode");
         updateThemeIcon();
     });
     function openNav(){mySidebar.classList.add("open");overlay.classList.add("show")}
@@ -420,22 +536,18 @@
         var iconEl = document.querySelector('.theme-toggle i');
         if(!iconEl) return;
         if(document.documentElement.classList.contains('dark-mode')){
-            iconEl.classList.remove('fa-moon');
-            iconEl.classList.add('fa-sun');
+            iconEl.classList.remove('fa-moon'); iconEl.classList.add('fa-sun');
         } else {
-            iconEl.classList.remove('fa-sun');
-            iconEl.classList.add('fa-moon');
+            iconEl.classList.remove('fa-sun'); iconEl.classList.add('fa-moon');
         }
     }
     function toggleTheme(){
         document.documentElement.classList.toggle("dark-mode");
         localStorage.setItem("theme", document.documentElement.classList.contains("dark-mode")?"dark":"light");
         updateThemeIcon();
-        // click pulse animation on icon
         var iconEl = document.querySelector('.theme-toggle i');
         if(iconEl){
             iconEl.classList.remove('icon-pulse');
-            // Force reflow to restart animation
             void iconEl.offsetWidth;
             iconEl.classList.add('icon-pulse');
             setTimeout(function(){ iconEl.classList.remove('icon-pulse'); }, 400);
@@ -443,7 +555,6 @@
     }
 </script>
 
-<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     (function(){
@@ -453,12 +564,6 @@
                 link.addEventListener('click', function(e){
                     e.preventDefault();
                     var href = link.getAttribute('href') || '/logout';
-                    if (typeof Swal === 'undefined') {
-                        if (confirm('Are you sure you want to log out?')) {
-                            window.location.href = href;
-                        }
-                        return;
-                    }
                     Swal.fire({
                         title: 'Log out?',
                         text: 'You will need to log in again to access your dashboard.',
@@ -468,52 +573,33 @@
                         cancelButtonColor: '#6c757d',
                         confirmButtonText: 'Yes, log me out',
                         cancelButtonText: 'Stay logged in'
-                    }).then(function(result){
-                        if(result.isConfirmed){
-                            window.location.href = href;
-                        }
-                    });
+                    }).then(function(result){ if(result.isConfirmed){ window.location.href = href; } });
                 });
             });
         }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', attachLogoutConfirm);
-        } else {
-            attachLogoutConfirm();
-        }
+        attachLogoutConfirm();
     })();
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
 <script>
     (function () {
         const startupId = ${startup.id};
         let stompClient = null;
-
         function connectProfileViewSocket() {
             const socket = new SockJS('/ws-chat');
             stompClient = Stomp.over(socket);
-
             stompClient.connect({}, function () {
-                stompClient.subscribe(
-                    '/topic/startup/profile-views/' + startupId,
-                    function (message) {
-                        const data = JSON.parse(message.body);
-                        const el = document.getElementById('profileViewsCount');
-                        if (el && data.totalViews !== undefined) {
-                            el.textContent = data.totalViews;
-                        }
-                    }
-                );
+                stompClient.subscribe('/topic/startup/profile-views/' + startupId, function (message) {
+                    const data = JSON.parse(message.body);
+                    const el = document.getElementById('profileViewsCount');
+                    if (el && data.totalViews !== undefined) el.textContent = data.totalViews;
+                });
             });
         }
-
         document.addEventListener('DOMContentLoaded', connectProfileViewSocket);
     })();
 </script>
-
-
 </body>
 </html>
