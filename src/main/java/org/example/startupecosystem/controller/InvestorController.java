@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.startupecosystem.entity.*;
 import org.example.startupecosystem.repository.InvestorRepository;
 import org.example.startupecosystem.repository.StartupProfileViewRepository;
+import org.example.startupecosystem.service.InvestmentRequestService;
 import org.example.startupecosystem.service.InvestorService;
 import org.example.startupecosystem.service.StartupService;
 import org.example.startupecosystem.service.NewsService;
@@ -36,11 +37,13 @@ public class InvestorController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    // 🔥 ADDED (only new dependency)
     @Autowired
     private StartupProfileViewRepository startupProfileViewRepository;
 
-    // --- Helper method for robust session ID retrieval (UNCHANGED) ---
+    @Autowired
+    private InvestmentRequestService investmentRequestService;
+
+    // --- Helper method for robust session ID retrieval ---
     private Optional<Long> getUserIdFromSession(HttpSession session, RedirectAttributes redirectAttributes) {
         Object userIdObj = session.getAttribute("loggedInUserId");
         Object roleObj = session.getAttribute("loggedInRole");
@@ -55,17 +58,12 @@ public class InvestorController {
                     ? Long.parseLong((String) userIdObj)
                     : (Long) userIdObj;
             return Optional.of(userId);
-
-        } catch (NumberFormatException | ClassCastException e) {
+        } catch (Exception e) {
             session.invalidate();
-            if (redirectAttributes != null) {
-                redirectAttributes.addFlashAttribute("error", "Authentication error. Please log in again.");
-            }
+            redirectAttributes.addFlashAttribute("error", "Authentication error. Please log in again.");
             return Optional.empty();
         }
     }
-    // ----------------------------------------------------
-
 
     @GetMapping({"/dashboard", "/dashboard/{id}"})
     public String showInvestorDashboard(
@@ -129,12 +127,9 @@ public class InvestorController {
             startupsList = startupService.findAll();
         }
 
-        List<ChatMessage> chatHistory = null;
-
         model.addAttribute("investorId", investorId);
         model.addAttribute("startupsList", startupsList);
         model.addAttribute("searchTerm", search);
-        model.addAttribute("chatHistory", chatHistory);
 
         return "investorMessages";
     }
@@ -163,7 +158,6 @@ public class InvestorController {
         return "exploreInvestors";
     }
 
-    // 🔥 ONLY METHOD WITH LOGIC ADDITION
     @GetMapping("/startup/{id}")
     public String showStartupProfile(
             @PathVariable("id") Long id,
@@ -186,12 +180,7 @@ public class InvestorController {
 
         Startup startup = startupOpt.get();
 
-        // ===============================
-        // 🔥 PROFILE VIEW TRACKING (SAFE)
-        // ===============================
-        boolean alreadyViewed =
-                startupProfileViewRepository
-                        .existsByStartupIdAndInvestorId(startup.getId(), investorId);
+        boolean alreadyViewed = startupProfileViewRepository.existsByStartupIdAndInvestorId(startup.getId(), investorId);
 
         if (!alreadyViewed) {
             StartupProfileViewEntity view = new StartupProfileViewEntity();
@@ -199,26 +188,45 @@ public class InvestorController {
             view.setInvestorId(investorId);
             startupProfileViewRepository.save(view);
 
-            // 🔥 REAL-TIME PUSH TO STARTUP DASHBOARD
-            long updatedCount =
-                    startupProfileViewRepository.countByStartupId(startup.getId());
+            long updatedCount = startupProfileViewRepository.countByStartupId(startup.getId());
 
             ProfileViewEvent event = new ProfileViewEvent();
             event.setStartupId(startup.getId());
             event.setTotalViews(updatedCount);
 
-            messagingTemplate.convertAndSend(
-                    "/topic/startup/profile-views/" + startup.getId(),
-                    event
-            );
+            messagingTemplate.convertAndSend("/topic/startup/profile-views/" + startup.getId(), event);
         }
-        // ===============================
 
         model.addAttribute("startup", startup);
 
         return "startupExpandedView";
     }
 
+    // --- NEW: Method to show the Investment Application Form ---
+    @GetMapping("/apply")
+    public String showInvestmentForm(
+            @RequestParam("startupId") Long startupId,
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt = getUserIdFromSession(session, redirectAttributes);
+        if (userIdOpt.isEmpty()) return "redirect:/login";
+
+        Long investorId = userIdOpt.get();
+        Optional<Investor> investorOptional = investorRepository.findById(investorId);
+        Optional<Startup> startupOpt = startupService.getStartupById(startupId);
+
+        if (investorOptional.isEmpty() || startupOpt.isEmpty()) {
+            return "redirect:/investor/dashboard";
+        }
+
+        model.addAttribute("investor", investorOptional.get());
+        model.addAttribute("startup", startupOpt.get());
+
+        // Returns the investment application JSP
+        return "investment-application";
+    }
 
     @GetMapping("/profile")
     public String showProfile(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
@@ -258,17 +266,44 @@ public class InvestorController {
         return "redirect:/investor/dashboard";
     }
 
-    @PostMapping("/apply-for-investment")
+    // --- UPDATED: Handle the actual form submission ---
+    @PostMapping("/submit-investment-request")
     public String applyForInvestment(
             @RequestParam("startupId") Long startupId,
+            @RequestParam("amount") Double amount,
+            @RequestParam("fundingStage") String fundingStage,
+            @RequestParam(value = "expectedRoi", required = false) Double expectedRoi,
+            @RequestParam(value = "horizon", required = false) Integer horizon,
+            @RequestParam(value = "message", required = false) String message,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         Optional<Long> userIdOpt = getUserIdFromSession(session, redirectAttributes);
         if (userIdOpt.isEmpty()) return "redirect:/login";
 
-        redirectAttributes.addFlashAttribute("message", "Your investment application has been submitted successfully!");
+        Long investorId = userIdOpt.get();
 
-        return "redirect:/investor/startup/" + startupId;
+        Investor investor = investorRepository
+                .findById(investorId)
+                .orElseThrow();
+
+        Startup startup = startupService
+                .getStartupById(startupId)
+                .orElseThrow();
+
+        // 🔥 REAL PERSISTENCE
+        investmentRequestService.createRequest(
+                investor,
+                startup,
+                amount,
+                fundingStage,
+                expectedRoi,
+                horizon,
+                message
+        );
+
+        redirectAttributes.addFlashAttribute("investmentSuccess", true);
+
+        return "redirect:/investor/apply?startupId=" + startupId;
     }
 }

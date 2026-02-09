@@ -9,187 +9,167 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* ================= THEME ================= */
         :root{
             --accent:#28a745;
-            --accent-dark:#1d7b37;
-
-            --bg:#f3f6f9;
+            --accent-dark:#1e7e34;
+            --bg:#f4f7fb;
             --card:#ffffff;
             --text:#0f172a;
-            --muted:#64748b;
-
-            --border:1px solid rgba(15,23,42,.08);
-            --shadow-sm:0 6px 18px rgba(0,0,0,.08);
-            --shadow-md:0 24px 50px rgba(0,0,0,.18);
+            --muted:#6b7280;
+            --border:1px solid rgba(15,23,42,.1);
+            --shadow:0 30px 70px rgba(0,0,0,.18);
         }
 
         *{box-sizing:border-box}
 
         body{
+            margin:0;
             font-family:'Poppins',sans-serif;
             background:
-                    radial-gradient(1200px 600px at top left, rgba(40,167,69,.12), transparent),
-                    radial-gradient(900px 500px at bottom right, rgba(40,167,69,.08), transparent),
+                    radial-gradient(1000px 500px at top left, rgba(40,167,69,.12), transparent),
+                    radial-gradient(900px 600px at bottom right, rgba(40,167,69,.08), transparent),
                     var(--bg);
             min-height:100vh;
-            padding-top:72px;
+            padding:90px 20px 50px;
             display:flex;
             justify-content:center;
             align-items:flex-start;
         }
 
-        /* ================= NAVBAR ================= */
-        .navbar{
-            background:rgba(255,255,255,.9)!important;
-            backdrop-filter:blur(12px);
-            border-bottom:var(--border);
-        }
-        .navbar-brand{
-            font-weight:800;
-            color:var(--accent)!important;
-            font-size:1.25rem;
-            letter-spacing:-.4px;
-        }
-
-        /* ================= CARD ================= */
-        .card-custom{
+        .signup-card{
             width:100%;
-            max-width:680px;
+            max-width:1000px;
             background:var(--card);
-            border-radius:26px;
-            padding:44px 42px;
-            margin:28px 16px;
-            border:var(--border);
-            box-shadow:var(--shadow-md);
-            animation:fadeUp .8s ease;
-        }
-
-        @keyframes fadeUp{
-            from{opacity:0;transform:translateY(20px)}
-            to{opacity:1;transform:translateY(0)}
+            border-radius:32px;
+            padding:56px 60px;
+            box-shadow:var(--shadow);
         }
 
         h1{
             text-align:center;
             font-weight:800;
-            font-size:2.3rem;
+            font-size:2.1rem;
             color:var(--accent);
-            margin-bottom:8px;
+            margin-bottom:6px;
         }
 
-        .role-message{
+        .subtitle{
             text-align:center;
-            font-weight:600;
             color:var(--muted);
-            margin-bottom:32px;
-        }
-
-        /* ================= FORM ================= */
-        label{
             font-weight:600;
-            font-size:.9rem;
-            margin-top:18px;
-            color:var(--text);
+            margin-bottom:44px;
         }
 
-        input,textarea{
+        .section{
+            margin-top:48px;
+        }
+
+        .section-title{
+            font-size:1.35rem;
+            font-weight:800;
+            color:var(--accent);
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin-bottom:26px;
+        }
+
+        .section-title::before{
+            content:'';
+            width:6px;
+            height:26px;
+            background:var(--accent);
+            border-radius:6px;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:22px 26px;
+        }
+
+        label{
+            font-size:.8rem;
+            font-weight:600;
+            color:var(--text);
+            margin-bottom:6px;
+            display:block;
+        }
+
+        input, textarea, select{
             width:100%;
-            padding:12px 14px;
-            border-radius:12px;
+            padding:13px 16px;
+            border-radius:14px;
             border:var(--border);
-            font-size:.95rem;
+            font-size:.9rem;
+            background:#fafafa;
             transition:.25s ease;
         }
 
-        textarea{min-height:90px;resize:vertical}
-
-        input:focus,textarea:focus{
-            outline:none;
-            border-color:var(--accent);
-            box-shadow:0 0 0 3px rgba(40,167,69,.2);
+        select{
+            cursor:pointer;
         }
 
-        /* ================= PASSWORD ================= */
-        .password-container{position:relative}
+        textarea{
+            resize:vertical;
+            min-height:100px;
+        }
+
+        input:focus, textarea:focus, select:focus{
+            outline:none;
+            background:white;
+            border-color:var(--accent);
+            box-shadow:0 0 0 4px rgba(40,167,69,.18);
+        }
+
+        .password-wrap{position:relative}
+
         .toggle-password{
             position:absolute;
-            right:14px;
+            right:16px;
             top:50%;
             transform:translateY(-50%);
             cursor:pointer;
             color:var(--muted);
         }
+
         .toggle-password:hover{color:var(--accent)}
 
-        #password,#confirmPassword{padding-right:42px}
+        #password,#confirmPassword{padding-right:46px}
 
-        /* ================= SECTION HEADERS ================= */
-        .detail-header{
-            margin-top:40px;
-            margin-bottom:18px;
-            font-size:1.35rem;
-            font-weight:800;
-            color:var(--accent);
-            border-bottom:2px solid var(--accent);
-            padding-bottom:8px;
-            text-align:center;
-        }
-
-        /* ================= BUTTON ================= */
-        .btn-custom{
+        .btn-submit{
             width:100%;
-            margin-top:36px;
-            padding:14px;
+            margin-top:54px;
+            padding:18px;
             border:none;
             border-radius:999px;
-            font-size:1.05rem;
-            font-weight:700;
             background:linear-gradient(135deg,var(--accent),var(--accent-dark));
             color:white;
+            font-size:1.1rem;
+            font-weight:700;
             cursor:pointer;
-            box-shadow:0 12px 28px rgba(40,167,69,.45);
-            transition:.3s ease;
-        }
-
-        .btn-custom:hover{
-            transform:translateY(-2px);
-            box-shadow:0 18px 40px rgba(40,167,69,.6);
+            box-shadow:0 18px 40px rgba(40,167,69,.55);
         }
 
         .hidden{display:none!important}
 
-        /* ================= RESPONSIVE ================= */
-        @media(max-width:600px){
-            .card-custom{padding:34px 26px}
-            h1{font-size:1.9rem}
+        @media(max-width:768px){
+            .grid{grid-template-columns:1fr}
+            .signup-card{padding:38px 26px}
         }
     </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid px-4">
-        <a class="navbar-brand" href="/">
-            ECO<span style="color:#0f172a">TRACK</span>
-        </a>
-    </div>
-</nav>
-
-<div class="card-custom">
+<div class="signup-card">
 
     <h1>Create Your Account</h1>
-    <p class="role-message">
-        You are registering as a <strong>${selectedRole}</strong>. Complete the form below.
+    <p class="subtitle">
+        Registering as a <strong>${selectedRole}</strong> on EcoTrack
     </p>
-
-    <c:if test="${not empty error}">
-        <div class="alert alert-danger">${error}</div>
-    </c:if>
 
     <c:choose>
         <c:when test="${selectedRole == 'Startup'}">
@@ -209,92 +189,199 @@
     <form action="/completeSignup" method="post" onsubmit="return validateForm()">
         <input type="hidden" name="userType" value="${selectedRole}">
 
-        <label>Email</label>
-        <input type="email" name="email" required>
-
-        <label>Password</label>
-        <div class="password-container">
-            <input type="password" id="password" name="password" required>
-            <span class="toggle-password" onclick="togglePasswordVisibility('password','eye1')">
-                <i id="eye1" class="fas fa-eye-slash"></i>
-            </span>
+        <!-- ACCOUNT -->
+        <div class="section">
+            <div class="section-title">Account Credentials</div>
+            <div class="grid">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div></div>
+                <div>
+                    <label>Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" name="password" required>
+                        <span class="toggle-password" onclick="togglePasswordVisibility('password','eye1')">
+                            <i id="eye1" class="fas fa-eye-slash"></i>
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <label>Confirm Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword','eye2')">
+                            <i id="eye2" class="fas fa-eye-slash"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <label>Confirm Password</label>
-        <div class="password-container">
-            <input type="password" id="confirmPassword" name="confirmPassword" required>
-            <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword','eye2')">
-                <i id="eye2" class="fas fa-eye-slash"></i>
-            </span>
+        <!-- STARTUP -->
+        <!-- STARTUP -->
+        <div class="section ${startupClass}">
+            <div class="section-title">Startup Details</div>
+
+            <div class="grid">
+
+                <!-- Company Name -->
+                <div>
+                    <label>Company Name</label>
+                    <input type="text" name="companyName" placeholder="Registered startup name" required>
+                </div>
+
+                <!-- Industry -->
+                <div>
+                    <label>Industry</label>
+                    <select name="industry" required>
+                        <option value="">Select Industry</option>
+                        <option>FinTech</option>
+                        <option>HealthTech</option>
+                        <option>EdTech</option>
+                        <option>AgriTech</option>
+                        <option>ClimateTech</option>
+                        <option>SaaS</option>
+                        <option>E-commerce</option>
+                        <option>AI / ML</option>
+                    </select>
+                </div>
+
+                <!-- Registration Number -->
+                <div>
+                    <label>Registration Number</label>
+                    <input type="text" name="registrationNumber" placeholder="Govt. registration number" required>
+                </div>
+
+                <!-- Government ID -->
+                <div>
+                    <label>Government ID</label>
+                    <input type="text" name="governmentId" placeholder="PAN / CIN / GST / other ID" required>
+                </div>
+
+                <!-- Founding Date -->
+                <div>
+                    <label>Founding Date</label>
+                    <input type="date" name="foundingDate" required>
+                </div>
+
+                <div></div>
+
+                <!-- Funding Ask -->
+                <div>
+                    <label>Funding Ask (USD)</label>
+                    <input type="number"
+                           name="fundingAsk"
+                           placeholder="e.g. 500000"
+                           min="0"
+                           step="1000"
+                           required>
+                </div>
+
+                <!-- Equity Offered -->
+                <div>
+                    <label>Equity Offered (%)</label>
+                    <input type="number"
+                           name="equityOffered"
+                           placeholder="e.g. 10"
+                           min="0"
+                           max="100"
+                           step="0.1"
+                           required>
+                </div>
+
+                <!-- Description -->
+                <div style="grid-column:1/-1">
+                    <label>Startup Description</label>
+                    <textarea name="description"
+                              placeholder="Briefly describe what your startup does, problem solved, and traction (if any)"
+                              required></textarea>
+                </div>
+
+            </div>
         </div>
 
-        <!-- Startup -->
-        <div id="startupFields" class="${startupClass}">
-            <div class="detail-header">Startup Details</div>
-            <label>Industry</label>
-            <input type="text" name="industry">
 
-            <label>Company Name</label>
-            <input type="text" name="companyName">
+        <!-- INVESTOR -->
+        <div class="section ${investorClass}">
+            <div class="section-title">Investor Details</div>
+            <div class="grid">
+                <div><label>Investor Name</label><input type="text" name="investorName"></div>
+                <div><label>Investment Firm</label><input type="text" name="investmentFirm"></div>
 
-            <label>Description</label>
-            <textarea name="description"></textarea>
+                <div>
+                    <label>Investor Type</label>
+                    <select name="investorType">
+                        <option value="">Select Type</option>
+                        <option>Angel Investor</option>
+                        <option>Venture Capital</option>
+                        <option>Private Equity</option>
+                        <option>Corporate Investor</option>
+                    </select>
+                </div>
 
-            <label>Registration Number</label>
-            <input type="text" name="registrationNumber">
+                <div>
+                    <label>Preferred Domains</label>
+                    <select name="preferredDomains">
+                        <option value="">Select Domain</option>
+                        <option>FinTech</option>
+                        <option>HealthTech</option>
+                        <option>EdTech</option>
+                        <option>ClimateTech</option>
+                        <option>SaaS</option>
+                        <option>AI / ML</option>
+                    </select>
+                </div>
 
-            <label>Government ID</label>
-            <input type="text" name="governmentId">
+                <div>
+                    <label>Funding Stages</label>
+                    <select name="fundingStages">
+                        <option value="">Select Stage</option>
+                        <option>Pre-Seed</option>
+                        <option>Seed</option>
+                        <option>Series A</option>
+                        <option>Series B+</option>
+                    </select>
+                </div>
 
-            <label>Founding Date</label>
-            <input type="date" name="foundingDate">
-            
+                <div><label>Location</label><input type="text" name="location"></div>
+                <div><label>Website</label><input type="text" name="website"></div>
+                <div>
+                    <label>Investment Range (USD)</label>
+                    <select name="investmentRangeUsd">
+                        <option value="">Select Range</option>
+                        <option value="10000-50000">$10k – $50k</option>
+                        <option value="50000-250000">$50k – $250k</option>
+                        <option value="250000-1000000">$250k – $1M</option>
+                        <option value="1000000-5000000">$1M – $5M</option>
+                        <option value="5000000-10000000">$5M – $10M</option>
+                        <option value="10000000+">$10M+</option>
+                    </select>
+                </div>
+
+
+                <div style="grid-column:1/-1">
+                    <label>LinkedIn</label>
+                    <input type="text" name="linkedin">
+                </div>
+            </div>
         </div>
 
-        <!-- Investor -->
-        <div id="investorFields" class="${investorClass}">
-            <div class="detail-header">Investor Details</div>
-            <label>Investor Name</label>
-            <input type="text" name="investorName">
-
-            <label>Investment Firm</label>
-            <input type="text" name="investmentFirm">
-
-            <label>Investor Type</label>
-            <input type="text" name="investorType">
-
-            <label>Preferred Domains</label>
-            <input type="text" name="preferredDomains">
-
-            <label>Funding Stages</label>
-            <input type="text" name="fundingStages">
-
-            <label>Location</label>
-            <input type="text" name="location">
-
-            <label>Website</label>
-            <input type="text" name="website">
-
-            <label>Investment Range (USD)</label>
-            <input type="text" name="investmentRangeUsd">
-
-            <label>LinkedIn</label>
-            <input type="text" name="linkedin">
-        </div>
-
-        <button type="submit" class="btn-custom">Create Account</button>
+        <button type="submit" class="btn-submit">Create Account</button>
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function togglePasswordVisibility(id,eye){
+    function togglePasswordVisibility(id, eye){
         const f=document.getElementById(id);
         const i=document.getElementById(eye);
-        if(f.type==="password"){f.type="text";i.classList.replace("fa-eye-slash","fa-eye")}
-        else{f.type="password";i.classList.replace("fa-eye","fa-eye-slash")}
+        if(f.type==="password"){
+            f.type="text"; i.classList.replace("fa-eye-slash","fa-eye");
+        } else {
+            f.type="password"; i.classList.replace("fa-eye","fa-eye-slash");
+        }
     }
-
     function validateForm(){
         if(password.value!==confirmPassword.value){
             alert("Passwords do not match");
