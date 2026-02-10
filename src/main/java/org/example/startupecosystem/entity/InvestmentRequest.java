@@ -32,10 +32,14 @@ public class InvestmentRequest {
     @Column(length = 2000)
     private String message;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvestmentRequestStatus status =  InvestmentRequestStatus.PENDING;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // getters & setters
+
 
 
     public Long getId() {
@@ -108,5 +112,13 @@ public class InvestmentRequest {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public InvestmentRequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InvestmentRequestStatus status) {
+        this.status = status;
     }
 }

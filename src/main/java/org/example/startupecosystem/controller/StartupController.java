@@ -1,9 +1,8 @@
 package org.example.startupecosystem.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.startupecosystem.entity.ChatMessage;
-import org.example.startupecosystem.entity.Startup;
-import org.example.startupecosystem.entity.Investor;
+import org.example.startupecosystem.entity.*;
+import org.example.startupecosystem.repository.InvestmentRequestRepository;
 import org.example.startupecosystem.repository.StartupRepository;
 import org.example.startupecosystem.repository.StartupProfileViewRepository;
 import org.example.startupecosystem.service.ChatService;
@@ -41,6 +40,9 @@ public class StartupController {
     @Autowired
     private StartupProfileViewRepository startupProfileViewRepository;
 
+    @Autowired
+    private InvestmentRequestRepository investmentRequestRepository;
+
     // ---------------- SESSION HELPER (UNCHANGED) ----------------
     private Optional<Long> getUserIdFromSession(
             HttpSession session,
@@ -59,7 +61,7 @@ public class StartupController {
                     ? Long.parseLong((String) userIdObj)
                     : (Long) userIdObj;
             return Optional.of(userId);
-        } catch (NumberFormatException | ClassCastException e) {
+        } catch (Exception e) {
             session.invalidate();
             if (redirectAttributes != null) {
                 redirectAttributes.addFlashAttribute(
@@ -72,7 +74,7 @@ public class StartupController {
 
 
     /* ============================================================
-       ✅ OPTION B: DASHBOARD WITH ID (SECURE + CORRECT)
+       ✅ STARTUP DASHBOARD (CLEAN + UX-DRIVEN)
        ============================================================ */
     @GetMapping("/dashboard/{id}")
     public String showStartupDashboard(
@@ -90,34 +92,48 @@ public class StartupController {
 
         Long loggedInStartupId = userIdOpt.get();
 
-        // 🔒 SECURITY CHECK (CRITICAL)
+        // 🔒 SECURITY CHECK
         if (!loggedInStartupId.equals(id)) {
             return "redirect:/login";
         }
 
-        Optional<Startup> startupOptional =
-                startupRepository.findById(id);
+        Startup startup = startupRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Startup not found"));
 
-        if (startupOptional.isEmpty()) {
-            return "redirect:/login";
-        }
-
-        Startup startup = startupOptional.get();
         model.addAttribute("startup", startup);
 
-        // ---------- DASHBOARD METRICS ----------
-        model.addAttribute("totalInvestments", 0);
-        model.addAttribute("totalMessages", 0);
-
+        // ---------- METRICS ----------
         long profileViews =
                 startupProfileViewRepository.countByStartupId(id);
         model.addAttribute("profileViews", profileViews);
-        // ---------------------------------------
+
+        model.addAttribute("totalInvestments", 0); // later from ACCEPTED
+        model.addAttribute("totalMessages", 0);
+        // -----------------------------
+
+        // ================= INVESTMENT REQUESTS (UX LOGIC) =================
+        List<InvestmentRequest> allRequests =
+                investmentRequestRepository
+                        .findByStartupIdOrderByCreatedAtDesc(id);
+
+        // Pending ONLY → dashboard main list (max 4)
+        List<InvestmentRequest> pendingRequests = allRequests.stream()
+                .filter(r -> r.getStatus() == InvestmentRequestStatus.PENDING)
+                .limit(4)
+                .toList();
+
+        // True pending count (for summary card)
+        long pendingCount = allRequests.stream()
+                .filter(r -> r.getStatus() == InvestmentRequestStatus.PENDING)
+                .count();
+
+        model.addAttribute("pendingRequests", pendingRequests);
+        model.addAttribute("pendingRequestCount", pendingCount);
+        // ==================================================================
 
         // ---------- NEWS ----------
-        String industry = startup.getIndustry();
-        String topic = (industry != null && !industry.trim().isEmpty())
-                ? industry.trim()
+        String topic = (startup.getIndustry() != null && !startup.getIndustry().trim().isEmpty())
+                ? startup.getIndustry().trim()
                 : "startup";
 
         model.addAttribute("newsList", newsService.fetchNews(topic));
@@ -125,6 +141,119 @@ public class StartupController {
 
         return "startupDashboard";
     }
+
+    @GetMapping("/investments")
+    public String showAllInvestmentRequests(
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new RuntimeException("Startup not found"));
+
+        List<InvestmentRequest> allRequests =
+                investmentRequestRepository
+                        .findByStartupIdOrderByCreatedAtDesc(startupId);
+
+        model.addAttribute("startup", startup);
+        model.addAttribute("allRequests", allRequests);
+
+        return "startupInvestmentRequests";
+    }
+
+    /* ================= INVESTMENT REQUEST REVIEW ================= */
+
+    @GetMapping("/investment-requests/{requestId}")
+    public String reviewInvestmentRequest(
+            @PathVariable Long requestId,
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
+        InvestmentRequest request = investmentRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        // 🔒 SECURITY CHECK
+        if (!request.getStartup().getId().equals(startupId)) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("request", request);
+        return "investmentRequestReview";
+    }
+
+
+    @PostMapping("/investment-requests/{requestId}/accept")
+    public String acceptInvestmentRequest(
+            @PathVariable Long requestId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Long startupId = getUserIdFromSession(session, "Startup", redirectAttributes)
+                .orElseThrow();
+
+        InvestmentRequest request = investmentRequestRepository.findById(requestId)
+                .orElseThrow();
+
+        if (!request.getStartup().getId().equals(startupId)
+                || request.getStatus() != InvestmentRequestStatus.PENDING) {
+            return "redirect:/startup/dashboard/" + startupId;
+        }
+
+        request.setStatus(InvestmentRequestStatus.ACCEPTED);
+        investmentRequestRepository.save(request);
+
+        redirectAttributes.addFlashAttribute(
+                "success", "Investment request accepted");
+
+        return "redirect:/startup/dashboard/" + startupId;
+    }
+
+
+    @PostMapping("/investment-requests/{requestId}/reject")
+    public String rejectInvestmentRequest(
+            @PathVariable Long requestId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Long startupId = getUserIdFromSession(session, "Startup", redirectAttributes)
+                .orElseThrow();
+
+        InvestmentRequest request = investmentRequestRepository.findById(requestId)
+                .orElseThrow();
+
+        if (!request.getStartup().getId().equals(startupId)
+                || request.getStatus() != InvestmentRequestStatus.PENDING) {
+            return "redirect:/startup/dashboard/" + startupId;
+        }
+
+        request.setStatus(InvestmentRequestStatus.REJECTED);
+        investmentRequestRepository.save(request);
+
+        redirectAttributes.addFlashAttribute(
+                "success", "Investment request rejected");
+
+        return "redirect:/startup/dashboard/" + startupId;
+    }
+
 
 
     /* ===================== MESSAGES ===================== */
@@ -144,14 +273,10 @@ public class StartupController {
 
         Long startupId = userIdOpt.get();
 
-        Optional<Startup> startupOptional =
-                startupRepository.findById(startupId);
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new RuntimeException("Startup not found"));
 
-        if (startupOptional.isEmpty()) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("startup", startupOptional.get());
+        model.addAttribute("startup", startup);
 
         List<Investor> investors =
                 (search != null && !search.trim().isEmpty())
@@ -183,15 +308,10 @@ public class StartupController {
 
         Long startupId = userIdOpt.get();
 
-        Optional<Startup> startupOptional =
-                startupRepository.findById(startupId);
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new RuntimeException("Startup not found"));
 
-        if (startupOptional.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Profile not found.");
-            return "redirect:/startup/dashboard/" + startupId;
-        }
-
-        model.addAttribute("startup", startupOptional.get());
+        model.addAttribute("startup", startup);
         return "startupProfile";
     }
 
@@ -213,15 +333,11 @@ public class StartupController {
 
         Long startupId = userIdOpt.get();
 
-        try {
-            startupService.updateStartupProfile(
-                    startupId, name, description, industry);
-            redirectAttributes.addFlashAttribute(
-                    "message", "Profile updated successfully!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(
-                    "error", "An error occurred while saving your profile.");
-        }
+        startupService.updateStartupProfile(
+                startupId, name, description, industry);
+
+        redirectAttributes.addFlashAttribute(
+                "message", "Profile updated successfully!");
 
         return "redirect:/startup/dashboard/" + startupId;
     }

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
@@ -238,6 +240,38 @@
                     0 22px 55px rgba(255,255,255,.10);
         }
 
+        /* ================= PAGINATION ================= */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+        .page-link {
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: var(--card);
+            border: var(--border);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s;
+        }
+        .page-link:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+        .page-link.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .page-link.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         /* ================= NEWS ================= */
         .news-section{margin-top:60px}
         .news-header{
@@ -277,7 +311,6 @@
 
 <body>
 
-<!-- SIDEBAR -->
 <div id="mySidebar" class="sidebar">
     <div class="panel">
         <div class="sidebar-logo">
@@ -300,7 +333,6 @@
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-left">
         <i class="fas fa-bars hamburger" onclick="openNav()"></i>
@@ -321,7 +353,6 @@
     </div>
 </header>
 
-<!-- CONTENT -->
 <div class="page-wrap">
 
     <div class="header-section">
@@ -358,8 +389,13 @@
     </div>
 
     <c:if test="${not empty startups}">
+        <c:set var="pageSize" value="6" />
+        <c:set var="page" value="${not empty param.page ? param.page : 1}" />
+        <c:set var="start" value="${(page - 1) * pageSize}" />
+        <c:set var="end" value="${start + pageSize - 1}" />
+
         <div class="grid-container">
-            <c:forEach var="startup" items="${startups}">
+            <c:forEach var="startup" items="${startups}" begin="${start}" end="${end}">
                 <a href="/investor/startup/${startup.id}" class="startup-card">
                     <span class="industry-tag">${startup.industry}</span>
                     <h3 class="startup-name">${startup.name}</h3>
@@ -377,9 +413,30 @@
                 </a>
             </c:forEach>
         </div>
+
+        <div class="pagination-container">
+            <c:set var="totalItems" value="${fn:length(startups)}" />
+            <c:set var="totalPagesCount" value="${Math.ceil(totalItems / pageSize).intValue()}" />
+
+            <c:if test="${totalPagesCount > 1}">
+                <a href="/investor/dashboard?page=${page > 1 ? page - 1 : 1}&search=${currentSearch}&industry=${currentIndustry}"
+                   class="page-link ${page == 1 ? 'disabled' : ''}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+
+                <c:forEach begin="1" end="${totalPagesCount}" var="i">
+                    <a href="/investor/dashboard?page=${i}&search=${currentSearch}&industry=${currentIndustry}"
+                       class="page-link ${page == i ? 'active' : ''}">${i}</a>
+                </c:forEach>
+
+                <a href="/investor/dashboard?page=${page < totalPagesCount ? page + 1 : totalPagesCount}&search=${currentSearch}&industry=${currentIndustry}"
+                   class="page-link ${page == totalPagesCount ? 'disabled' : ''}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </c:if>
+        </div>
     </c:if>
 
-    <!-- NEWS SECTION -->
     <div class="news-section">
         <h3 class="news-header">Market Insights: ${newsTopic}</h3>
 

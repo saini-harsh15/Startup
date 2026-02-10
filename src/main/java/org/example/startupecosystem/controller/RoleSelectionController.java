@@ -82,17 +82,21 @@ public class RoleSelectionController {
         if (isVerified) {
             try {
                 Long userId = signupService.registerNewUser(
-                        userDto.getEmail(),
-                        userDto.getPassword(),
-                        userDto.getUserType(),
-                        userDto.getUserType().equals("Startup") ? userDto.getCompanyName() : userDto.getInvestorName(),
-                        userDto.getDescription(),
-                        userDto.getIndustry(),
-                        userDto.getRegistrationNumber(),
-                        userDto.getGovernmentId(),
-                        userDto.getFoundingDate(),
-                        userDto.getInvestorName(),
-                        userDto.getInvestmentFirm()
+                        userDto.getEmail(),                     // String
+                        userDto.getPassword(),                  // String
+                        userDto.getUserType(),                  // String
+                        userDto.getUserType().equalsIgnoreCase("Startup")
+                                ? userDto.getCompanyName()
+                                : userDto.getInvestorName(),    // String (name)
+                        userDto.getDescription(),               // String
+                        userDto.getIndustry(),                  // String
+                        userDto.getRegistrationNumber(),        // String
+                        userDto.getGovernmentId(),              // String
+                        userDto.getFoundingDate(),               // Date
+                        userDto.getFundingAsk(),                // Double  ✅ MISSING BEFORE
+                        userDto.getEquityOffered(),              // Double  ✅ MISSING BEFORE
+                        userDto.getInvestorName(),               // String
+                        userDto.getInvestmentFirm()              // String
                 );
 
                 // Store user info in session for authentication

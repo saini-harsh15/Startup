@@ -28,7 +28,9 @@ public class InvestmentRequestService {
         req.setExpectedRoi(expectedRoi);
         req.setHorizon(horizon);
         req.setMessage(message);
+        req.setStatus(InvestmentRequestStatus.PENDING);
 
         repository.save(req);
     }
 }
+

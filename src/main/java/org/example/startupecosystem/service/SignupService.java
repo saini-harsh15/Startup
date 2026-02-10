@@ -24,49 +24,50 @@ public class SignupService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Long registerNewUser(String email, String password, String role, String name, String description, String industry, String registrationNumber, String governmentId, Date foundingDate, String investorName, String investmentFirm) {
-
+    public Long registerNewUser(
+            String email,
+            String password,
+            String role,
+            String name,
+            String description,
+            String industry,
+            String registrationNumber,
+            String governmentId,
+            Date foundingDate,
+            Double fundingAsk,
+            Double equityOffered,
+            String investorName,
+            String investmentFirm
+    ) {
 
         String hashedPassword = passwordEncoder.encode(password);
-        Long userId = null;
 
-        if ("Startup".equals(role)) {
+        if ("Startup".equalsIgnoreCase(role)) {
             Startup startup = new Startup();
             startup.setEmail(email);
             startup.setPassword(hashedPassword);
-            // For startups, use companyName as the name if name is null
-            startup.setName(name != null ? name : registrationNumber);
+            startup.setName(name);
             startup.setDescription(description);
             startup.setIndustry(industry);
-            // New verification fields added
             startup.setRegistrationNumber(registrationNumber);
             startup.setGovernmentId(governmentId);
             startup.setFoundingDate(foundingDate);
+            startup.setFundingAsk(fundingAsk);
+            startup.setEquityOffered(equityOffered);
 
-            try {
-                Startup savedStartup = startupRepository.save(startup);
-                userId = savedStartup.getId();
-            } catch (Exception e) {
-                // In a production app, use a proper logging framework and handle the exception gracefully
-                e.printStackTrace();
-                throw e; // Rethrow to allow controller to handle it
-            }
+            return startupRepository.save(startup).getId();
+        }
 
-            System.out.println("Startup account created for email: " + email);
-
-        } else if ("Investor".equals(role)) {
+        if ("Investor".equalsIgnoreCase(role)) {
             Investor investor = new Investor();
             investor.setEmail(email);
             investor.setPassword(hashedPassword);
-            // New verification fields added
             investor.setInvestorName(investorName);
             investor.setInvestmentFirm(investmentFirm);
 
-            Investor savedInvestor = investorRepository.save(investor);
-            userId = savedInvestor.getId();
-            System.out.println("Investor account created for email: " + email);
+            return investorRepository.save(investor).getId();
         }
-        
-        return userId;
+
+        throw new IllegalArgumentException("Invalid role: " + role);
     }
 }

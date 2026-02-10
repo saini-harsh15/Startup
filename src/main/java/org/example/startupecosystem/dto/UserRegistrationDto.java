@@ -1,13 +1,13 @@
 package org.example.startupecosystem.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 
 public class UserRegistrationDto {
+
     private String email;
     private String password;
-    private String userType; // "Startup" or "Investor"
+    private String userType; // Startup or Investor
     private String name;
     private String description;
     private String industry;
@@ -16,8 +16,12 @@ public class UserRegistrationDto {
     private String companyName;
     private String registrationNumber;
     private String governmentId;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd") // ⚠️ fixed MM
     private Date foundingDate;
+
+    private Double fundingAsk;      // ✅ ADDED
+    private Double equityOffered;   // ✅ ADDED
 
     // Investor-specific fields
     private String investorName;
@@ -25,7 +29,8 @@ public class UserRegistrationDto {
     private Integer yearsOfExperience;
     private String preferredIndustry;
 
-    // Getters and Setters
+    // ===== Getters & Setters =====
+
     public String getEmail() {
         return email;
     }
@@ -104,6 +109,22 @@ public class UserRegistrationDto {
 
     public void setFoundingDate(Date foundingDate) {
         this.foundingDate = foundingDate;
+    }
+
+    public Double getFundingAsk() {
+        return fundingAsk;
+    }
+
+    public void setFundingAsk(Double fundingAsk) {
+        this.fundingAsk = fundingAsk;
+    }
+
+    public Double getEquityOffered() {
+        return equityOffered;
+    }
+
+    public void setEquityOffered(Double equityOffered) {
+        this.equityOffered = equityOffered;
     }
 
     public String getInvestorName() {

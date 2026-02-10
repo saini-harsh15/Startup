@@ -1,7 +1,6 @@
 package org.example.startupecosystem.entity;
 
 import jakarta.persistence.*;
-
 import java.util.Date;
 
 @Entity
@@ -12,22 +11,12 @@ public class Startup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "password")
     private String password;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "industry")
     private String industry;
 
-    // New fields from the verification process
     @Column(name = "registration_number")
     private String registrationNumber;
 
@@ -36,14 +25,16 @@ public class Startup {
 
     @Column(name = "founding_date")
     private Date foundingDate;
-    
+
     @Column(name = "funding_ask")
     private Double fundingAsk;
-    
+
     @Column(name = "equity_offered")
     private Double equityOffered;
 
-    // Getters and Setters
+    // getters & setters (unchanged)
+
+
     public Long getId() {
         return id;
     }
@@ -92,7 +83,6 @@ public class Startup {
         this.industry = industry;
     }
 
-    // New Getters and Setters for the added fields
     public String getRegistrationNumber() {
         return registrationNumber;
     }
@@ -116,19 +106,19 @@ public class Startup {
     public void setFoundingDate(Date foundingDate) {
         this.foundingDate = foundingDate;
     }
-    
+
     public Double getFundingAsk() {
         return fundingAsk;
     }
-    
+
     public void setFundingAsk(Double fundingAsk) {
         this.fundingAsk = fundingAsk;
     }
-    
+
     public Double getEquityOffered() {
         return equityOffered;
     }
-    
+
     public void setEquityOffered(Double equityOffered) {
         this.equityOffered = equityOffered;
     }
