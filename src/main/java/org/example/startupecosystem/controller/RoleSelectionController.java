@@ -31,99 +31,87 @@ public class RoleSelectionController {
         return "roleselection";
     }
 
-    // This method now redirects to the signup page to maintain a proper flow.
-    @PostMapping("/selectRole")
-    public String selectRole(@RequestParam String role, HttpSession session) {
-        session.setAttribute("selectedRole", role);
-        return "redirect:/signup";
-    }
-
-    @GetMapping("/signup")
-    public String showSignupPage(Model model, HttpSession session) {
-        String role = (String) session.getAttribute("selectedRole");
-        if (role == null) {
-            // If no role is selected, redirect back to the role selection page.
-            return "redirect:/";
-        }
-        // Add a new DTO object to the model for the form.
+    @GetMapping("/signup/startup")
+    public String showStartupSignup(Model model) {
         model.addAttribute("userDto", new UserRegistrationDto());
-        return "signup";
+        return "startup-signup";
     }
 
-    // A single endpoint to handle the complete signup and verification
-    @PostMapping("/completeSignup")
-    public String completeSignup(@ModelAttribute("userDto") UserRegistrationDto userDto,
-                                 RedirectAttributes redirectAttributes,
-                                 HttpSession session) {
+    @PostMapping("/completeStartupSignup")
+    public String completeStartupSignup(@ModelAttribute("userDto") UserRegistrationDto userDto,
+                                        RedirectAttributes redirectAttributes,
+                                        HttpSession session) {
 
-        // Skip verification for now to allow all users to register
-        boolean isVerified = true;
+        try {
 
-        // The following verification code is commented out to allow all users to register
-        // If verification is needed in the future, uncomment this code
-        /*
-        if ("Startup".equalsIgnoreCase(userDto.getUserType())) {
-            isVerified = verificationService.verifyCompany(
-                    userDto.getCompanyName(),
+            Long userId = signupService.registerNewUser(
+                    userDto.getEmail(),
+                    userDto.getPassword(),
+                    "Startup",                         // Hardcoded role
+                    userDto.getCompanyName(),          // Name
+                    userDto.getDescription(),
+                    userDto.getIndustry(),
                     userDto.getRegistrationNumber(),
                     userDto.getGovernmentId(),
                     userDto.getFoundingDate(),
-                    userDto.getIndustry()
+                    userDto.getFundingAsk(),
+                    userDto.getEquityOffered(),
+                    null,                              // Investor name not needed
+                    null                               // Investment firm not needed
             );
-        } else if ("Investor".equalsIgnoreCase(userDto.getUserType())) {
-            isVerified = verificationService.verifyInvestor(
+
+            session.setAttribute("loggedInUserId", userId.toString());
+            session.setAttribute("loggedInRole", "Startup");
+
+            return "redirect:/startup/dashboard/" + userId;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Startup registration failed.");
+            return "redirect:/signup/startup";
+        }
+    }
+
+    @GetMapping("/signup/investor")
+    public String showInvestorSignup(Model model) {
+        model.addAttribute("userDto", new UserRegistrationDto());
+        return "investor-signup";
+    }
+    @PostMapping("/completeInvestorSignup")
+    public String completeInvestorSignup(@ModelAttribute("userDto") UserRegistrationDto userDto,
+                                         RedirectAttributes redirectAttributes,
+                                         HttpSession session) {
+
+        try {
+
+            Long userId = signupService.registerNewUser(
+                    userDto.getEmail(),
+                    userDto.getPassword(),
+                    "Investor",                       // Hardcoded role
+                    userDto.getInvestorName(),        // Name
+                    null,                             // No description needed
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     userDto.getInvestorName(),
                     userDto.getInvestmentFirm()
             );
-        }
-        */
 
-        // Always proceed with registration since verification is bypassed
-        if (isVerified) {
-            try {
-                Long userId = signupService.registerNewUser(
-                        userDto.getEmail(),                     // String
-                        userDto.getPassword(),                  // String
-                        userDto.getUserType(),                  // String
-                        userDto.getUserType().equalsIgnoreCase("Startup")
-                                ? userDto.getCompanyName()
-                                : userDto.getInvestorName(),    // String (name)
-                        userDto.getDescription(),               // String
-                        userDto.getIndustry(),                  // String
-                        userDto.getRegistrationNumber(),        // String
-                        userDto.getGovernmentId(),              // String
-                        userDto.getFoundingDate(),               // Date
-                        userDto.getFundingAsk(),                // Double  ✅ MISSING BEFORE
-                        userDto.getEquityOffered(),              // Double  ✅ MISSING BEFORE
-                        userDto.getInvestorName(),               // String
-                        userDto.getInvestmentFirm()              // String
-                );
+            session.setAttribute("loggedInUserId", userId.toString());
+            session.setAttribute("loggedInRole", "Investor");
 
-                // Store user info in session for authentication
-                session.setAttribute("loggedInUserId", userId.toString());
-                session.setAttribute("loggedInRole", userDto.getUserType());
+            return "redirect:/investor/dashboard/" + userId;
 
-                // On successful signup, redirect directly to the appropriate dashboard
-                if ("Startup".equalsIgnoreCase(userDto.getUserType())) {
-                    return "redirect:/startup/dashboard/" + userId;
-                } else if ("Investor".equalsIgnoreCase(userDto.getUserType())) {
-                    return "redirect:/investor/dashboard/" + userId;
-                }
-
-                // Fallback to general dashboard
-                return "redirect:/dashboard";
-            } catch (Exception e) {
-                // Log the exception properly instead of printing the stack trace
-                e.printStackTrace();
-                redirectAttributes.addFlashAttribute("error", "An error occurred during registration. Please try again.");
-                return "redirect:/signup"; // Redirect back to the single signup page
-            }
-        } else {
-            // Verification failed, add an error message and return to the signup page
-            redirectAttributes.addFlashAttribute("error", "The provided details could not be verified. Please check your information.");
-            return "redirect:/signup";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Investor registration failed.");
+            return "redirect:/signup/investor";
         }
     }
+
 
     @GetMapping("/login")
     public String showLoginPage() {

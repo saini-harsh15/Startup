@@ -47,6 +47,11 @@ public class InvestorService {
         return findAll();
     }
 
+    public List<Investor> findAllByIds(List<Long> ids) {
+        return investorRepository.findAllById(ids);
+    }
+
+
     /**
      * Backward-compatible search method used by existing controllers.
      * Delegates to repository to filter investors by search string.

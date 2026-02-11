@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.startupecosystem.entity.*;
 import org.example.startupecosystem.repository.InvestorRepository;
 import org.example.startupecosystem.repository.StartupProfileViewRepository;
-import org.example.startupecosystem.service.InvestmentRequestService;
-import org.example.startupecosystem.service.InvestorService;
-import org.example.startupecosystem.service.StartupService;
-import org.example.startupecosystem.service.NewsService;
+import org.example.startupecosystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -42,6 +39,10 @@ public class InvestorController {
 
     @Autowired
     private InvestmentRequestService investmentRequestService;
+
+    @Autowired
+    private ChatService chatService;
+
 
     // --- Helper method for robust session ID retrieval ---
     private Optional<Long> getUserIdFromSession(HttpSession session, RedirectAttributes redirectAttributes) {
@@ -120,12 +121,30 @@ public class InvestorController {
 
         model.addAttribute("investor", investorOptional.get());
 
+        // 1️⃣ Get chat partner IDs
+        List<Long> partnerIds = chatService.getChatPartnerIds(investorId);
+
         List<Startup> startupsList;
-        if (search != null && !search.trim().isEmpty()) {
-            startupsList = startupService.findStartupsByCriteria(search.trim(), null);
+
+        if (partnerIds.isEmpty()) {
+            startupsList = List.of();
         } else {
-            startupsList = startupService.findAll();
+            startupsList = startupService.findAllByIds(partnerIds);
         }
+
+// 2️⃣ Apply search filter ONLY within chat partners
+        if (search != null && !search.trim().isEmpty()) {
+            String lower = search.trim().toLowerCase();
+
+            startupsList = startupsList.stream()
+                    .filter(s ->
+                            s.getName().toLowerCase().contains(lower) ||
+                                    (s.getIndustry() != null &&
+                                            s.getIndustry().toLowerCase().contains(lower))
+                    )
+                    .toList();
+        }
+
 
         model.addAttribute("investorId", investorId);
         model.addAttribute("startupsList", startupsList);

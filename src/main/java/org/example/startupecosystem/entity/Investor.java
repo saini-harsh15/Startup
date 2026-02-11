@@ -57,7 +57,19 @@ public class Investor {
     @Column(name = "linkedin")
     private String linkedin;
 
+    @Column(columnDefinition = "TEXT")
+    private String publicKey;
+
+
     // Getters and Setters
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public Long getId() {
         return id;

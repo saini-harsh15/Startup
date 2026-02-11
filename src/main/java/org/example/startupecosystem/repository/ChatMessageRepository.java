@@ -16,4 +16,25 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
            "   OR (m.senderId = :userB AND m.receiverId = :userA) " +
            "ORDER BY m.timestamp ASC")
     List<ChatMessage> findConversationBetween(@Param("userA") Long userA, @Param("userB") Long userB);
+
+
+    @Query("""
+    SELECT DISTINCT 
+        CASE 
+            WHEN m.senderId = :userId THEN m.receiverId
+            ELSE m.senderId
+        END
+    FROM ChatMessage m
+    WHERE m.senderId = :userId OR m.receiverId = :userId
+""")
+    List<Long> findChatPartnerIds(@Param("userId") Long userId);
+
+    @Query("""
+       SELECT m FROM ChatMessage m
+       WHERE m.senderId = :userId OR m.receiverId = :userId
+       ORDER BY m.timestamp DESC
+       """)
+    List<ChatMessage> findAllUserMessagesOrdered(@Param("userId") Long userId);
+
+
 }

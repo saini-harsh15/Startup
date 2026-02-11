@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.example.startupecosystem.util.PasswordValidator;
+
 
 import java.util.Date;
 
@@ -39,6 +41,13 @@ public class SignupService {
             String investorName,
             String investmentFirm
     ) {
+
+        // 🔒 PASSWORD VALIDATION
+        if (!PasswordValidator.isValid(password)) {
+            throw new IllegalArgumentException(
+                    "Password must be at least 10 characters long and include uppercase, lowercase and a number. No spaces allowed."
+            );
+        }
 
         String hashedPassword = passwordEncoder.encode(password);
 

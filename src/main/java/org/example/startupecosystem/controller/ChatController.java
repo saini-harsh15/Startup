@@ -24,14 +24,19 @@ public class ChatController {
      */
     @MessageMapping("/chat")
     public void processMessage(ChatMessage chatMessage) {
-        // Set timestamp and persist
+
         chatMessage.setTimestamp(LocalDateTime.now());
         chatMessageRepository.save(chatMessage);
 
-        // Broadcast to both receiver and sender channels
-        messagingTemplate.convertAndSend("/topic/messages/" + chatMessage.getReceiverId(), chatMessage);
-        messagingTemplate.convertAndSend("/topic/messages/" + chatMessage.getSenderId(), chatMessage);
+        messagingTemplate.convertAndSend(
+                "/topic/messages/" + chatMessage.getReceiverId(),
+                chatMessage);
+
+        messagingTemplate.convertAndSend(
+                "/topic/messages/" + chatMessage.getSenderId(),
+                chatMessage);
     }
+
 
     /**
      * Typing indicator relay: client sends to /app/typing and we forward to recipient topic.

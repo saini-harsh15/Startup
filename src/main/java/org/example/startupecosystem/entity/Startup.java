@@ -32,8 +32,20 @@ public class Startup {
     @Column(name = "equity_offered")
     private Double equityOffered;
 
+    @Column(columnDefinition = "TEXT")
+    private String publicKey;
+
+
     // getters & setters (unchanged)
 
+
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public Long getId() {
         return id;

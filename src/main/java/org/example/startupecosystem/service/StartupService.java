@@ -30,6 +30,11 @@ public class StartupService {
         return startupRepository.findBySearchCriteria(search, industry);
     }
 
+    public List<Startup> findAllByIds(List<Long> ids) {
+        return startupRepository.findAllById(ids);
+    }
+
+
     public List<String> getDistinctIndustries() {
         return startupRepository.findDistinctIndustries();
     }

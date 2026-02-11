@@ -278,10 +278,26 @@ public class StartupController {
 
         model.addAttribute("startup", startup);
 
-        List<Investor> investors =
-                (search != null && !search.trim().isEmpty())
-                        ? investorService.searchInvestors(search.trim())
-                        : investorService.findAll();
+        List<Investor> investors;
+
+        if (search != null && !search.trim().isEmpty()) {
+
+            // 🔍 SEARCH ENTIRE INVESTOR DATABASE
+            investors = investorService.searchInvestors(search.trim());
+
+        } else {
+
+            // 💬 SHOW ONLY EXISTING CHAT PARTNERS
+            List<Long> partnerIds = chatService.getChatPartnerIds(startupId);
+
+            if (partnerIds.isEmpty()) {
+                investors = List.of();
+            } else {
+                investors = investorService.findAllByIds(partnerIds);
+            }
+        }
+
+
 
         model.addAttribute("startupId", startupId);
         model.addAttribute("investorsList", investors);
