@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.startupecosystem.util.PasswordValidator;
+import org.springframework.dao.DataIntegrityViolationException;
+
 
 
 import java.util.Date;
@@ -25,6 +27,18 @@ public class SignupService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private void validateEmailNotTaken(String email) {
+        if (startupRepository.existsByEmail(email) || investorRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+    }
+
+    public boolean emailExists(String email) {
+        return startupRepository.existsByEmail(email) || investorRepository.existsByEmail(email);
+    }
+
+
 
     public Long registerNewUser(
             String email,
@@ -49,6 +63,7 @@ public class SignupService {
             );
         }
 
+        validateEmailNotTaken(email);
         String hashedPassword = passwordEncoder.encode(password);
 
         if ("Startup".equalsIgnoreCase(role)) {
@@ -64,7 +79,12 @@ public class SignupService {
             startup.setFundingAsk(fundingAsk);
             startup.setEquityOffered(equityOffered);
 
-            return startupRepository.save(startup).getId();
+            try {
+                return startupRepository.save(startup).getId();
+            } catch (DataIntegrityViolationException e) {
+                throw new IllegalArgumentException("Email already registered");
+            }
+
         }
 
         if ("Investor".equalsIgnoreCase(role)) {
@@ -74,7 +94,12 @@ public class SignupService {
             investor.setInvestorName(investorName);
             investor.setInvestmentFirm(investmentFirm);
 
-            return investorRepository.save(investor).getId();
+            try {
+                return investorRepository.save(investor).getId();
+            } catch (DataIntegrityViolationException e) {
+                throw new IllegalArgumentException("Email already registered");
+            }
+
         }
 
         throw new IllegalArgumentException("Invalid role: " + role);

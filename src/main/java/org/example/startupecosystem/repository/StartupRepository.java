@@ -16,6 +16,9 @@ public interface StartupRepository extends JpaRepository<Startup, Long> {
 
     Optional<Startup> findByEmail(String email);
 
+    boolean existsByEmail(String email);
+
+
     // Custom query method for filtering startups
     @Query("SELECT s FROM Startup s WHERE " +
             "(:search IS NULL OR :search = '' OR LOWER(s.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(s.industry) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +

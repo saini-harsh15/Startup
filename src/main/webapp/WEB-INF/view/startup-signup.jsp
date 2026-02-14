@@ -201,7 +201,8 @@
 
                 <div>
                     <label>Email</label>
-                    <input type="email" name="email" placeholder="founder@yourstartup.com" required>
+                    <input type="email" id="email" name="email" placeholder="founder@yourstartup.com" required>
+                    <div id="emailStatus" style="font-size:.8rem;margin-top:6px;font-weight:600;"></div>
                 </div>
 
                 <div></div>
@@ -310,7 +311,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn-submit">Create Account</button>
+        <button type="submit" id="submitBtn" class="btn-submit">Create Account</button>
     </form>
 </div>
 
@@ -376,9 +377,69 @@
             return false;
         }
 
+        if(!emailValid){
+            alert("Please use a different email address.");
+            return false;
+        }
+
         return true;
+
     }
+
+    const emailInput = document.getElementById("email");
+    const emailStatus = document.getElementById("emailStatus");
+    const submitBtn = document.getElementById("submitBtn");
+
+    let emailTimer = null;
+    let emailValid = false;
+
+    emailInput.addEventListener("input", function(){
+
+        clearTimeout(emailTimer);
+
+        const email = emailInput.value.trim();
+
+        if(email.length < 5){
+            emailStatus.innerText = "";
+            submitBtn.disabled = false;
+            return;
+        }
+
+        emailStatus.style.color = "#6b7280";
+        emailStatus.innerText = "Checking availability...";
+        submitBtn.disabled = true;
+
+        emailTimer = setTimeout(() => {
+
+            fetch("/check-email?email=" + encodeURIComponent(email))
+                .then(res => res.text())
+                .then(result => {
+
+                    if(result === "EXISTS"){
+                        emailStatus.style.color = "#dc3545";
+                        emailStatus.innerText = "Email already registered";
+                        submitBtn.disabled = true;
+                        emailValid = false;
+                    }
+                    else{
+                        emailStatus.style.color = "#28a745";
+                        emailStatus.innerText = "Email available ✓";
+                        submitBtn.disabled = false;
+                        emailValid = true;
+                    }
+                })
+                .catch(() => {
+                    emailStatus.style.color = "#dc3545";
+                    emailStatus.innerText = "Unable to verify email";
+                    submitBtn.disabled = false;
+                });
+
+        }, 600); // debounce typing
+    });
+
 </script>
+
+
 
 </body>
 </html>

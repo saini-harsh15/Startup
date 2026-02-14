@@ -8,10 +8,7 @@ import org.example.startupecosystem.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -65,12 +62,16 @@ public class RoleSelectionController {
 
             return "redirect:/startup/dashboard/" + userId;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Startup registration failed.");
-            return "redirect:/signup/startup";
-        }
+        } catch (IllegalArgumentException e) {
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
+        return "redirect:/signup/startup";
+    } catch (Exception e) {
+        e.printStackTrace();
+        redirectAttributes.addFlashAttribute("error", "Something went wrong. Please try again.");
+        return "redirect:/signup/startup";
     }
+
+}
 
     @GetMapping("/signup/investor")
     public String showInvestorSignup(Model model) {
@@ -105,11 +106,24 @@ public class RoleSelectionController {
 
             return "redirect:/investor/dashboard/" + userId;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Investor registration failed.");
-            return "redirect:/signup/investor";
-        }
+        }catch (IllegalArgumentException e) {
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
+        return "redirect:/signup/startup";
+    } catch (Exception e) {
+        e.printStackTrace();
+        redirectAttributes.addFlashAttribute("error", "Something went wrong. Please try again.");
+        return "redirect:/signup/startup";
+    }
+
+}
+
+    @GetMapping("/check-email")
+    @ResponseBody
+    public String checkEmail(@RequestParam String email) {
+
+        boolean exists = signupService.emailExists(email);
+
+        return exists ? "EXISTS" : "AVAILABLE";
     }
 
 

@@ -18,6 +18,9 @@ public interface InvestorRepository extends JpaRepository<Investor, Long> {
     // Standard method inherited from JpaRepository, often added for clarity.
     Optional<Investor> findById(Long id);
 
+    boolean existsByEmail(String email);
+
+
     /**
      * Searches investors by name, preferred domain, or investor type.
      * Logic Fix: Simplified the WHERE clause to remove redundant NULL checks.
