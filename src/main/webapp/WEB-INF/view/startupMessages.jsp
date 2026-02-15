@@ -323,12 +323,26 @@
                 <input type="file" id="fileInput" accept="image/*,application/pdf,text/plain" style="display:none" />
                 <button class="send-button" id="sendBtn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
             </div>
-            <div id="emojiPicker" style="display:none; position:absolute; bottom:110px; left:24px; background:rgba(255,255,255,0.95); border:1px solid rgba(12,17,38,0.08); border-radius:12px; padding:8px; box-shadow:0 8px 24px rgba(12,17,38,0.12); z-index:1000;">
+            <div id="emojiPicker"
+                 style="display:none; position:absolute; bottom:70px; left:12px; background:rgba(255,255,255,0.95); border:1px solid rgba(12,17,38,0.08); border-radius:12px; padding:8px; box-shadow:0 8px 24px rgba(12,17,38,0.12); z-index:1000;">
             </div>
+
         </div>
 
     </div>
 </div>
+
+<!-- IMAGE VIEWER -->
+<div id="imageViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:9999; justify-content:center; align-items:center;" onclick="closeImageViewer()">
+    <img id="viewerImage" style="max-width:92%; max-height:92%; border-radius:12px;" onclick="event.stopPropagation()">
+</div>
+
+<!-- PDF VIEWER -->
+<div id="pdfViewer" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.95); z-index:9999;" onclick="closePdfViewer()">
+    <button onclick="closePdfViewer(); event.stopPropagation();" style="position:absolute;top:12px;right:18px;font-size:28px;color:white;background:none;border:none;cursor:pointer;">×</button>
+    <iframe id="viewerPdf" style="width:100%;height:100%;border:none;" onclick="event.stopPropagation()"></iframe>
+</div>
+
 
 <script>
     var stompClient = null;
@@ -560,34 +574,75 @@
         if (content.startsWith('FILE::')){
             try{
                 const meta = JSON.parse(content.substring(6));
-                if (meta && meta.type && String(meta.type).startsWith('image/')){
-                    const img = new Image();
+
+                // IMAGE
+                if (meta.type && meta.type.startsWith('image/')){
+                    const img = document.createElement('img');
                     img.src = meta.url;
-                    img.alt = meta.name || 'image';
-                    img.loading = 'lazy';
                     img.style.maxWidth = '240px';
                     img.style.borderRadius = '10px';
-                    img.referrerPolicy = 'no-referrer';
+                    img.style.cursor = 'pointer';
+                    img.onclick = function(){ openImageViewer(meta.url); };
                     bubble.appendChild(img);
-                    if (meta.name){
-                        const cap = document.createElement('div');
-                        cap.style.fontSize = '0.8rem';
-                        cap.style.color = 'var(--muted)';
-                        cap.textContent = meta.name;
-                        bubble.appendChild(cap);
-                    }
-                } else {
+                }
+
+                // PDF
+                else if(meta.type === 'application/pdf'){
+
+                    const card = document.createElement('div');
+                    card.style.display = 'flex';
+                    card.style.alignItems = 'center';
+                    card.style.gap = '12px';
+                    card.style.padding = '10px 12px';
+                    card.style.borderRadius = '12px';
+                    card.style.background = 'rgba(40,167,69,0.10)';
+                    card.style.border = '1px solid rgba(40,167,69,0.25)';
+                    card.style.cursor = 'pointer';
+                    card.style.maxWidth = '260px';
+
+                    const icon = document.createElement('div');
+                    icon.textContent = '📄';
+                    icon.style.fontSize = '26px';
+
+                    const textWrap = document.createElement('div');
+                    textWrap.style.display = 'flex';
+                    textWrap.style.flexDirection = 'column';
+
+                    const name = document.createElement('div');
+                    name.textContent = meta.name || 'Document';
+                    name.style.fontWeight = '600';
+                    name.style.fontSize = '0.95rem';
+
+                    const sub = document.createElement('div');
+                    sub.textContent = 'Tap to view';
+                    sub.style.fontSize = '0.75rem';
+                    sub.style.color = 'var(--muted)';
+
+                    textWrap.appendChild(name);
+                    textWrap.appendChild(sub);
+
+                    card.appendChild(icon);
+                    card.appendChild(textWrap);
+
+                    card.onclick = function(){ openPdfViewer(meta.url); };
+
+                    bubble.appendChild(card);
+                }
+
+
+                // OTHER FILES
+                else{
                     const a = document.createElement('a');
                     a.href = meta.url;
-                    a.target = '_blank';
-                    a.rel = 'noopener';
-                    a.textContent = meta.name || 'Download file';
+                    a.target='_blank';
+                    a.textContent = 'Download ' + (meta.name || 'file');
                     bubble.appendChild(a);
                 }
+
             }catch(e){
                 bubble.textContent = content;
             }
-        } else {
+        }else {
             bubble.textContent = content;
         }
         const timeEl = document.createElement('div');
@@ -610,31 +665,101 @@
         input.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
-    const EMOJI_SET = ['😀','😁','😂','🤣','😊','😍','😘','😎','🤩','🙂','😉','😇','🥰','🤗','🤔','🤨','🙃','😴','🤤','😢','😭','😡','😤','👍','👎','👏','🙌','🙏','💪','🔥','✨','🎉','💯','✅','❌','💡','📎','📷','🖼️'];
+    const EMOJI_CATEGORIES = {
+        "🙂": ["😀","😁","😂","🤣","😊","🙂","😉","😇","🥰","😍","🤩","😘","😜","🤔","😎","🥳","😭","😡","😴","🤯"],
+        "👍": ["👍","👎","👏","🙌","🙏","💪","👌","🤝","👀","🤌","✌️","🤞","🫡","🫶"],
+        "🐶": ["🐶","🐱","🐼","🦊","🐻","🐸","🐵","🐔","🐧","🦄","🐝","🐙"],
+        "🍔": ["🍔","🍕","🌮","🍟","🍗","🍎","🍓","🍉","🍩","🍪","☕","🍺"],
+        "⚽": ["⚽","🏏","🏀","🎮","🎧","🎬","🎤","🏆","🥇","🚴","🏋️"],
+        "🚗": ["🚗","✈️","🚀","🛵","🚲","🚌","🚓","⛽","🗺️"],
+        "💡": ["💡","📌","📎","📷","📱","💻","⌚","🔋","🔒","🔑"],
+        "❤️": ["❤️","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓"]
+    };
 
     function buildEmojiPicker(pickerEl, inputEl){
         if (!pickerEl || pickerEl.dataset.built) return;
-        const wrap = document.createElement('div');
-        wrap.style.display = 'grid';
-        wrap.style.gridTemplateColumns = 'repeat(10, 24px)';
-        wrap.style.gap = '6px';
-        EMOJI_SET.forEach(e => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.textContent = e;
-            btn.style.width = '24px';
-            btn.style.height = '24px';
-            btn.style.border = 'none';
-            btn.style.background = 'transparent';
-            btn.style.cursor = 'pointer';
-            btn.addEventListener('click', () => {
-                insertAtCursor(inputEl, e);
+
+        pickerEl.innerHTML="";
+        pickerEl.style.width="320px";
+        pickerEl.style.height="340px";
+        pickerEl.style.display="flex";
+        pickerEl.style.flexDirection="column";
+        pickerEl.style.padding="8px";
+        pickerEl.style.borderRadius="14px";
+        pickerEl.style.background="var(--white)";
+        pickerEl.style.boxShadow="0 12px 30px rgba(0,0,0,.18)";
+
+        const tabs=document.createElement('div');
+        tabs.style.display="grid";
+        tabs.style.gridTemplateColumns="repeat(8,1fr)";
+        tabs.style.gap="4px";
+
+        const grid=document.createElement('div');
+        grid.style.flex="1";
+        grid.style.overflowY="auto";
+        grid.style.overflowX="hidden";
+        grid.style.display="grid";
+        grid.style.gridTemplateColumns="repeat(6,1fr)";
+        grid.style.justifyItems="center";
+        grid.style.alignContent="start";
+        grid.style.gap="8px";
+        grid.style.paddingTop="10px";
+
+        function loadCategory(cat){
+            grid.innerHTML="";
+            EMOJI_CATEGORIES[cat].forEach(e=>{
+                const b=document.createElement('button');
+                b.textContent=e;
+                b.type='button';
+                b.style.fontSize="22px";
+                b.style.width="38px";
+                b.style.height="38px";
+                b.style.display="flex";
+                b.style.alignItems="center";
+                b.style.justifyContent="center";
+                b.style.border="none";
+                b.style.borderRadius="10px";
+                b.style.background="transparent";
+                b.style.cursor="pointer";
+                b.onmouseenter=()=>b.style.background="rgba(0,0,0,.08)";
+                b.onmouseleave=()=>b.style.background="transparent";
+                b.onclick=()=>insertAtCursor(inputEl,e);
+                grid.appendChild(b);
             });
-            wrap.appendChild(btn);
+        }
+
+        Object.keys(EMOJI_CATEGORIES).forEach((cat,i)=>{
+            const t=document.createElement('button');
+            t.textContent=cat;
+            t.type='button';
+            t.style.fontSize="18px";
+            t.style.border="none";
+            t.style.background="transparent";
+            t.style.cursor="pointer";
+            t.onclick=()=>loadCategory(cat);
+            tabs.appendChild(t);
+            if(i===0) loadCategory(cat);
         });
-        pickerEl.appendChild(wrap);
-        pickerEl.dataset.built = '1';
+
+        // divider line
+        const divider = document.createElement('div');
+        divider.style.height = '1px';
+        divider.style.background = 'rgba(0,0,0,.08)';
+        divider.style.margin = '6px 0';
+
+// dark mode support
+        if(document.documentElement.getAttribute('data-theme') === 'dark'){
+            divider.style.background = 'rgba(255,255,255,.12)';
+        }
+
+        pickerEl.appendChild(tabs);
+        pickerEl.appendChild(divider);
+        pickerEl.appendChild(grid);
+
+        pickerEl.dataset.built='1';
+
     }
+
 
     let typingHideTimer = null;
     function handleIncomingTyping(data){
@@ -651,6 +776,27 @@
             }
         }
     }
+
+    function openImageViewer(src){
+        document.body.style.overflow='hidden';
+        document.getElementById('viewerImage').src = src;
+        document.getElementById('imageViewer').style.display='flex';
+    }
+    function closeImageViewer(){
+        document.body.style.overflow='';
+        document.getElementById('imageViewer').style.display='none';
+    }
+
+    function openPdfViewer(src){
+        document.body.style.overflow='hidden';
+        document.getElementById('viewerPdf').src = src;
+        document.getElementById('pdfViewer').style.display='block';
+    }
+    function closePdfViewer(){
+        document.body.style.overflow='';
+        document.getElementById('pdfViewer').style.display='none';
+    }
+
 
     function sendTyping(state){
         if (!stompClient || !currentReceiverId) return;
@@ -726,14 +872,18 @@
 
         if (emojiBtn && emojiPicker){
             emojiBtn.addEventListener('click', function(){
-                emojiPicker.style.display = (emojiPicker.style.display === 'none' || !emojiPicker.style.display) ? 'block' : 'none';
+                emojiPicker.style.display =
+                    (emojiPicker.style.display === 'none' || !emojiPicker.style.display)
+                        ? 'block' : 'none';
             });
+
             document.addEventListener('click', function(e){
                 if (!emojiPicker.contains(e.target) && e.target !== emojiBtn){
                     emojiPicker.style.display = 'none';
                 }
             });
         }
+
 
         if (attachBtn && fileInput){
             attachBtn.addEventListener('click', function(){ fileInput.click(); });
