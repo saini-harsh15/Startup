@@ -278,7 +278,8 @@
                         <option>EdTech</option>
                         <option>ClimateTech</option>
                         <option>SaaS</option>
-                        <option>AI / ML</option>
+                        <option>AI</option>
+                        <option>ML</option>
                     </select>
                 </div>
 
