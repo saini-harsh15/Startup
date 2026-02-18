@@ -40,22 +40,41 @@
 
         body{
             font-family:'Poppins',sans-serif;
-            background:var(--bg);
+            background: linear-gradient(180deg,#f4fbf6 0%, #eef6f2 50%, #f7fafb 100%);
             color:var(--text);
-            padding-top:90px;
+            padding-top:96px;
         }
+        .dark-mode body{
+            background: linear-gradient(180deg,#071018 0%, #071417 100%);
+        }
+
+
 
         /* ========== NAVBAR ========== */
         .navbar{
-            position:fixed;top:14px;left:14px;right:14px;
-            height:68px;padding:0 26px;
-            background:rgba(255,255,255,.85);
-            backdrop-filter:blur(14px);
-            border:var(--border);border-radius:18px;
-            display:flex;justify-content:space-between;align-items:center;
-            z-index:1000;
+            position:fixed;
+            top:10px;
+            left:10px;
+            right:10px;
+            height:64px;
+            padding:0 22px;
+            border-radius:16px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            z-index:1400;
+
+            background:linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.62));
+            backdrop-filter:blur(10px) saturate(120%);
+            border:1px solid rgba(255,255,255,0.48);
+            box-shadow:0 8px 28px rgba(12,17,38,0.06);
         }
-        .dark-mode .navbar{background:rgba(17,24,39,.9)}
+
+        .dark-mode .navbar{
+            background:linear-gradient(180deg, rgba(18,25,38,0.60), rgba(16,22,34,0.52));
+            border:1px solid rgba(255,255,255,0.04);
+        }
+
 
         .nav-left{display:flex;align-items:center;gap:16px}
         .logo{font-weight:800;font-size:1.35rem;color:var(--accent)}
@@ -82,13 +101,21 @@
 
         .sidebar .panel{
             width:300px;height:100%;
-            padding:26px 22px;
-            background:var(--card);
-            border:var(--border);
-            border-radius:18px;
-            box-shadow:12px 0 35px rgba(0,0,0,.12);
+            padding:22px;
             position:relative;
+
+            background:linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.55));
+            backdrop-filter:blur(10px);
+            border:1px solid rgba(255,255,255,0.45);
+            border-radius:18px;
+            box-shadow:6px 14px 32px rgba(12,17,38,0.12);
         }
+
+        .dark-mode .sidebar .panel{
+            background:linear-gradient(180deg, rgba(18,25,38,0.90), rgba(16,22,34,0.75));
+            border:1px solid rgba(255,255,255,0.06);
+        }
+
 
         .sidebar-logo{
             display:flex;align-items:center;gap:10px;
@@ -128,7 +155,18 @@
         .overlay.show{display:block}
 
         /* ========== PAGE ========== */
-        .page-wrap{max-width:1200px;margin:auto;padding:24px}
+        .page-wrap{
+            max-width:1300px;
+            margin:0 auto;
+            padding:18px;
+            border-radius:24px;
+            background:linear-gradient(180deg,#e9f5ee 0%, #f7fafb 70%);
+        }
+
+        .dark-mode .page-wrap{
+            background:linear-gradient(180deg,#0d1f18 0%, #071417 70%);
+        }
+
 
         .detail-header{
             display:flex;justify-content:space-between;align-items:flex-start;
@@ -146,12 +184,19 @@
         }
 
         .card{
-            background:var(--card);
-            border:var(--border);
-            border-radius:22px;
-            padding:40px;
-            box-shadow:var(--shadow-sm);
+            background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.85));
+            border:1px solid rgba(255,255,255,0.6);
+            border-radius:24px;
+            padding:42px;
+            backdrop-filter:blur(6px);
+            box-shadow:0 18px 50px rgba(12,17,38,0.08);
         }
+
+        .dark-mode .card{
+            background:rgba(18,25,38,0.88);
+            border:1px solid rgba(255,255,255,0.08);
+        }
+
 
         .action-bar{
             display:flex;gap:14px;margin-bottom:30px;
@@ -186,11 +231,19 @@
         }
 
         .stat-card{
-            background:var(--bg);
-            border:var(--border);
+            background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.75));
+            border:1px solid rgba(255,255,255,0.55);
             border-radius:18px;
             padding:22px;
+            backdrop-filter:blur(4px);
+            box-shadow:0 10px 22px rgba(12,17,38,0.06);
         }
+
+        .dark-mode .stat-card{
+            background:rgba(17,24,39,0.65);
+            border:1px solid rgba(255,255,255,0.08);
+        }
+
         .stat-card span{
             display:block;font-size:.75rem;color:var(--muted);
             text-transform:uppercase;font-weight:700;margin-bottom:6px;
@@ -198,6 +251,89 @@
         .stat-card strong{
             font-size:1.25rem;font-weight:800;color:var(--accent);
         }
+
+        .btn{
+            transition:all .18s cubic-bezier(.2,.8,.2,1);
+        }
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+        .btn-primary:hover{
+            box-shadow:0 14px 28px rgba(40,167,69,.35);
+        }
+        .btn-muted:hover{
+            background:#dfe3e8;
+        }
+
+        /* Theme Toggle */
+        /* ===== Dashboard Style Theme Toggle ===== */
+
+        .theme-toggle{
+            cursor:pointer;
+            border-radius:12px;
+            padding:8px 12px;
+            font-size:0.95rem;
+            background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+            border:1px solid rgba(255,255,255,.5);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 6px 18px rgba(12,17,38,.08);
+            backdrop-filter:blur(8px) saturate(120%);
+            color:var(--muted);
+            transition:
+                    transform .18s cubic-bezier(.2,.8,.2,1),
+                    box-shadow .18s ease,
+                    color .18s ease,
+                    background .18s ease;
+        }
+
+        /* hover lift */
+        .theme-toggle:hover{
+            transform:translateY(-2px) scale(1.08);
+            color:var(--accent);
+            box-shadow:0 10px 26px rgba(40,167,69,.28);
+        }
+
+        /* click feedback */
+        .theme-toggle:active{
+            transform:scale(.92);
+            box-shadow:0 4px 12px rgba(0,0,0,.18);
+        }
+
+        /* rotating icon */
+        .theme-toggle i{
+            transition:transform .35s ease;
+        }
+
+        .theme-toggle:hover i{
+            transform:rotate(-18deg) scale(1.1);
+        }
+
+        /* DARK MODE VERSION */
+        .dark-mode .theme-toggle{
+            background:linear-gradient(180deg, rgba(17,24,39,.85), rgba(17,24,39,.65));
+            border:1px solid rgba(255,255,255,.08);
+            color:#d1d5db;
+            box-shadow:0 6px 18px rgba(0,0,0,.45);
+        }
+
+        .dark-mode .theme-toggle:hover{
+            color:#34d058;
+            box-shadow:0 12px 28px rgba(0,0,0,.55);
+        }
+
+        @keyframes iconPulse{
+            0%{transform:scale(1)}
+            40%{transform:scale(1.35)}
+            100%{transform:scale(1)}
+        }
+
+        .icon-pulse{
+            animation:iconPulse .35s ease;
+        }
+
+
     </style>
 </head>
 
@@ -233,8 +369,14 @@
         <div class="logo">ECO<span>TRACK</span></div>
     </div>
     <div class="nav-right">
+
+        <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" aria-pressed="false">
+            <i class="fas fa-moon"></i>
+        </button>
+
         <div class="profile-icon">I</div>
     </div>
+
 </header>
 
 <!-- CONTENT -->
@@ -295,6 +437,50 @@
         document.getElementById("overlay").classList.remove("show");
     }
 </script>
+
+<script>
+    function setTheme(theme){
+        const html = document.documentElement;
+        const btn = document.getElementById("themeToggleBtn");
+        const icon = btn ? btn.querySelector("i") : null;
+
+        if(theme === "dark"){
+            html.classList.add("dark-mode");
+            if(icon) icon.className = "fas fa-sun";
+            if(btn) btn.setAttribute("aria-pressed","true");
+        }else{
+            html.classList.remove("dark-mode");
+            if(icon) icon.className = "fas fa-moon";
+            if(btn) btn.setAttribute("aria-pressed","false");
+        }
+
+        try{ localStorage.setItem("theme", theme); }catch(e){}
+    }
+
+    function toggleTheme(){
+        const isDark = document.documentElement.classList.contains("dark-mode");
+        setTheme(isDark ? "light" : "dark");
+
+        const icon = document.querySelector("#themeToggleBtn i");
+        if(icon){
+            icon.classList.remove("icon-pulse");
+            void icon.offsetWidth;
+            icon.classList.add("icon-pulse");
+            setTimeout(()=>icon.classList.remove("icon-pulse"),400);
+        }
+    }
+
+    /* Restore saved theme */
+    document.addEventListener("DOMContentLoaded", function(){
+        const saved = (function(){
+            try{return localStorage.getItem("theme");}
+            catch(e){return null;}
+        })() || "light";
+
+        setTheme(saved);
+    });
+</script>
+
 
 </body>
 </html>

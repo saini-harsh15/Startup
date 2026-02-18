@@ -586,6 +586,112 @@
             border: 1px solid rgba(220, 53, 69, 0.4);
         }
 
+        /* ===== USER IDENTITY CHIP ===== */
+        .user-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:4px 10px 4px 8px;
+            border-radius:999px;
+            background:rgba(15,23,42,.05);
+            border:var(--border);
+            height:38px;
+        }
+
+        .dark-mode .user-chip{
+            background:rgba(255,255,255,.06);
+        }
+
+        .user-chip:hover{
+            background:var(--accent-soft);
+        }
+
+        .welcome-text{
+            font-size:.88rem;
+            color:var(--muted);
+            font-weight:450;
+            white-space:nowrap;
+        }
+
+        .welcome-text strong{
+            color:var(--text);
+            font-weight:600;
+        }
+
+        /* theme icon inside chip */
+        .user-chip .theme-toggle{
+            font-size:1rem;
+            padding:6px;
+        }
+
+        /* mobile cleanup */
+        @media(max-width:768px){
+            .welcome-text{display:none}
+            .user-chip{padding:6px 10px}
+        }
+
+        /* ================= INTERACTION SYSTEM ================= */
+
+        /* clickable elements */
+        button,
+        .btn-save,
+        .sidebar a,
+        .dropdown-content a,
+        .profile-icon,
+        .user-chip,
+        .theme-toggle{
+            transition:
+                    transform .18s ease,
+                    box-shadow .18s ease,
+                    background-color .18s ease,
+                    color .18s ease,
+                    border-color .18s ease;
+        }
+
+        /* lift effect */
+        button:hover,
+        .btn-save:hover,
+        .profile-icon:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(0,0,0,.12);
+        }
+
+        /* press effect */
+        button:active,
+        .profile-icon:active{
+            transform: translateY(0px) scale(.97);
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+        }
+
+        /* sidebar links feel clickable */
+        .sidebar a:hover{
+            transform: translateX(6px);
+        }
+
+        /* dropdown items feel selectable */
+        .dropdown-content a:hover{
+            padding-left: 20px;
+        }
+
+        /* theme toggle nicer */
+        .theme-toggle:hover{
+            transform: rotate(-12deg) scale(1.15);
+        }
+
+        /* primary save button emphasis */
+        .btn-save:hover{
+            filter: brightness(1.05);
+        }
+
+        /* dark mode adjustments */
+        .dark-mode button:hover,
+        .dark-mode .btn-save:hover,
+        .dark-mode .profile-icon:hover{
+            box-shadow: 0 12px 26px rgba(0,0,0,.45);
+        }
+
+
+
     </style>
 </head>
 
@@ -612,15 +718,30 @@
         <div class="logo">ECO<span>TRACK</span></div>
     </div>
     <div class="nav-right">
-        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+
+        <div class="user-chip">
+
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">
+                <i class="fas fa-moon"></i>
+            </button>
+
+            <div class="welcome-text">
+                Welcome, <strong>${startup.name}</strong>
+            </div>
+
+        </div>
+
         <div class="dropdown">
             <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">S</div>
+
             <div id="myDropdown" class="dropdown-content">
                 <a href="/startup/profile">Profile</a>
                 <a href="/logout" class="logout-link">Logout</a>
             </div>
         </div>
+
     </div>
+
 </header>
 
 <div class="page-wrap">

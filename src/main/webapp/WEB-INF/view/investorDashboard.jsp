@@ -306,6 +306,84 @@
             .header-section{flex-direction:column;align-items:flex-start;gap:14px}
             .grid-container,.news-grid{grid-template-columns:1fr}
         }
+
+        .nav-right{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .welcome-text{
+            font-size:.92rem;
+            color:var(--muted);
+            font-weight:500;
+            padding:6px 10px;
+            border-radius:10px;
+            transition:.2s ease;
+        }
+
+        .welcome-text strong{
+            color:var(--text);
+            font-weight:600;
+        }
+
+        /* Slight hover polish */
+        .welcome-text:hover{
+            background:var(--accent-soft);
+        }
+
+        /* Hide on mobile */
+        @media(max-width:768px){
+            .welcome-text{display:none}
+        }
+
+        /* ===== USER IDENTITY CHIP ===== */
+        .user-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:4px 10px 4px 8px;
+            border-radius:999px;
+            background:rgba(15,23,42,.05);
+            border:var(--border);
+            transition:.2s ease;
+            height :38px;
+        }
+
+        .dark-mode .user-chip{
+            background:rgba(255,255,255,.06);
+        }
+
+        .user-chip:hover{
+            background:var(--accent-soft);
+        }
+
+        /* welcome text */
+        .welcome-text{
+            font-size:.88rem;
+            color:var(--muted);
+            font-weight:450;
+            white-space:nowrap;
+        }
+
+        .welcome-text strong{
+            color:var(--text);
+            font-weight:600;
+        }
+
+        /* make theme icon fit inside chip */
+        .user-chip .theme-toggle{
+            font-size:1rem;
+            padding:6px;
+        }
+
+        /* mobile: keep only icon + avatar */
+        @media(max-width:768px){
+            .welcome-text{display:none}
+            .user-chip{padding:6px 10px}
+        }
+
+
     </style>
 </head>
 
@@ -340,17 +418,31 @@
     </div>
 
     <div class="nav-right">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">
-            <i class="fas fa-moon"></i>
-        </button>
+
+        <div class="user-chip">
+
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">
+                <i class="fas fa-moon"></i>
+            </button>
+
+            <div class="welcome-text">
+                Welcome, <strong>${investor.investorName}</strong>
+            </div>
+
+        </div>
+
         <div class="dropdown">
             <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()">P</div>
+
             <div id="myDropdown" class="dropdown-content">
                 <a href="/investor/profile">Profile</a>
                 <a href="/logout" class="logout-link">Logout</a>
             </div>
         </div>
+
     </div>
+
+
 </header>
 
 <div class="page-wrap">

@@ -1,436 +1,297 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
-    // Prevent caching of this page
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
     response.setDateHeader("Expires", 0);
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Startup Profile | EcoTrack</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* =========================
-           Variables & base reset
-           ========================= */
-        :root{
+        :root {
             --accent: #28a745;
-            --accent-600: #218838;
-            --bg-1: linear-gradient(180deg,#f4fbf6 0%, #eef6f2 50%, #f7fafb 100%);
-            --muted: #6b7280;
+            --accent-soft: rgba(40, 167, 69, .12);
+            --bg: #f3f6f9;
+            --card: #ffffff;
             --text: #0f172a;
-            --card-radius: 14px;
-            --max-page-width: 1600px;
-            --border-color: #e0e0e0;
+            --muted: #64748b;
+            --border: 1px solid rgba(15, 23, 42, .06);
+            --shadow-sm: 0 6px 14px rgba(0, 0, 0, .06);
+            --shadow-md: 0 22px 40px rgba(0, 0, 0, .10);
         }
 
-        *{box-sizing:border-box;margin:0;padding:0}
-        html,body{height:100%;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
-        body{
-            background: var(--bg-1);
+        .dark-mode {
+            --bg: #0b1220;
+            --card: #111827;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
             color: var(--text);
-            min-height:100vh;
-            padding-top:78px; /* Space for fixed navbar */
-            transition: background 0.28s ease, color 0.28s ease;
-            text-align: center;
+            padding-top: 108px;
+            scroll-behavior: smooth;
+            transition: background 0.3s ease;
         }
 
-        /* Thin scrollbar (modern) */
-        ::-webkit-scrollbar { height:10px; width:10px; }
-        ::-webkit-scrollbar-thumb { background: rgba(12,17,38,0.12); border-radius:999px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        * { scrollbar-width: thin; scrollbar-color: rgba(12,17,38,0.12) transparent; }
-
-        /* =========================
-           Navbar (glass)
-           ========================= */
-        .navbar{
-            position:fixed;
-            top:10px;
-            left:10px;
-            right:10px;
-            height:64px;
-            z-index:1400;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-            padding:10px 18px;
-            border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.62));
-            backdrop-filter: blur(8px) saturate(120%);
-            border: 1px solid rgba(255,255,255,0.48);
-            box-shadow: 0 8px 28px rgba(12,17,38,0.06);
+        /* ================= PULSE ANIMATION ================= */
+        @keyframes pulsePop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.25); }
+            100% { transform: scale(1); }
         }
-        .navbar-left{display:flex;gap:14px;align-items:center}
-        .hamburger{font-size:1.25rem;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;z-index:1410}
-        .logo{font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:0.2px}
-        .navbar-right{display:flex;gap:12px;align-items:center}
+        .icon-pulse { animation: pulsePop .35s ease; }
 
-        .welcome-msg{font-weight:600;color:var(--text);opacity:0.92}
-        .profile-dropdown{position:relative}
-
-        /* Profile icon */
-        .profile-icon{
-            width:44px;height:44px;border-radius:12px;
-            display:flex;align-items:center;justify-content:center;font-weight:700;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.84));
-            color:var(--accent); cursor:pointer; border:1px solid rgba(12,17,38,0.04);
-            box-shadow: 0 6px 20px rgba(12,17,38,0.06);
-            z-index:1410;
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed; top: 14px; left: 14px; right: 14px; height: 68px; padding: 0 22px 0 26px;
+            background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px);
+            border: var(--border); border-radius: 18px; display: flex;
+            justify-content: space-between; align-items: center; z-index: 1000;
         }
+        .dark-mode .navbar { background: rgba(17, 24, 39, .9); }
 
-        /* Theme toggle */
-        .theme-toggle{
-            cursor:pointer;border-radius:10px;padding:8px 10px;font-size:0.95rem;
-            background: rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.5);
-            display:inline-flex;align-items:center;justify-content:center;box-shadow: 0 4px 12px rgba(12,17,38,0.04)
+        .nav-left { display: flex; align-items: center; gap: 16px; }
+        .hamburger { font-size: 1.2rem; cursor: pointer; color: var(--muted); transition: color 0.2s; }
+        .hamburger:hover { color: var(--accent); }
+
+        .logo { font-weight: 800; font-size: 1.35rem; color: var(--accent); cursor: pointer; }
+        .logo span { color: var(--text); }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar { position: fixed; top: 14px; left: 14px; height: calc(100% - 28px); width: 0; overflow: hidden; transition: .35s ease; z-index: 1100; }
+        .sidebar.open { width: 300px; }
+        .sidebar .panel {
+            width: 300px; height: 100%; padding: 26px 22px; background: var(--card);
+            border: var(--border); border-radius: 18px; box-shadow: 12px 0 35px rgba(0, 0, 0, .12); position: relative;
         }
-
-        .dropdown-content{
-            display:none; position:absolute; right:0; top:58px; min-width:170px;
-            background: linear-gradient(180deg,#ffffff,#fbffff);
-            border-radius:10px; overflow:hidden; box-shadow:0 12px 36px rgba(12,17,38,0.08); border:1px solid rgba(12,17,38,0.04);
-            z-index: 1405;
+        .sidebar a {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 8px;
+            border-radius: 14px; text-decoration: none; color: var(--text); font-weight: 500; transition: .25s ease;
         }
-        .dropdown-content.show{display:block}
-        .dropdown-content a{display:block;padding:12px 14px;color:#0f172a;text-decoration:none;font-weight:600}
-        .dropdown-content a:hover{background: linear-gradient(90deg, rgba(40,167,69,0.06), transparent)}
+        .sidebar a:hover{ background:var(--accent-soft); color:var(--accent); padding-left:22px; transform:translateX(4px); }
 
-        /* =========================
-           Sidebar (collapsible)
-           ========================= */
-        .sidebar{
-            position:fixed;top:10px;left:10px;height:calc(100% - 20px);width:0;z-index:1350;padding-top:88px;
-            overflow:hidden;transition:width 320ms cubic-bezier(.2,.9,.2,1);
-        }
-        .sidebar .panel{
-            height:100%; width:280px; padding:18px; border-radius:14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.66), rgba(255,255,255,0.52));
-            border:1px solid rgba(255,255,255,0.45); backdrop-filter: blur(6px);
-            box-shadow: 6px 12px 30px rgba(12,17,38,0.06);
-            transform-origin:left center;
-        }
-        .sidebar.open{width:300px}
-        .sidebar.open .panel{width:300px}
-        .sidebar a{display:flex;align-items:center;padding:14px 12px;border-radius:10px;text-decoration:none;color:var(--text);font-weight:600}
-        .sidebar a i{margin-right:12px;color:var(--muted)}
-        .sidebar a:hover{background: rgba(40,167,69,0.06); color: var(--accent)}
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, .35); z-index: 1050; }
+        .overlay.show { display: block; }
 
-        /* overlay when sidebar open on small screens */
-        .overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:1340;background:rgba(9,11,14,0.28);transition:opacity .2s}
-        .overlay.show{display:block}
+        /* ================= PROFILE LAYOUT ================= */
+        .page-wrap { max-width: 1200px; margin: auto; padding: 18px 24px 50px; }
 
-        /* =========================
-           Profile Container (Page content)
-           ========================= */
-        .page-wrap{width:100%;max-width:var(--max-page-width);margin:0 auto;padding:14px 22px}
-        .container{
-            max-width: 800px;
-            width:100%; border-radius:16px; padding:40px; margin: 20px auto;
-            background: linear-gradient(180deg, rgba(255,255,255,0.90), rgba(255,255,255,0.80));
-            border: 1px solid rgba(255,255,255,0.58); backdrop-filter: blur(4px);
-            box-shadow: 0 14px 50px rgba(12,17,38,0.06);
-            text-align: left;
-        }
-
-        h1{color:var(--accent); margin:0 0 16px; font-size:1.8rem; font-weight:700; display: flex; align-items: center;}
-        h1 i { margin-right: 15px; }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.95rem;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(12,17,38,0.1);
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            background: rgba(255,255,255,0.9);
-            transition: border-color 0.3s ease;
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
-        }
-
-        /* --- Save Button (Pill-shaped) --- */
-        .save-button {
-            background: linear-gradient(180deg, var(--accent), var(--accent-600));
+        .profile-header-card {
+            background: linear-gradient(135deg, var(--accent), #1e7e34);
+            border-radius: 22px 22px 0 0;
+            padding: 26px 34px;
             color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.2);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            width: 100%;
-            margin-top: 15px;
-        }
-        .save-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+            position: relative;
         }
 
-        .alert-message {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
+        .main-content {
+            background: var(--card);
+            border: var(--border);
+            border-top: none;
+            border-radius: 0 0 22px 22px;
+            padding: 40px;
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
         }
-        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-        /* =========================
-           Dark theme overrides
-           ========================= */
-        .dark-mode{
-            --bg-1: linear-gradient(180deg,#071018 0%,#071417 100%);
-            --muted: #9fb3c6;
-            --text: #dbeafe;
-            color: var(--text);
+        .identity-col { text-align: center; border-right: var(--border); padding-right: 40px; }
+        .profile-avatar-large {
+            width: 96px; height: 96px; border-radius: 22px;
+            background: var(--bg); margin: 0 auto 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.3rem; font-weight: 800; color: var(--accent); border: var(--border);
         }
-        .dark-mode .navbar{
-            background: linear-gradient(180deg, rgba(18,25,38,0.60), rgba(16,22,34,0.52));
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .dark-mode .container{
-            background: rgba(18,25,38,0.85);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 14px 50px rgba(0,0,0,0.5);
-        }
-        .dark-mode .sidebar .panel{
-            background: linear-gradient(180deg, rgba(18,25,38,0.85), rgba(16,22,34,0.7));
-            border:1px solid rgba(255,255,255,0.08);
-        }
-        .dark-mode .form-group label {
-            color: var(--text);
-        }
-        .dark-mode .form-group input,
-        .dark-mode .form-group textarea {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.2);
-            color: var(--text);
-        }
-        .dark-mode .save-button {
-            background: linear-gradient(180deg, #2b9d49, #1a642e);
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
-        }
-        .dark-mode .theme-toggle{ background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15) }
-        .dark-mode .profile-icon{ background: #1a642e; color: #bff2c7 }
 
-        /* Accessibility focus */
-        a:focus, button:focus, input:focus { outline: 3px solid rgba(40,167,69,0.18); outline-offset: 2px; border-radius:8px }
-
-        /* Responsive */
-        @media (max-width:860px){
-            .navbar{left:6px;right:6px}
-            body{padding-top:86px}
-            .page-wrap{padding:14px 12px}
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 14px; border: var(--border); border-radius: 14px;
+            background: var(--bg); color: var(--text); font-family: inherit; font-size: 1rem;
+            transition: all 0.3s ease;
         }
-        @media (max-width:480px){
-            .container { padding: 25px 15px; }
-            h1 { font-size: 1.5rem; }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--accent); background: var(--card);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        .btn-save {
+            background: var(--accent); color: white; border: none; padding: 16px;
+            border-radius: 14px; font-weight: 700; cursor: pointer; transition: all .3s ease;
+            width: 100%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+
+        /* ================= UI COMPONENTS ================= */
+        .user-chip {
+            display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 8px;
+            border-radius: 999px; background: rgba(15,23,42,.05); border: var(--border); height: 38px;
+        }
+        .dark-mode .user-chip { background: rgba(255,255,255,.06); }
+
+        .profile-icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #28a745, #34d058);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none; position: absolute; right: 0; top: 56px; min-width: 180px;
+            background: var(--card); border: var(--border); border-radius: 14px; box-shadow: var(--shadow-md);
+        }
+        .dropdown-content.show { display: block; }
+        .dropdown-content a { display: block; padding: 14px 16px; color: var(--text); text-decoration: none; font-weight: 500; }
+        .dropdown-content a:hover { background: var(--accent-soft); color: var(--accent); padding-left: 20px; }
+
+        /* Interaction Physics */
+        button, .btn-save, .profile-icon, .user-chip, .theme-toggle {
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+        }
+        button:hover, .btn-save:hover, .profile-icon:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.12); }
+        button:active, .profile-icon:active { transform: translateY(0px) scale(.97); }
+
+        @media (max-width: 850px) {
+            .main-content { grid-template-columns: 1fr; }
+            .identity-col { border-right: none; border-bottom: var(--border); padding-bottom: 30px; }
         }
     </style>
 </head>
+
 <body>
 
-<div id="mySidebar" class="sidebar" aria-hidden="true">
-    <div class="panel" role="navigation" aria-label="Sidebar">
-        <span class="closebtn" onclick="closeNav()" style="position:absolute;top:18px;right:18px;font-size:20px;cursor:pointer">×</span>
-
-        <a href="/startup/dashboard/${startup.id}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="/startup/profile"><i class="fas fa-user-circle"></i> My Profile</a>
-        <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
-        <a href="/contact"><i class="fas fa-envelope"></i> Contact Us</a>
-
-        <div style="position:absolute;bottom:18px;left:18px;right:18px;color:var(--muted);font-weight:600;font-size:0.95rem">
-            <div>Startup Ecosystem</div>
-            <div style="font-size:0.85rem;margin-top:6px;color:var(--muted)">© <span id="yearSpan"></span></div>
+<div id="mySidebar" class="sidebar">
+    <div class="panel">
+        <div class="logo" style="margin-bottom: 30px; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-leaf" style="background: var(--accent); color: white; padding: 10px; border-radius: 12px;"></i>
+            <span>ECO<strong>TRACK</strong></span>
+        </div>
+        <a href="/startup/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="/startup/profile" style="background: var(--accent-soft); color: var(--accent);"><i class="fas fa-user"></i> My Profile</a>
+        <a href="/startup/messages"><i class="fas fa-comment-dots"></i> Messages</a>
+        <div style="position: absolute; bottom: 30px; left: 22px; color: var(--muted); font-size: 0.8rem;">
+            © <span id="year"></span> EcoTrack
         </div>
     </div>
 </div>
 
-<div id="overlay" class="overlay" onclick="closeNav()" aria-hidden="true"></div>
+<div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<header class="navbar" role="banner">
-    <div class="navbar-left">
-        <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu">&#9776;</div>
-        <div class="logo" title="Project name">Startup Ecosystem</div>
+<header class="navbar">
+    <div class="nav-left">
+        <i class="fas fa-bars hamburger" onclick="openNav()"></i>
+        <div class="logo" onclick="location.href='/startup/dashboard'">ECO<span>TRACK</span></div>
     </div>
-
-    <div class="navbar-right">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" aria-pressed="false" title="Toggle dark mode">
-            <i class="fas fa-moon"></i>
-        </button>
-
-        <div class="welcome-msg">Welcome, ${startup.name}</div>
-
-        <div class="profile-dropdown">
-            <div id="profileIcon" class="profile-icon" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">P</div>
-            <nav id="myDropdown" class="dropdown-content" role="menu" aria-hidden="true">
-                <a href="/startup/profile" role="menuitem">My Profile</a>
-                <a href="/logout" role="menuitem">Logout</a>
-            </nav>
+    <div class="nav-right" style="display:flex; align-items:center; gap:16px;">
+        <div class="user-chip">
+            <button class="theme-toggle" onclick="toggleTheme()" style="background:none; border:none; color:var(--muted); cursor:pointer;">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <div style="font-size:.88rem; color:var(--muted); font-weight:450; white-space:nowrap;">
+                Welcome, <strong>${startup.name}</strong>
+            </div>
+        </div>
+        <div class="dropdown" style="position:relative;">
+            <div id="navAvatar" class="profile-icon" onclick="toggleDropdown()">S</div>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="/startup/profile">Profile</a>
+                <a href="/logout">Logout</a>
+            </div>
         </div>
     </div>
 </header>
 
 <div class="page-wrap">
-    <div class="container">
-        <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+    <div class="profile-header-card">
+        <h2 style="font-size: 1.8rem; font-weight: 800;">Startup Settings</h2>
+        <p style="opacity: 0.9;">Update your venture details and visibility</p>
+    </div>
 
-        <c:if test="${not empty message}">
-            <div class="alert-message alert-success">${message}</div>
-        </c:if>
-        <c:if test="${not empty error}">
-            <div class="alert-message alert-danger">${error}</div>
-        </c:if>
+    <div class="main-content">
+        <div class="identity-col">
+            <div class="profile-avatar-large" id="bigAvatar">S</div>
+            <h3>${startup.name}</h3>
+            <span style="background: var(--accent-soft); color: var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
+                STARTUP PROFILE
+            </span>
+            <div style="margin-top: 25px; text-align: left;">
+                <p style="font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-industry" style="margin-right:8px; color:var(--accent)"></i> ${startup.industry}</p>
+                <p style="font-size: 0.85rem;"><i class="fas fa-envelope" style="margin-right:8px; color:var(--accent)"></i> ${startup.email}</p>
+            </div>
+        </div>
 
-        <form action="/startup/profile/save" method="post">
-            <div class="form-group">
-                <label for="companyName">Company Name:</label>
-                <input type="text" id="companyName" name="companyName" value="${startup.name}" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required>${startup.description}</textarea>
-            </div>
-            <div class="form-group">
-                <label for="industry">Industry:</label>
-                <input type="text" id="industry" name="industry" value="${startup.industry}" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="${startup.email}" disabled>
-            </div>
-            <button type="submit" class="save-button">Save Changes</button>
-        </form>
+        <div class="form-col">
+            <c:if test="${not empty message}"><div style="padding:14px; border-radius:12px; background:#d4edda; color:#155724; margin-bottom:20px; font-weight:600;">${message}</div></c:if>
+
+            <form action="/startup/profile/save" method="post">
+                <div class="form-group">
+                    <label>Company Name</label>
+                    <input type="text" name="companyName" value="${startup.name}" required>
+                </div>
+                <div class="form-group">
+                    <label>Sector / Industry</label>
+                    <input type="text" name="industry" value="${startup.industry}" required>
+                </div>
+                <div class="form-group">
+                    <label>Company Mission & Bio</label>
+                    <textarea name="description" rows="5" required>${startup.description}</textarea>
+                </div>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
-    /* =========================
-       Keep all original function names and logic
-       ========================= */
-    document.addEventListener('DOMContentLoaded', () => {
-        // Redirect to login if the session is gone
-        if ("${startup.email}" === "") {
-            window.location.href = "/login?message=You have been logged out.";
-        }
+    function openNav() { document.getElementById("mySidebar").classList.add("open"); document.getElementById("overlay").classList.add("show"); }
+    function closeNav() { document.getElementById("mySidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("show"); }
+    function toggleDropdown() { document.getElementById("myDropdown").classList.toggle("show"); }
 
-        // Year for sidebar footer
-        const yearSpan = document.getElementById('yearSpan');
-        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-
-        // Theme restore
-        const savedTheme = (function(){
-            try { return localStorage.getItem('theme'); } catch(e){ return null; }
-        })() || 'light';
-        setTheme(savedTheme);
-
-        // Dynamic Profile Icon
-        const startupName = "${startup.name}";
-        const profileIcon = document.getElementById("profileIcon");
-        if (startupName && profileIcon) {
-            profileIcon.textContent = startupName.charAt(0).toUpperCase();
-            profileIcon.setAttribute('title', startupName);
-        }
-    });
-
-    function openNav() {
-        document.getElementById("mySidebar").classList.add("open");
-        document.getElementById("overlay").classList.add("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'false');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'false');
-    }
-
-    function closeNav() {
-        document.getElementById("mySidebar").classList.remove("open");
-        document.getElementById("overlay").classList.remove("show");
-        document.getElementById("mySidebar").setAttribute('aria-hidden', 'true');
-        document.getElementById("overlay").setAttribute('aria-hidden', 'true');
-    }
-
-    function toggleDropdown() {
-        const dd = document.getElementById("myDropdown");
-        dd.classList.toggle("show");
-        const expanded = dd.classList.contains("show");
-        document.getElementById("profileIcon").setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        dd.setAttribute('aria-hidden', expanded ? 'false' : 'true');
-    }
-
-    window.addEventListener('click', function(event) {
-        if (!event.target.closest('.profile-dropdown') && !event.target.closest('.hamburger')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                    openDropdown.setAttribute('aria-hidden', 'true');
-                    var icon = document.getElementById("profileIcon");
-                    if (icon) icon.setAttribute('aria-expanded', 'false');
-                }
-            }
-        }
-    });
-
-    function setTheme(theme) {
-        const html = document.documentElement;
-        const toggleBtn = document.querySelector('.theme-toggle');
-
-        if (theme === 'dark') {
-            html.classList.add('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-                toggleBtn.setAttribute('aria-pressed', 'true');
-            }
-        } else {
-            html.classList.remove('dark-mode');
-            if (toggleBtn) {
-                toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-                toggleBtn.setAttribute('aria-pressed', 'false');
-            }
-        }
-        try { localStorage.setItem('theme', theme); } catch(e){ /* ignore if storage blocked */ }
-    }
+    window.addEventListener("click", (e) => { if(!e.target.closest(".dropdown")) document.getElementById("myDropdown").classList.remove("show"); });
 
     function toggleTheme() {
-        const html = document.documentElement;
-        if (html.classList.contains('dark-mode')) {
-            setTheme('light');
-        } else {
-            setTheme('dark');
-        }
+        const icon = document.getElementById("themeIcon");
+        icon.classList.add('icon-pulse');
+        setTimeout(() => icon.classList.remove('icon-pulse'), 400);
+        const isDark = document.documentElement.classList.toggle("dark-mode");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        updateThemeUI();
     }
-</script>
 
+    function updateThemeUI() {
+        const isDark = document.documentElement.classList.contains("dark-mode");
+        document.getElementById("themeIcon").className = isDark ? "fas fa-sun" : "fas fa-moon";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById("year").textContent = new Date().getFullYear();
+        if (localStorage.getItem("theme") === "dark") document.documentElement.classList.add("dark-mode");
+        updateThemeUI();
+
+        const name = "${startup.name}";
+        if(name && name.trim().length > 0) {
+            const initial = name.trim().charAt(0).toUpperCase();
+            document.getElementById("navAvatar").textContent = initial;
+            document.getElementById("bigAvatar").textContent = initial;
+        }
+    });
+</script>
 </body>
 </html>
