@@ -166,7 +166,7 @@
         <div class="grid">
             <div class="form-group">
                 <label>Investment Amount</label>
-                <input type="number" name="amount" required placeholder="e.g. 50000">
+                <input type="number" name="amount" required step="1000" min="1000" placeholder="e.g. 50000">
             </div>
 
             <div class="form-group">
@@ -183,8 +183,8 @@
 
         <div class="grid">
             <div class="form-group">
-                <label>Expected ROI (%) <span style="color:var(--muted)">(optional)</span></label>
-                <input type="number" name="expectedRoi" placeholder="e.g. 20">
+                <label>Expected ROI (%) <span style="color:#dc2626">*</span></label>
+                <input type="number" name="expectedRoi" required placeholder="e.g. 20">
             </div>
 
             <div class="form-group">
@@ -194,10 +194,14 @@
         </div>
 
         <div class="form-group">
-            <label>Message to Startup <span style="color:var(--muted)">(optional)</span></label>
-            <textarea name="message" rows="4"
+            <label>Message to Startup <span style="color:#dc2626">*</span></label>
+            <textarea name="message" rows="4" required
                       placeholder="Add a short note, expectations, or strategic value you bring"></textarea>
         </div>
+
+        <p style="font-size:.8rem;color:var(--muted);margin-top:8px">
+            <span style="color:#dc2626">*</span> Required fields — helps startups evaluate serious investment intent.
+        </p>
 
         <button type="submit" class="btn">
             <i class="fas fa-paper-plane"></i> Submit Application
