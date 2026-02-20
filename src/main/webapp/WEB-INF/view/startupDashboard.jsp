@@ -764,7 +764,7 @@
             <span>Investor Messages</span>
             <h2>0</h2>
         </a>
-        <div class="summary-card">
+        <div class="summary-card" onclick="window.location.href='/startup/profile-analytics'">
             <span>Profile Views</span>
             <h2 id="profileViewsCount">${profileViews}</h2>
         </div>
@@ -853,6 +853,15 @@
         </div>
     </div>
 </div>
+
+<div id="viewersModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:2000;">
+    <div style="width:420px; max-height:70vh; overflow:auto; background:white; margin:8% auto; padding:20px; border-radius:16px;">
+        <h3>Recent Viewers</h3>
+        <div id="viewerList"></div>
+        <button onclick="closeViewers()">Close</button>
+    </div>
+</div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -958,6 +967,59 @@
 
         document.addEventListener('DOMContentLoaded', connectProfileViewSocket);
     })();
+    function openProfileViewers() {
+
+        fetch('/startup/profile-viewers')
+            .then(res => res.json())
+            .then(data => {
+
+                const list = document.getElementById('viewerList');
+                list.innerHTML = '';
+
+                if(data.length === 0){
+                    list.innerHTML = '<p>No viewers yet</p>';
+                }
+
+                data.forEach(v => {
+                    list.innerHTML += `
+    <div style="padding:12px;border-bottom:var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+            <strong>\${v.investorName}</strong><br>
+            <small style="color:var(--muted)">\${v.investorType || ''}</small><br>
+            <small style="color:var(--muted)">\${formatTime(v.viewedAt)}</small>
+        </div>
+        <a href="/startup/chat?investorId=\${v.investorId}"
+           style="padding:6px 12px;border-radius:8px;background:var(--accent);color:white;text-decoration:none;font-size:.8rem">
+            Chat
+        </a>
+    </div>
+    `;
+                });
+
+
+                document.getElementById('viewersModal').style.display = 'block';
+            });
+    }
+
+    function closeViewers(){
+        document.getElementById('viewersModal').style.display = 'none';
+    }
+
+    function formatTime(dateString){
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = (now - date)/1000;
+
+        if(diff < 60) return "just now";
+        if(diff < 3600) return Math.floor(diff/60) + " min ago";
+        if(diff < 86400) return Math.floor(diff/3600) + " hr ago";
+
+        return date.toLocaleDateString();
+    }
+
+
 </script>
+
+
 </body>
 </html>

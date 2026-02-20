@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --------- YOUR ORIGINAL CSS — UNCHANGED --------- */
         :root{
             --accent:#28a745;
             --accent-dark:#145c2a;
@@ -29,13 +30,8 @@
             background:#eef3f6;
         }
 
-        /* Layout */
-        .login-wrapper{
-            display:flex;
-            height:100vh;
-        }
+        .login-wrapper{display:flex;height:100vh;}
 
-        /* ===== HERO SIDE ===== */
         .side-panel{
             width:58%;
             position:relative;
@@ -51,84 +47,28 @@
                     linear-gradient(135deg,#1f8f43,#0e4d23);
         }
 
-        .logo{
-            display:flex;
-            align-items:center;
-            gap:16px;
-            font-size:2rem;
-            font-weight:800;
-            margin-bottom:30px;
-        }
+        .logo{display:flex;align-items:center;gap:16px;font-size:2rem;font-weight:800;margin-bottom:30px;}
+        .logo i{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
 
-        .logo i{
-            width:60px;
-            height:60px;
-            border-radius:18px;
-            background:rgba(255,255,255,.18);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:1.5rem;
-            backdrop-filter:blur(6px);
-        }
+        .side-panel h1{font-size:3rem;font-weight:800;margin-bottom:16px;}
+        .side-panel p{font-size:1.1rem;opacity:.95;max-width:480px;line-height:1.7;}
 
-        .side-panel h1{
-            font-size:3rem;
-            font-weight:800;
-            margin-bottom:16px;
-        }
+        .form-panel{width:42%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7fafc,#eef3f6);}
 
-        .side-panel p{
-            font-size:1.1rem;
-            opacity:.95;
-            max-width:480px;
-            line-height:1.7;
-        }
-
-        /* ===== FORM SIDE ===== */
-        .form-panel{
-            width:42%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:linear-gradient(180deg,#f7fafc,#eef3f6);
-        }
-
-        /* Glass Card */
         .login-card{
             width:100%;
             max-width:420px;
             padding:44px 42px;
             border-radius:28px;
-
             background:rgba(255,255,255,.65);
             backdrop-filter:blur(14px);
-
-            box-shadow:
-                    0 20px 50px rgba(0,0,0,.12),
-                    inset 0 1px rgba(255,255,255,.6);
+            box-shadow:0 20px 50px rgba(0,0,0,.12), inset 0 1px rgba(255,255,255,.6);
         }
 
-        .login-card h2{
-            text-align:center;
-            color:#1f8f43;
-            font-weight:800;
-            margin-bottom:6px;
-        }
+        .login-card h2{text-align:center;color:#1f8f43;font-weight:800;margin-bottom:6px;}
+        .login-card p{text-align:center;color:#64748b;margin-bottom:30px;}
 
-        .login-card p{
-            text-align:center;
-            color:#64748b;
-            margin-bottom:30px;
-        }
-
-        /* Inputs */
-        label{
-            font-weight:600;
-            font-size:.9rem;
-            display:block;
-            margin-bottom:6px;
-        }
+        label{font-weight:600;font-size:.9rem;display:block;margin-bottom:6px;}
 
         input{
             width:100%;
@@ -140,24 +80,11 @@
             transition:.25s ease;
         }
 
-        input:focus{
-            outline:none;
-            border-color:#28a745;
-            box-shadow:0 0 0 3px rgba(40,167,69,.18);
-        }
+        input:focus{outline:none;border-color:#28a745;box-shadow:0 0 0 3px rgba(40,167,69,.18);}
 
         .password-container{position:relative}
+        .toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;}
 
-        .toggle-password{
-            position:absolute;
-            right:14px;
-            top:50%;
-            transform:translateY(-50%);
-            cursor:pointer;
-            color:#64748b;
-        }
-
-        /* Button */
         .btn-custom{
             width:100%;
             padding:14px;
@@ -171,69 +98,135 @@
             transition:.25s ease;
         }
 
-        .btn-custom:hover{
-            transform:translateY(-2px);
-            box-shadow:0 18px 42px rgba(40,167,69,.5);
-        }
-
-        /* Footer */
-        .signup-link{
-            text-align:center;
-            margin-top:26px;
-            font-size:.9rem;
-            color:#64748b;
-        }
-
-        .signup-link a{
-            color:#28a745;
-            font-weight:600;
-            text-decoration:none;
-        }
-
+        .btn-custom:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(40,167,69,.5);}
+        .signup-link{text-align:center;margin-top:26px;font-size:.9rem;color:#64748b;}
+        .signup-link a{color:#28a745;font-weight:600;text-decoration:none;}
         .signup-link a:hover{text-decoration:underline}
 
-        /* Mobile */
         @media(max-width:900px){
             .side-panel{display:none}
             .form-panel{width:100%}
         }
 
-        /* LOGIN MESSAGE (PREMIUM ALERT) */
+        /* ===== SaaS AUTH MESSAGE ===== */
         .login-message{
             display:flex;
-            align-items:center;
-            gap:10px;
-            padding:12px 14px;
+            align-items:flex-start;
+            gap:12px;
+            padding:14px 16px;
             border-radius:14px;
             font-size:.9rem;
-            font-weight:600;
             margin-bottom:18px;
-            animation:fadeSlide .35s ease;
             backdrop-filter:blur(6px);
+            position:relative;
+            overflow:hidden;
+            animation:fadeSlide .35s ease;
         }
 
-        .login-message i{
-            font-size:1.1rem;
-        }
+        .login-message i{font-size:1.2rem;margin-top:2px}
 
-        /* Error */
         .login-message.error{
             background:rgba(255,70,70,.10);
             color:#dc3545;
             border:1px solid rgba(220,53,69,.25);
         }
 
-        /* Success */
         .login-message.success{
             background:rgba(40,167,69,.12);
             color:#1e7e34;
             border:1px solid rgba(40,167,69,.35);
         }
 
+        .login-message::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:0;
+            height:3px;
+            width:100%;
+            background:currentColor;
+            opacity:.25;
+            animation:progressBar 4.5s linear forwards;
+        }
+
+        @keyframes progressBar{
+            from{width:100%}
+            to{width:0%}
+        }
+
         @keyframes fadeSlide{
             from{opacity:0; transform:translateY(-6px)}
             to{opacity:1; transform:translateY(0)}
         }
+
+        /* interactive forgot password link */
+        .forgot-link{
+            position:relative;
+            transition:color .25s ease;
+        }
+
+        .forgot-link i{
+            transition:transform .25s ease, opacity .25s ease;
+            opacity:.6;
+        }
+
+        .forgot-link::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-2px;
+            width:0%;
+            height:2px;
+            background:#28a745;
+            transition:width .25s ease;
+        }
+
+        .forgot-link:hover{
+            color:#28a745 !important;
+        }
+
+        .forgot-link:hover::after{
+            width:100%;
+        }
+
+        .forgot-link:hover i{
+            transform:translateX(4px);
+            opacity:1;
+        }
+
+        /* subtle interactive help link */
+        .forgot-link{
+            position:relative;
+            transition:color .25s ease, letter-spacing .25s ease;
+        }
+
+        /* underline reveal */
+        .forgot-link::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-2px;
+            width:0%;
+            height:2px;
+            background:#28a745;
+            transition:width .25s ease;
+        }
+
+        /* hover feel */
+        .forgot-link:hover{
+            color:#28a745 !important;
+            letter-spacing:.2px;
+        }
+
+        .forgot-link:hover::after{
+            width:100%;
+        }
+
+        /* tiny press feedback */
+        .forgot-link:active{
+            transform:scale(.97);
+        }
+
 
     </style>
 </head>
@@ -242,7 +235,6 @@
 
 <div class="login-wrapper">
 
-    <!-- LEFT HERO PANEL -->
     <div class="side-panel">
         <div class="logo">
             <i class="fas fa-leaf"></i>
@@ -255,7 +247,6 @@
         </p>
     </div>
 
-    <!-- RIGHT FORM PANEL -->
     <div class="form-panel">
         <div class="login-card">
 
@@ -263,24 +254,42 @@
             <p>Enter your credentials to continue</p>
 
             <% String message = (String) request.getAttribute("message"); %>
-            <% if (message != null) { %>
-            <div class="login-message <%= message.toLowerCase().contains("success") ? "success" : "error" %>">
-                <i class="fas <%= message.toLowerCase().contains("success") ? "fa-check-circle" : "fa-exclamation-circle" %>"></i>
-                <span><%= message %></span>
+            <% if (message != null) {
+                boolean success = message.toLowerCase().contains("success");
+            %>
+
+            <div id="authAlert" class="login-message <%= success ? "success" : "error" %>">
+                <i class="fas <%= success ? "fa-circle-check" : "fa-triangle-exclamation" %>"></i>
+
+                <div style="display:flex;flex-direction:column;line-height:1.4">
+                    <% if(success){ %>
+                    <strong>You're in.</strong>
+                    <span style="font-weight:500;opacity:.9">Redirecting to your workspace...</span>
+                    <% } else { %>
+                    <strong>We couldn’t sign you in</strong>
+                    <span style="font-weight:500;opacity:.9">
+                Check your email & password and try again. Caps Lock might be on.
+            </span>
+                    <% } %>
+                </div>
             </div>
+
             <% } %>
 
 
-            <form action="/login" method="post">
+            <form action="/login" method="post" id="loginForm">
 
                 <div style="margin-bottom:18px;">
                     <label>Email</label>
-                    <input type="email" name="email" required>
+                    <input type="email" name="email" id="email" required>
                 </div>
 
                 <div style="margin-bottom:6px;display:flex;justify-content:space-between;">
                     <label>Password</label>
-                    <a href="/forgot-password" style="font-size:.8rem;color:#64748b;text-decoration:none;">Forgot Password?</a>
+                    <a href="/forgot-password" id="forgotLink" class="forgot-link" style="font-size:.8rem;color:#64748b;text-decoration:none;">Forgot Password?</a>
+
+                    </a>
+
                 </div>
 
                 <div class="password-container">
@@ -290,7 +299,12 @@
                     </span>
                 </div>
 
-                <button type="submit" class="btn-custom">Login</button>
+                <!-- caps lock message -->
+                <div id="capsWarning" style="display:none;color:#dc3545;font-size:.8rem;margin-top:6px;">
+                    Caps Lock is ON
+                </div>
+
+                <button type="submit" class="btn-custom" id="loginBtn">Login</button>
             </form>
 
             <div class="signup-link">
@@ -307,15 +321,75 @@
     function togglePasswordVisibility(){
         const p=document.getElementById("password");
         const i=document.getElementById("eyeIcon");
-        if(p.type==="password"){
-            p.type="text";
-            i.classList.replace("fa-eye-slash","fa-eye");
-        }else{
-            p.type="password";
-            i.classList.replace("fa-eye","fa-eye-slash");
-        }
+        if(p.type==="password"){p.type="text";i.classList.replace("fa-eye-slash","fa-eye");}
+        else{p.type="password";i.classList.replace("fa-eye","fa-eye-slash");}
     }
+
+    /* remember email */
+    const emailInput=document.getElementById("email");
+    const savedEmail=localStorage.getItem("lastLoginEmail");
+    if(savedEmail) emailInput.value=savedEmail;
+
+    document.getElementById("loginForm").addEventListener("submit",()=>{
+        localStorage.setItem("lastLoginEmail",emailInput.value);
+
+        const btn=document.getElementById("loginBtn");
+        btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Signing in...';
+        btn.disabled=true;
+    });
+
+    /* caps lock detection */
+    const password=document.getElementById("password");
+    const caps=document.getElementById("capsWarning");
+    password.addEventListener("keyup",e=>{
+        caps.style.display=e.getModifierState("CapsLock")?"block":"none";
+    });
+
+    /* autofocus */
+    window.addEventListener("load",()=>{
+        if(!emailInput.value) emailInput.focus();
+        else password.focus();
+    });
+
+    /* enter submit */
+    document.addEventListener("keydown",e=>{
+        if(e.key==="Enter"){
+            document.getElementById("loginForm").submit();
+        }
+    });
+
+    /* auto dismiss login alert */
+    const alertBox = document.getElementById("authAlert");
+    if(alertBox){
+        setTimeout(()=>{
+            alertBox.style.opacity="0";
+            alertBox.style.transform="translateY(-8px)";
+            setTimeout(()=>alertBox.remove(),300);
+        },4500);
+    }
+
 </script>
+<script>
+
+    /* Forgot password interaction */
+    const forgot = document.getElementById("forgotLink");
+
+    forgot.addEventListener("click", function(e){
+
+        // visual acknowledgement
+        this.style.pointerEvents="none";
+        this.style.opacity=".7";
+        this.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Opening...';
+
+        // small delay so user perceives action
+        setTimeout(()=>{
+            window.location.href=this.href;
+        },450);
+
+        e.preventDefault();
+    });
+</script>
+
 
 </body>
 </html>

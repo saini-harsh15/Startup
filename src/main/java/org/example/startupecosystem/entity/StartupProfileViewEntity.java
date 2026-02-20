@@ -5,21 +5,25 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "startup_profile_views",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"startup_id", "investor_id"}))
+        indexes = {
+                @Index(name="idx_startup_view_time", columnList="startupId, viewedAt DESC"),
+                @Index(name="idx_unique_daily_view", columnList="startupId, investorId, viewDateKey", unique=false)
+        })
 public class StartupProfileViewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "startup_id", nullable = false)
     private Long startupId;
-
-    @Column(name = "investor_id", nullable = false)
     private Long investorId;
 
-    @Column(name = "viewed_at", nullable = false)
-    private LocalDateTime viewedAt = LocalDateTime.now();
+    private LocalDateTime viewedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.viewedAt = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;
@@ -52,4 +56,5 @@ public class StartupProfileViewEntity {
     public void setViewedAt(LocalDateTime viewedAt) {
         this.viewedAt = viewedAt;
     }
+
 }

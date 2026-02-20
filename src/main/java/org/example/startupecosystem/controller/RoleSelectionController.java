@@ -85,37 +85,22 @@ public class RoleSelectionController {
 
         try {
 
-            Long userId = signupService.registerNewUser(
-                    userDto.getEmail(),
-                    userDto.getPassword(),
-                    "Investor",                       // Hardcoded role
-                    userDto.getInvestorName(),        // Name
-                    null,                             // No description needed
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    userDto.getInvestorName(),
-                    userDto.getInvestmentFirm()
-            );
+            Long userId = signupService.registerInvestor(userDto);
 
             session.setAttribute("loggedInUserId", userId.toString());
             session.setAttribute("loggedInRole", "Investor");
 
             return "redirect:/investor/dashboard/" + userId;
 
-        }catch (IllegalArgumentException e) {
-        redirectAttributes.addFlashAttribute("error", e.getMessage());
-        return "redirect:/signup/startup";
-    } catch (Exception e) {
-        e.printStackTrace();
-        redirectAttributes.addFlashAttribute("error", "Something went wrong. Please try again.");
-        return "redirect:/signup/startup";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/signup/investor";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Something went wrong. Please try again.");
+            return "redirect:/signup/investor";
+        }
     }
-
-}
 
     @GetMapping("/check-email")
     @ResponseBody

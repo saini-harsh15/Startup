@@ -1,6 +1,8 @@
 package org.example.startupecosystem.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.startupecosystem.dto.ProfileViewerAnalyticsDTO;
+import org.example.startupecosystem.dto.ProfileViewerDTO;
 import org.example.startupecosystem.entity.*;
 import org.example.startupecosystem.repository.InvestmentRequestRepository;
 import org.example.startupecosystem.repository.StartupRepository;
@@ -97,14 +99,18 @@ public class StartupController {
             return "redirect:/login";
         }
 
-        Startup startup = startupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Startup not found"));
+        Optional<Startup> startupOpt = startupRepository.findById(id);
+        if (startupOpt.isEmpty()) {
+            session.invalidate();
+            return "redirect:/login";
+        }
+        Startup startup = startupOpt.get();
+
 
         model.addAttribute("startup", startup);
 
         // ---------- METRICS ----------
-        long profileViews =
-                startupProfileViewRepository.countByStartupId(id);
+        long profileViews = startupProfileViewRepository.countUniqueViewers(id);
         model.addAttribute("profileViews", profileViews);
 
         model.addAttribute("totalInvestments", 0); // later from ACCEPTED
@@ -207,8 +213,15 @@ public class StartupController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        Long startupId = getUserIdFromSession(session, "Startup", redirectAttributes)
-                .orElseThrow();
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
 
         InvestmentRequest request = investmentRequestRepository.findById(requestId)
                 .orElseThrow();
@@ -234,8 +247,15 @@ public class StartupController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        Long startupId = getUserIdFromSession(session, "Startup", redirectAttributes)
-                .orElseThrow();
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
 
         InvestmentRequest request = investmentRequestRepository.findById(requestId)
                 .orElseThrow();
@@ -306,6 +326,129 @@ public class StartupController {
 
         return "startupMessages";
     }
+
+
+    @GetMapping("/profile-viewers")
+    public org.springframework.http.ResponseEntity<List<ProfileViewerDTO>> getProfileViewers(
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return org.springframework.http.ResponseEntity.status(401).body(List.of());
+        }
+
+        Long startupId = userIdOpt.get();
+
+        List<StartupProfileViewEntity> views =
+                startupProfileViewRepository.findTop20ByStartupIdOrderByViewedAtDesc(startupId);
+
+        List<Long> investorIds = views.stream()
+                .map(StartupProfileViewEntity::getInvestorId)
+                .distinct()
+                .toList();
+
+        List<Investor> investors = investorService.findAllByIds(investorIds);
+
+        List<ProfileViewerDTO> response = views.stream().map(view -> {
+            Investor investor = investors.stream()
+                    .filter(i -> i.getId().equals(view.getInvestorId()))
+                    .findFirst().orElse(null);
+
+            return new ProfileViewerDTO(
+                    view.getInvestorId(),
+                    investor != null ? investor.getInvestorName() : "Unknown",
+                    investor != null ? investor.getInvestorType() : "",
+                    view.getViewedAt()
+            );
+        }).toList();
+
+        return org.springframework.http.ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/profile-analytics")
+    public String profileAnalytics(
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
+        Optional<Startup> startupOpt = startupRepository.findById(startupId);
+        if (startupOpt.isEmpty()) {
+            session.invalidate();
+            return "redirect:/login";
+        }
+
+        Startup startup = startupOpt.get();
+
+        List<Object[]> rows = startupProfileViewRepository.findViewerAnalytics(startupId);
+
+        List<Long> investorIds = rows.stream()
+                .map(r -> (Long) r[0])
+                .toList();
+
+        List<Investor> investors = investorService.findAllByIds(investorIds);
+
+        List<ProfileViewerAnalyticsDTO> analytics = rows.stream().map(r -> {
+
+            Long investorId = (Long) r[0];
+            long visits = (Long) r[1];
+            java.time.LocalDateTime lastViewed = (java.time.LocalDateTime) r[2];
+
+            Investor inv = investors.stream()
+                    .filter(i -> i.getId().equals(investorId))
+                    .findFirst().orElse(null);
+
+            int score = (int)(visits * 5);
+
+            long hoursSinceLastView =
+                    java.time.Duration.between(lastViewed, java.time.LocalDateTime.now()).toHours();
+
+            if (hoursSinceLastView < 24) score += 20;
+            else if (hoursSinceLastView < 72) score += 10;
+
+            String temperature =
+                    score >= 35 ? "HOT" :
+                            score >= 18 ? "WARM" : "COLD";
+
+            String lastSeenText =
+                    hoursSinceLastView < 1 ? "Active now" :
+                            hoursSinceLastView < 6 ? "Viewed recently" :
+                                    hoursSinceLastView < 24 ? "Viewed today" :
+                                            hoursSinceLastView < 72 ? "Seen this week" :
+                                                    "Inactive lead";
+
+            return new ProfileViewerAnalyticsDTO(
+                    investorId,
+                    inv != null ? inv.getInvestorName() : "Unknown",
+                    inv != null ? inv.getInvestorType() : "",
+                    visits,
+                    lastViewed,
+                    score,
+                    temperature,
+                    lastSeenText
+            );
+
+        }).toList();
+
+        model.addAttribute("startup", startup);
+        model.addAttribute("analytics", analytics);
+
+        return "startupProfileAnalytics";
+    }
+
+
 
 
     /* ===================== PROFILE ===================== */

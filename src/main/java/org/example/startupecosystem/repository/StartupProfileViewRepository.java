@@ -2,11 +2,39 @@ package org.example.startupecosystem.repository;
 
 import org.example.startupecosystem.entity.StartupProfileViewEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface StartupProfileViewRepository
         extends JpaRepository<StartupProfileViewEntity, Long> {
 
-    boolean existsByStartupIdAndInvestorId(Long startupId, Long investorId);
-
     long countByStartupId(Long startupId);
+
+    // last 20 viewers (recent activity)
+    List<StartupProfileViewEntity> findTop20ByStartupIdOrderByViewedAtDesc(Long startupId);
+
+    // 🔥 NEW — last view by specific investor (for cooldown tracking)
+    Optional<StartupProfileViewEntity>
+    findTopByStartupIdAndInvestorIdOrderByViewedAtDesc(Long startupId, Long investorId);
+
+    // Analytics aggregation
+    @Query("""
+        SELECT v.investorId, COUNT(v), MAX(v.viewedAt)
+        FROM StartupProfileViewEntity v
+        WHERE v.startupId = :startupId
+        GROUP BY v.investorId
+        ORDER BY MAX(v.viewedAt) DESC
+    """)
+    List<Object[]> findViewerAnalytics(@Param("startupId") Long startupId);
+
+
+    @Query("""
+SELECT COUNT(DISTINCT v.investorId)
+FROM StartupProfileViewEntity v
+WHERE v.startupId = :startupId
+""")
+    long countUniqueViewers(@Param("startupId") Long startupId);
 }

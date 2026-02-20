@@ -199,12 +199,33 @@ public class InvestorController {
 
         Startup startup = startupOpt.get();
 
-        boolean alreadyViewed = startupProfileViewRepository.existsByStartupIdAndInvestorId(startup.getId(), investorId);
+        // ===== REAL ENGAGEMENT TRACKING (5 MIN COOLDOWN) =====
 
-        if (!alreadyViewed) {
+        Optional<StartupProfileViewEntity> lastViewOpt =
+                startupProfileViewRepository
+                        .findTopByStartupIdAndInvestorIdOrderByViewedAtDesc(startup.getId(), investorId);
+
+        boolean shouldCount = true;
+
+        if (lastViewOpt.isPresent()) {
+            long seconds = java.time.Duration.between(
+                    lastViewOpt.get().getViewedAt(),
+                    java.time.LocalDateTime.now()
+            ).getSeconds();
+
+            // Ignore refresh spam
+            if (seconds < 300) {
+                shouldCount = false;
+            }
+        }
+
+        if (shouldCount) {
+
             StartupProfileViewEntity view = new StartupProfileViewEntity();
             view.setStartupId(startup.getId());
             view.setInvestorId(investorId);
+            view.setViewedAt(java.time.LocalDateTime.now());
+
             startupProfileViewRepository.save(view);
 
             long updatedCount = startupProfileViewRepository.countByStartupId(startup.getId());
@@ -213,8 +234,12 @@ public class InvestorController {
             event.setStartupId(startup.getId());
             event.setTotalViews(updatedCount);
 
-            messagingTemplate.convertAndSend("/topic/startup/profile-views/" + startup.getId(), event);
+            messagingTemplate.convertAndSend(
+                    "/topic/startup/profile-views/" + startup.getId(),
+                    event
+            );
         }
+
 
         model.addAttribute("startup", startup);
 

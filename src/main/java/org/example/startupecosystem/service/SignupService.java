@@ -104,4 +104,35 @@ public class SignupService {
 
         throw new IllegalArgumentException("Invalid role: " + role);
     }
+
+    public Long registerInvestor(org.example.startupecosystem.dto.UserRegistrationDto dto) {
+
+        if (!PasswordValidator.isValid(dto.getPassword())) {
+            throw new IllegalArgumentException(
+                    "Password must be at least 10 characters long and include uppercase, lowercase and a number. No spaces allowed."
+            );
+        }
+
+        validateEmailNotTaken(dto.getEmail());
+        String hashedPassword = passwordEncoder.encode(dto.getPassword());
+
+        Investor investor = new Investor();
+
+        investor.setEmail(dto.getEmail());
+        investor.setPassword(hashedPassword);
+
+        investor.setInvestorName(dto.getInvestorName());
+        investor.setInvestmentFirm(dto.getInvestmentFirm());
+        investor.setInvestorType(dto.getInvestorType());
+        investor.setPreferredDomains(dto.getPreferredDomains());
+        investor.setFundingStages(dto.getFundingStages());
+        investor.setLocation(dto.getLocation());
+        investor.setWebsite(dto.getWebsite());
+        investor.setInvestmentRangeUsd(dto.getInvestmentRangeUsd());
+        investor.setLinkedin(dto.getLinkedin());
+        investor.setBio(dto.getBio());
+        investor.setInvestmentPreferences(dto.getInvestmentPreferences());
+
+        return investorRepository.save(investor).getId();
+    }
 }

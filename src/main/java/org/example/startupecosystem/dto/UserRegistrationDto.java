@@ -29,7 +29,91 @@ public class UserRegistrationDto {
     private Integer yearsOfExperience;
     private String preferredIndustry;
 
+    // ===== REAL INVESTOR PROFILE FIELDS =====
+    private String investorType;
+    private String preferredDomains;
+    private String fundingStages;
+    private String location;
+    private String website;
+    private String investmentRangeUsd;
+    private String linkedin;
+    private String bio;
+    private String investmentPreferences;
+
     // ===== Getters & Setters =====
+
+
+    public String getInvestmentPreferences() {
+        return investmentPreferences;
+    }
+
+    public void setInvestmentPreferences(String investmentPreferences) {
+        this.investmentPreferences = investmentPreferences;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getLinkedin() {
+        return linkedin;
+    }
+
+    public void setLinkedin(String linkedin) {
+        this.linkedin = linkedin;
+    }
+
+    public String getInvestmentRangeUsd() {
+        return investmentRangeUsd;
+    }
+
+    public void setInvestmentRangeUsd(String investmentRangeUsd) {
+        this.investmentRangeUsd = investmentRangeUsd;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getFundingStages() {
+        return fundingStages;
+    }
+
+    public void setFundingStages(String fundingStages) {
+        this.fundingStages = fundingStages;
+    }
+
+    public String getPreferredDomains() {
+        return preferredDomains;
+    }
+
+    public void setPreferredDomains(String preferredDomains) {
+        this.preferredDomains = preferredDomains;
+    }
+
+    public String getInvestorType() {
+        return investorType;
+    }
+
+    public void setInvestorType(String investorType) {
+        this.investorType = investorType;
+    }
 
     public String getEmail() {
         return email;
