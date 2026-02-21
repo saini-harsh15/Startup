@@ -165,7 +165,7 @@
 
         <div class="grid">
             <div class="form-group">
-                <label>Investment Amount</label>
+                <label>Investment Amount <span style="color:#dc2626">*</span></label>
                 <input type="number" name="amount" required step="1000" min="1000" placeholder="e.g. 50000">
             </div>
 
