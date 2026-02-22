@@ -587,47 +587,52 @@
         }
 
         /* ===== USER IDENTITY CHIP ===== */
-        .user-chip{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            padding:4px 10px 4px 8px;
-            border-radius:999px;
-            background:rgba(15,23,42,.05);
-            border:var(--border);
-            height:38px;
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px 4px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, .05);
+            border: var(--border);
+            height: 38px;
         }
 
-        .dark-mode .user-chip{
-            background:rgba(255,255,255,.06);
+        .dark-mode .user-chip {
+            background: rgba(255, 255, 255, .06);
         }
 
-        .user-chip:hover{
-            background:var(--accent-soft);
+        .user-chip:hover {
+            background: var(--accent-soft);
         }
 
-        .welcome-text{
-            font-size:.88rem;
-            color:var(--muted);
-            font-weight:450;
-            white-space:nowrap;
+        .welcome-text {
+            font-size: .88rem;
+            color: var(--muted);
+            font-weight: 450;
+            white-space: nowrap;
         }
 
-        .welcome-text strong{
-            color:var(--text);
-            font-weight:600;
+        .welcome-text strong {
+            color: var(--text);
+            font-weight: 600;
         }
 
         /* theme icon inside chip */
-        .user-chip .theme-toggle{
-            font-size:1rem;
-            padding:6px;
+        .user-chip .theme-toggle {
+            font-size: 1rem;
+            padding: 6px;
         }
 
         /* mobile cleanup */
-        @media(max-width:768px){
-            .welcome-text{display:none}
-            .user-chip{padding:6px 10px}
+        @media (max-width: 768px) {
+            .welcome-text {
+                display: none
+            }
+
+            .user-chip {
+                padding: 6px 10px
+            }
         }
 
         /* ================= INTERACTION SYSTEM ================= */
@@ -639,57 +644,55 @@
         .dropdown-content a,
         .profile-icon,
         .user-chip,
-        .theme-toggle{
-            transition:
-                    transform .18s ease,
-                    box-shadow .18s ease,
-                    background-color .18s ease,
-                    color .18s ease,
-                    border-color .18s ease;
+        .theme-toggle {
+            transition: transform .18s ease,
+            box-shadow .18s ease,
+            background-color .18s ease,
+            color .18s ease,
+            border-color .18s ease;
         }
 
         /* lift effect */
         button:hover,
         .btn-save:hover,
-        .profile-icon:hover{
+        .profile-icon:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(0,0,0,.12);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, .12);
         }
 
         /* press effect */
         button:active,
-        .profile-icon:active{
+        .profile-icon:active {
             transform: translateY(0px) scale(.97);
-            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
         }
 
         /* sidebar links feel clickable */
-        .sidebar a:hover{
+        .sidebar a:hover {
             transform: translateX(6px);
         }
 
         /* dropdown items feel selectable */
-        .dropdown-content a:hover{
+        .dropdown-content a:hover {
             padding-left: 20px;
         }
 
         /* theme toggle nicer */
-        .theme-toggle:hover{
+        .theme-toggle:hover {
             transform: rotate(-12deg) scale(1.15);
         }
 
         /* primary save button emphasis */
-        .btn-save:hover{
+        .btn-save:hover {
             filter: brightness(1.05);
         }
 
         /* dark mode adjustments */
         .dark-mode button:hover,
         .dark-mode .btn-save:hover,
-        .dark-mode .profile-icon:hover{
-            box-shadow: 0 12px 26px rgba(0,0,0,.45);
+        .dark-mode .profile-icon:hover {
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .45);
         }
-
 
 
     </style>
@@ -770,7 +773,7 @@
         </div>
         <div class="summary-card" onclick="window.location.href='/startup/investments'">
             <span>Pending Investment Requests</span>
-            <h2>${pendingRequestCount}</h2>
+            <h2 id="pendingCount">${pendingRequestCount}</h2>
         </div>
         <div class="summary-card">
             <span>Total Investment</span>
@@ -783,38 +786,39 @@
 
         <c:choose>
             <c:when test="${not empty pendingRequests}">
-            <div class="request-grid">
-                <c:forEach var="req" items="${pendingRequests}">
-                            <div class="request-card">
-                                <div class="request-header">
-                                    <div class="investor-info">
-                                        <h4>${req.investor.investorName}</h4>
-                                        <p style="font-size:0.8rem; color:var(--muted)">Received via EcoTrack</p>
-                                    </div>
-                                    <span class="status-badge
-    ${req.status == 'PENDING' ? 'status-pending' :
-      req.status == 'ACCEPTED' ? 'status-accepted' :
-      'status-rejected'}">
-                                            ${req.status}
+                <div class="request-grid">
+                    <c:forEach var="req" items="${pendingRequests}">
+                        <div class="request-card">
+                            <div class="request-header">
+                                <div class="investor-info">
+                                    <h4>${req.investor.investorName}</h4>
+                                    <p style="font-size:0.8rem; color:var(--muted)">Received via EcoTrack</p>
+                                </div>
+                                <span class="status-badge
+                                    ${req.status == 'PENDING' ? 'status-pending' :
+                                      req.status == 'ACCEPTED' ? 'status-accepted' :
+                                            'status-rejected'}">
+                                           ${req.status}
                                     </span>
 
-                                </div>
-                                <div class="request-details">
-                                    <div class="detail-item"><span>Amount:</span><span
-                                            style="font-weight:600; color:var(--accent)">$${req.amount}</span></div>
-                                    <div class="detail-item"><span>Funding Stage:</span><span>${req.fundingStage}</span>
-                                    </div>
-                                </div>
-                                <div class="request-actions">
-                                    <a href="/startup/chat?investorId=${req.investor.id}" class="btn-outline">
-                                        <i class="fas fa-comment" style="margin-right:8px"></i> Chat</a>
-                                    <a href="/startup/investment-requests/${req.id}" class="btn-primary">Review</a>
+                            </div>
+                            <div class="request-details">
+                                <div class="detail-item"><span>Amount:</span><span
+                                        style="font-weight:600; color:var(--accent)">$${req.amount}</span></div>
+                                <div class="detail-item"><span>Funding Stage:</span><span>${req.fundingStage}</span>
                                 </div>
                             </div>
+                            <div class="request-actions">
+                                <a href="/startup/chat?investorId=${req.investor.id}" class="btn-outline">
+                                    <i class="fas fa-comment" style="margin-right:8px"></i> Chat</a>
+                                <a href="/startup/investment-requests/${req.id}" class="btn-primary">Review</a>
+                            </div>
+                        </div>
                     </c:forEach>
                 </div>
             </c:when>
             <c:otherwise>
+                <div class="request-grid"></div>
                 <div class="empty-state">
                     <i class="fas fa-circle-info"></i>
                     No investment requests yet.
@@ -950,23 +954,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script>
     (function () {
-        const startupId = ${startup.id};
+        const startupId = "${startup.id}";
         let stompClient = null;
 
         function connectProfileViewSocket() {
             const socket = new SockJS('/ws-chat');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function () {
+
+                console.log("WebSocket connected for startup:", startupId);
+
                 stompClient.subscribe('/topic/startup/profile-views/' + startupId, function (message) {
+                    console.log("Profile view message:", message.body);
                     const data = JSON.parse(message.body);
                     const el = document.getElementById('profileViewsCount');
-                    if (el && data.totalViews !== undefined) el.textContent = data.totalViews;
+                    if (el && data.totalViews !== undefined) {
+                        el.textContent = data.totalViews;
+                    }
                 });
+
+                stompClient.subscribe('/topic/startup/investment/' + startupId, function (message) {
+                    console.log("Investment message:", message.body);
+                    const req = JSON.parse(message.body);
+                    renderNewInvestmentRequest(req);
+                });
+
+            }, function (error) {
+                console.error("WebSocket connection error:", error);
             });
         }
 
-        document.addEventListener('DOMContentLoaded', connectProfileViewSocket);
+        connectProfileViewSocket();
     })();
+
     function openProfileViewers() {
 
         fetch('/startup/profile-viewers')
@@ -976,7 +996,7 @@
                 const list = document.getElementById('viewerList');
                 list.innerHTML = '';
 
-                if(data.length === 0){
+                if (data.length === 0) {
                     list.innerHTML = '<p>No viewers yet</p>';
                 }
 
@@ -1001,20 +1021,85 @@
             });
     }
 
-    function closeViewers(){
+    function closeViewers() {
         document.getElementById('viewersModal').style.display = 'none';
     }
 
-    function formatTime(dateString){
+    function formatTime(dateString) {
         const date = new Date(dateString);
         const now = new Date();
-        const diff = (now - date)/1000;
+        const diff = (now - date) / 1000;
 
-        if(diff < 60) return "just now";
-        if(diff < 3600) return Math.floor(diff/60) + " min ago";
-        if(diff < 86400) return Math.floor(diff/3600) + " hr ago";
+        if (diff < 60) return "just now";
+        if (diff < 3600) return Math.floor(diff / 60) + " min ago";
+        if (diff < 86400) return Math.floor(diff / 3600) + " hr ago";
 
         return date.toLocaleDateString();
+    }
+
+    function renderNewInvestmentRequest(req) {
+
+        let container = document.querySelector('.request-grid');
+
+        if (!container) {
+            const section = document.getElementById('investment-workflow');
+            const newGrid = document.createElement('div');
+            newGrid.className = 'request-grid';
+            section.appendChild(newGrid);
+            container = newGrid;
+        }
+
+        const empty = document.querySelector('.empty-state');
+        if (empty) empty.remove();
+
+        const card = document.createElement('div');
+        card.className = 'request-card';
+
+        const statusClass =
+            req.status === "ACCEPTED" ? "status-accepted" :
+                req.status === "REJECTED" ? "status-rejected" :
+                    "status-pending";
+
+        card.innerHTML = `
+        <div class="request-header">
+            <div class="investor-info">
+                <h4>\${req.investorName}</h4>
+                <p style="font-size:0.8rem; color:var(--muted)">Received via EcoTrack</p>
+            </div>
+            <span class="status-badge ${statusClass}">
+                \${req.status}
+            </span>
+        </div>
+
+        <div class="request-details">
+            <div class="detail-item">
+                <span>Amount:</span>
+                <span style="font-weight:600; color:var(--accent)">
+                    $\${Number(req.amount || 0).toLocaleString()}
+                </span>
+            </div>
+            <div class="detail-item">
+                <span>Funding Stage:</span>
+                <span>\${req.fundingStage}</span>
+            </div>
+        </div>
+
+        <div class="request-actions">
+            <a href="/startup/chat?investorId=\${req.investorId}" class="btn-outline">
+                <i class="fas fa-comment" style="margin-right:8px"></i> Chat
+            </a>
+            <a href="/startup/investment-requests/\${req.id}" class="btn-primary">
+                Review
+            </a>
+        </div>
+    `;
+
+        container.prepend(card);
+
+        const countEl = document.getElementById("pendingCount");
+        if (countEl) {
+            countEl.textContent = parseInt(countEl.textContent || 0) + 1;
+        }
     }
 
 
