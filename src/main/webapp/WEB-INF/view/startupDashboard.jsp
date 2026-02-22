@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     response.setHeader("Pragma", "no-cache");
@@ -775,10 +776,17 @@
             <span>Pending Investment Requests</span>
             <h2 id="pendingCount">${pendingRequestCount}</h2>
         </div>
-        <div class="summary-card">
+        <a href="/startup/accepted-investments" class="summary-card">
             <span>Total Investment</span>
-            <h2>${totalInvestment != null ? totalInvestment : 0}</h2>
-        </div>
+            <h2>
+                $
+                <fmt:formatNumber
+                        value="${totalInvestment}"
+                        type="number"
+                        groupingUsed="true"
+                        maxFractionDigits="0"/>
+            </h2>
+        </a>
     </div>
 
     <div class="investment-section" id="investment-workflow">

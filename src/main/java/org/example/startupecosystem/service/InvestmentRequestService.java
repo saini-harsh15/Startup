@@ -54,6 +54,11 @@ public class InvestmentRequestService {
                 "/topic/startup/investment/" + startup.getId(),
                 dto
         );
+
+    }
+
+    public Double getTotalInvestmentForStartup(Long startupId) {
+        return repository.getTotalAcceptedInvestmentByStartupId(startupId);
     }
 }
 

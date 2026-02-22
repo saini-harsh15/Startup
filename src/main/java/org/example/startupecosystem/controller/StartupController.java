@@ -16,7 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,7 +116,10 @@ public class StartupController {
         long profileViews = startupProfileViewRepository.countUniqueViewers(id);
         model.addAttribute("profileViews", profileViews);
 
-        model.addAttribute("totalInvestments", 0); // later from ACCEPTED
+        Double totalInvestment =
+                investmentRequestRepository.getTotalAcceptedInvestmentByStartupId(id);
+
+        model.addAttribute("totalInvestment", totalInvestment);
         model.addAttribute("totalMessages", 0);
         // -----------------------------
 
@@ -146,6 +152,110 @@ public class StartupController {
         // --------------------------
 
         return "startupDashboard";
+    }
+
+
+    @GetMapping("/accepted-investments")
+    public String showAcceptedInvestments(
+            Model model,
+            HttpSession session,
+            RedirectAttributes redirectAttributes)throws Exception {
+
+        Optional<Long> userIdOpt =
+                getUserIdFromSession(session, "Startup", redirectAttributes);
+
+        if (userIdOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Long startupId = userIdOpt.get();
+
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new RuntimeException("Startup not found"));
+
+        List<InvestmentRequest> acceptedRequests =
+                investmentRequestRepository
+                        .findByStartupIdAndStatusOrderByCreatedAtDesc(
+                                startupId,
+                                InvestmentRequestStatus.ACCEPTED);
+
+        // ================= FORMAT FOR DISPLAY =================
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd MMM yyyy");
+
+        List<Map<String, Object>> formattedRequests =
+                acceptedRequests.stream().map(req -> {
+
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("investorName",
+                            req.getInvestor().getInvestorName());
+                    map.put("amount", req.getAmount());
+                    map.put("formattedDate",
+                            req.getCreatedAt().format(formatter));
+                    map.put("fundingStage",
+                            req.getFundingStage());
+
+                    return map;
+
+                }).toList();
+
+        // ================= MONTHLY AGGREGATION =================
+
+        Map<String, Double> monthlyMap =
+                acceptedRequests.stream()
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                req -> req.getCreatedAt()
+                                        .getMonth()
+                                        .toString() + " " +
+                                        req.getCreatedAt().getYear(),
+                                java.util.stream.Collectors.summingDouble(
+                                        InvestmentRequest::getAmount)
+                        ));
+
+        List<String> chartMonths = new java.util.ArrayList<>(monthlyMap.keySet());
+        List<Double> chartTotals = new java.util.ArrayList<>(monthlyMap.values());
+
+        // ================= FUNDING STAGE AGGREGATION =================
+
+        Map<String, Double> stageMap =
+                acceptedRequests.stream()
+                        .collect(java.util.stream.Collectors.groupingBy(
+                                InvestmentRequest::getFundingStage,
+                                java.util.stream.Collectors.summingDouble(
+                                        InvestmentRequest::getAmount)
+                        ));
+
+        List<String> stageLabels = new java.util.ArrayList<>(stageMap.keySet());
+        List<Double> stageTotals = new java.util.ArrayList<>(stageMap.values());
+
+        Double totalInvestment =
+                investmentRequestRepository
+                        .getTotalAcceptedInvestmentByStartupId(startupId);
+
+        model.addAttribute("startup", startup);
+        model.addAttribute("acceptedRequests", formattedRequests);
+        model.addAttribute("totalInvestment", totalInvestment);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        model.addAttribute("chartMonthsJson",
+                chartMonths.isEmpty() ? "[]" :
+                        mapper.writeValueAsString(chartMonths));
+
+        model.addAttribute("chartTotalsJson",
+                chartTotals.isEmpty() ? "[]" :
+                        mapper.writeValueAsString(chartTotals));
+
+        model.addAttribute("stageLabelsJson",
+                stageLabels.isEmpty() ? "[]" :
+                        mapper.writeValueAsString(stageLabels));
+
+        model.addAttribute("stageTotalsJson",
+                stageTotals.isEmpty() ? "[]" :
+                        mapper.writeValueAsString(stageTotals));
+
+        return "startupAcceptedInvestments";
     }
 
     @GetMapping("/investments")
