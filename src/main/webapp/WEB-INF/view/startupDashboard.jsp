@@ -831,7 +831,7 @@
     </div>
 
     <div class="news-section">
-        <h3 class="news-header">Market Insights</h3>
+        <h3 class="news-header">Market Insights: ${newsTopic}</h3>
         <div class="news-grid">
             <c:forEach var="news" items="${newsList}" varStatus="status">
                 <c:if test="${status.index < 4}">

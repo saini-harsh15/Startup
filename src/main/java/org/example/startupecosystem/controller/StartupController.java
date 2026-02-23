@@ -136,7 +136,7 @@ public class StartupController {
         String topic = (startup.getIndustry() != null && !startup.getIndustry().trim().isEmpty())
                 ? startup.getIndustry().trim()
                 : "startup";
-
+        model.addAttribute("newsTopic", topic);
         model.addAttribute("newsList", newsService.fetchNews(topic));
 
         return "startupDashboard";
