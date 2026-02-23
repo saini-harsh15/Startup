@@ -56,7 +56,6 @@
             scroll-behavior: smooth;
         }
 
-        /* ================= NAVBAR ================= */
         .navbar {
             position: fixed;
             top: 14px;
@@ -163,7 +162,6 @@
             cursor: pointer;
         }
 
-        /* ================= DROPDOWN ================= */
         .dropdown {
             position: relative
         }
@@ -197,7 +195,6 @@
             color: var(--accent);
         }
 
-        /* ================= SIDEBAR ================= */
         .sidebar {
             position: fixed;
             top: 14px;
@@ -290,7 +287,6 @@
             display: block
         }
 
-        /* ================= PAGE ================= */
         .page-wrap {
             max-width: 1400px;
             margin: auto;
@@ -313,7 +309,6 @@
             font-weight: 700;
         }
 
-        /* ================= CONTROLS ================= */
         .controls-bar {
             background: var(--card);
             border: var(--border);
@@ -363,7 +358,7 @@
             background: var(--accent-soft);
         }
 
-        /* ================= SUMMARY ================= */
+
         .summary-grid {
             display: grid;
             grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
@@ -401,7 +396,6 @@
             font-size: 2rem
         }
 
-        /* ================= INVESTMENT REQUESTS ================= */
         .investment-section {
             margin-bottom: 50px;
         }
@@ -472,7 +466,6 @@
             gap: 12px;
         }
 
-        /* Refined Subtle Empty State Styling */
         .empty-state {
             display: flex;
             align-items: center;
@@ -488,7 +481,7 @@
             opacity: 0.6;
         }
 
-        /* ================= PROFILE ================= */
+
         .profile-section {
             background: var(--card);
             border: var(--border);
@@ -505,7 +498,7 @@
             margin-bottom: 18px;
         }
 
-        /* ================= NEWS ================= */
+
         .news-header {
             font-size: 1.5rem;
             margin-bottom: 20px;
@@ -587,7 +580,7 @@
             border: 1px solid rgba(220, 53, 69, 0.4);
         }
 
-        /* ===== USER IDENTITY CHIP ===== */
+
         .user-chip {
             display: inline-flex;
             align-items: center;
@@ -619,13 +612,12 @@
             font-weight: 600;
         }
 
-        /* theme icon inside chip */
+
         .user-chip .theme-toggle {
             font-size: 1rem;
             padding: 6px;
         }
 
-        /* mobile cleanup */
         @media (max-width: 768px) {
             .welcome-text {
                 display: none
@@ -636,9 +628,6 @@
             }
         }
 
-        /* ================= INTERACTION SYSTEM ================= */
-
-        /* clickable elements */
         button,
         .btn-save,
         .sidebar a,
@@ -653,7 +642,7 @@
             border-color .18s ease;
         }
 
-        /* lift effect */
+
         button:hover,
         .btn-save:hover,
         .profile-icon:hover {
@@ -661,34 +650,29 @@
             box-shadow: 0 10px 22px rgba(0, 0, 0, .12);
         }
 
-        /* press effect */
+
         button:active,
         .profile-icon:active {
             transform: translateY(0px) scale(.97);
             box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
         }
 
-        /* sidebar links feel clickable */
         .sidebar a:hover {
             transform: translateX(6px);
         }
 
-        /* dropdown items feel selectable */
         .dropdown-content a:hover {
             padding-left: 20px;
         }
 
-        /* theme toggle nicer */
         .theme-toggle:hover {
             transform: rotate(-12deg) scale(1.15);
         }
 
-        /* primary save button emphasis */
         .btn-save:hover {
             filter: brightness(1.05);
         }
 
-        /* dark mode adjustments */
         .dark-mode button:hover,
         .dark-mode .btn-save:hover,
         .dark-mode .profile-icon:hover {

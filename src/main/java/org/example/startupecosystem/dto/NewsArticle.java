@@ -11,7 +11,6 @@ public class NewsArticle {
         this.imageUrl = imageUrl;
     }
 
-    // getters and setters
     public String getTitle() {
         return title;
     }

@@ -44,7 +44,7 @@ public class InvestorController {
     private ChatService chatService;
 
 
-    // --- Helper method for robust session ID retrieval ---
+
     private Optional<Long> getUserIdFromSession(HttpSession session, RedirectAttributes redirectAttributes) {
         Object userIdObj = session.getAttribute("loggedInUserId");
         Object roleObj = session.getAttribute("loggedInRole");
@@ -121,7 +121,7 @@ public class InvestorController {
 
         model.addAttribute("investor", investorOptional.get());
 
-        // 1️⃣ Get chat partner IDs
+
         List<Long> partnerIds = chatService.getChatPartnerIds(investorId);
 
         List<Startup> startupsList;
@@ -132,7 +132,7 @@ public class InvestorController {
             startupsList = startupService.findAllByIds(partnerIds);
         }
 
-// 2️⃣ Apply search filter ONLY within chat partners
+
         if (search != null && !search.trim().isEmpty()) {
             String lower = search.trim().toLowerCase();
 
@@ -199,8 +199,6 @@ public class InvestorController {
 
         Startup startup = startupOpt.get();
 
-        // ===== REAL ENGAGEMENT TRACKING (5 MIN COOLDOWN) =====
-
         Optional<StartupProfileViewEntity> lastViewOpt =
                 startupProfileViewRepository
                         .findTopByStartupIdAndInvestorIdOrderByViewedAtDesc(startup.getId(), investorId);
@@ -213,7 +211,7 @@ public class InvestorController {
                     java.time.LocalDateTime.now()
             ).getSeconds();
 
-            // Ignore refresh spam
+
             if (seconds < 300) {
                 shouldCount = false;
             }
@@ -246,8 +244,7 @@ public class InvestorController {
         return "startupExpandedView";
     }
 
-    // --- NEW: Method to show the Investment Application Form ---
-    @GetMapping("/apply")
+      @GetMapping("/apply")
     public String showInvestmentForm(
             @RequestParam("startupId") Long startupId,
             Model model,
@@ -268,7 +265,6 @@ public class InvestorController {
         model.addAttribute("investor", investorOptional.get());
         model.addAttribute("startup", startupOpt.get());
 
-        // Returns the investment application JSP
         return "investment-application";
     }
 
@@ -310,7 +306,6 @@ public class InvestorController {
         return "redirect:/investor/dashboard";
     }
 
-    // --- UPDATED: Handle the actual form submission ---
     @PostMapping("/submit-investment-request")
     public String applyForInvestment(
             @RequestParam("startupId") Long startupId,
@@ -335,7 +330,7 @@ public class InvestorController {
                 .getStartupById(startupId)
                 .orElseThrow();
 
-        // 🔥 REAL PERSISTENCE
+
         investmentRequestService.createRequest(
                 investor,
                 startup,

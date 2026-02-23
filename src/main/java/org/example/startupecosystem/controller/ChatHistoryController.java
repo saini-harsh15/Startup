@@ -18,7 +18,7 @@ public class ChatHistoryController {
     @Autowired
     private ChatService chatService;
 
-    // GET /api/chat/history?userId1=...&userId2=...
+
     @GetMapping("/history")
     public ResponseEntity<List<ChatMessage>> getChatHistory(
             @RequestParam("userId1") Long userId1,

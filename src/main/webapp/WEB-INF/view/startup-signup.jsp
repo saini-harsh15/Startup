@@ -129,7 +129,6 @@
             color:var(--muted);
         }
 
-        /* Password Strength */
         .strength-container{
             margin-top:10px;
             max-width:100%;
@@ -241,7 +240,6 @@
             </div>
         </div>
 
-        <!-- STARTUP DETAILS -->
         <div class="section">
             <div class="section-title">Startup Details</div>
 
@@ -434,7 +432,7 @@
                     submitBtn.disabled = false;
                 });
 
-        }, 600); // debounce typing
+        }, 600);
     });
 
 </script>

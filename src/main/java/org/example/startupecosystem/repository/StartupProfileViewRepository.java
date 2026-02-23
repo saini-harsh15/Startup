@@ -13,15 +13,12 @@ public interface StartupProfileViewRepository
 
     long countByStartupId(Long startupId);
 
-    // last 20 viewers (recent activity)
     List<StartupProfileViewEntity> findTop20ByStartupIdOrderByViewedAtDesc(Long startupId);
 
-    // 🔥 NEW — last view by specific investor (for cooldown tracking)
     Optional<StartupProfileViewEntity>
     findTopByStartupIdAndInvestorIdOrderByViewedAtDesc(Long startupId, Long investorId);
 
-    // Analytics aggregation
-    @Query("""
+     @Query("""
         SELECT v.investorId, COUNT(v), MAX(v.viewedAt)
         FROM StartupProfileViewEntity v
         WHERE v.startupId = :startupId

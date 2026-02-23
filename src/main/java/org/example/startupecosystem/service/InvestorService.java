@@ -27,23 +27,17 @@ public class InvestorService {
         return investorRepository.findAll();
     }
 
-    // Updated method for more flexible search and sort
     public List<Investor> findInvestorsByCriteria(String search, String sort) {
-        // Handle sorting if a sort parameter is provided
         if (sort != null && !sort.isEmpty()) {
             if (search != null && !search.isEmpty()) {
-                // If both search and sort are present, filter then sort
-                return investorRepository.findBySearchCriteria(search, Sort.by(sort));
+                 return investorRepository.findBySearchCriteria(search, Sort.by(sort));
             } else {
-                // If only sort is present, get all and sort
                 return investorRepository.findAll(Sort.by(sort));
             }
         } else if (search != null && !search.isEmpty()) {
-            // If only search is present, filter without sorting
-            return investorRepository.findBySearchCriteria(search, Sort.unsorted());
+           return investorRepository.findBySearchCriteria(search, Sort.unsorted());
         }
 
-        // Default: return all investors without any filters or sorting (using the new method)
         return findAll();
     }
 

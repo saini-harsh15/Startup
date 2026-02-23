@@ -21,14 +21,13 @@ public class Company {
     @Column(name = "government_id", nullable = false, unique = true)
     private String governmentId;
 
-    // This field must be of type Date to match the database column
+
     @Column(name = "founding_date", nullable = false)
     private Date foundingDate;
 
     @Column(name = "industry", nullable = false)
     private String industry;
 
-    // Default constructor is required by JPA
     public Company() {
     }
 

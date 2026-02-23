@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ================= THEME ================= */
+
         :root{
             --accent:#28a745;
             --accent-soft:rgba(40,167,69,.12);
@@ -52,7 +52,6 @@
             transition:.3s ease;
         }
 
-        /* ================= NAVBAR ================= */
         .navbar{
             position:fixed;
             top:14px;left:14px;right:14px;
@@ -91,7 +90,6 @@
             font-weight:700;cursor:pointer;
         }
 
-        /* ================= DROPDOWN ================= */
         .dropdown{position:relative}
         .dropdown-content{
             display:none;position:absolute;right:0;top:56px;
@@ -108,7 +106,7 @@
             background:var(--accent-soft);color:var(--accent);
         }
 
-        /* ================= SIDEBAR ================= */
+
         .sidebar{
             position:fixed;top:14px;left:14px;
             height:calc(100% - 28px);
@@ -166,14 +164,12 @@
             text-align:center;font-size:.8rem;color:var(--muted);
         }
 
-        /* ================= OVERLAY ================= */
         .overlay{
             display:none;position:fixed;inset:0;
             background:rgba(0,0,0,.35);z-index:1000;
         }
         .overlay.show{display:block}
 
-        /* ================= PAGE ================= */
         .page-wrap{max-width:1400px;margin:auto;padding:24px}
 
         .header-section{
@@ -203,7 +199,7 @@
         }
         .filter-panel.open{max-height:240px;padding:22px}
 
-        /* Startup cards */
+
         .grid-container{
             display:grid;
             grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
@@ -240,7 +236,6 @@
                     0 22px 55px rgba(255,255,255,.10);
         }
 
-        /* ================= PAGINATION ================= */
         .pagination-container {
             display: flex;
             justify-content: center;
@@ -272,7 +267,6 @@
             pointer-events: none;
         }
 
-        /* ================= NEWS ================= */
         .news-section{margin-top:60px}
         .news-header{
             font-size:1.5rem;margin-bottom:20px;
@@ -301,7 +295,6 @@
         .news-content{padding:16px}
         .news-title{font-size:.95rem;font-weight:600}
 
-        /* ================= RESPONSIVE ================= */
         @media(max-width:768px){
             .header-section{flex-direction:column;align-items:flex-start;gap:14px}
             .grid-container,.news-grid{grid-template-columns:1fr}
@@ -327,7 +320,6 @@
             font-weight:600;
         }
 
-        /* Slight hover polish */
         .welcome-text:hover{
             background:var(--accent-soft);
         }
@@ -337,7 +329,6 @@
             .welcome-text{display:none}
         }
 
-        /* ===== USER IDENTITY CHIP ===== */
         .user-chip{
             display:inline-flex;
             align-items:center;
@@ -358,7 +349,7 @@
             background:var(--accent-soft);
         }
 
-        /* welcome text */
+
         .welcome-text{
             font-size:.88rem;
             color:var(--muted);
@@ -371,13 +362,11 @@
             font-weight:600;
         }
 
-        /* make theme icon fit inside chip */
         .user-chip .theme-toggle{
             font-size:1rem;
             padding:6px;
         }
 
-        /* mobile: keep only icon + avatar */
         @media(max-width:768px){
             .welcome-text{display:none}
             .user-chip{padding:6px 10px}
@@ -556,7 +545,6 @@
         document.getElementById("yearSpan").textContent=new Date().getFullYear();
         const name="${investor.investorName}";
         if(name)profileIcon.textContent=name.charAt(0).toUpperCase();
-        // Apply saved theme on load
         const savedTheme = localStorage.getItem("theme");
         if(savedTheme === "dark"){
             document.documentElement.classList.add("dark-mode");
@@ -583,7 +571,6 @@
         localStorage.setItem("theme",
             document.documentElement.classList.contains("dark-mode")?"dark":"light");
         updateThemeIcon();
-        // click pulse animation on icon
         var iconEl = document.querySelector('.theme-toggle i');
         if(iconEl){
             iconEl.classList.remove('icon-pulse');

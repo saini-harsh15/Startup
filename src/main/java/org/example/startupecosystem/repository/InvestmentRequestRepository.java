@@ -11,13 +11,13 @@ import java.util.List;
 public interface InvestmentRequestRepository
         extends JpaRepository<InvestmentRequest, Long> {
 
-    // Existing – keep
+
     List<InvestmentRequest> findByStartupIdOrderByCreatedAtDesc(Long startupId);
 
-    // NEW – for dashboard metrics
+
     long countByStartupIdAndStatus(Long startupId, InvestmentRequestStatus status);
 
-    // NEW – for accepted investments
+
     List<InvestmentRequest> findByStartupIdAndStatusOrderByCreatedAtDesc(
             Long startupId,
             InvestmentRequestStatus status

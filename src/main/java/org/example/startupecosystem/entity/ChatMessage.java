@@ -12,10 +12,10 @@ public class ChatMessage {
     private Long id;
 
     @Column(name = "sender_id")
-    private Long senderId; // ID of the user sending the message (Startup or Investor)
+    private Long senderId;
 
     @Column(name = "receiver_id")
-    private Long receiverId; // ID of the intended recipient
+    private Long receiverId;
 
     @Column(name = "content", length = 500)
     private String content;
@@ -23,12 +23,12 @@ public class ChatMessage {
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
-    // Constructors
+
     public ChatMessage() {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getters and Setters (omitted for brevity, but needed by JPA)
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

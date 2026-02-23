@@ -12,8 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --------- YOUR ORIGINAL CSS — UNCHANGED --------- */
-        :root{
+       :root{
             --accent:#28a745;
             --accent-dark:#145c2a;
             --bg:#eef3f6;
@@ -108,7 +107,6 @@
             .form-panel{width:100%}
         }
 
-        /* ===== SaaS AUTH MESSAGE ===== */
         .login-message{
             display:flex;
             align-items:flex-start;
@@ -159,7 +157,6 @@
             to{opacity:1; transform:translateY(0)}
         }
 
-        /* interactive forgot password link */
         .forgot-link{
             position:relative;
             transition:color .25s ease;
@@ -194,13 +191,11 @@
             opacity:1;
         }
 
-        /* subtle interactive help link */
-        .forgot-link{
+       .forgot-link{
             position:relative;
             transition:color .25s ease, letter-spacing .25s ease;
         }
 
-        /* underline reveal */
         .forgot-link::after{
             content:"";
             position:absolute;
@@ -212,7 +207,6 @@
             transition:width .25s ease;
         }
 
-        /* hover feel */
         .forgot-link:hover{
             color:#28a745 !important;
             letter-spacing:.2px;
@@ -222,7 +216,6 @@
             width:100%;
         }
 
-        /* tiny press feedback */
         .forgot-link:active{
             transform:scale(.97);
         }
@@ -299,7 +292,6 @@
                     </span>
                 </div>
 
-                <!-- caps lock message -->
                 <div id="capsWarning" style="display:none;color:#dc3545;font-size:.8rem;margin-top:6px;">
                     Caps Lock is ON
                 </div>
@@ -325,7 +317,6 @@
         else{p.type="password";i.classList.replace("fa-eye","fa-eye-slash");}
     }
 
-    /* remember email */
     const emailInput=document.getElementById("email");
     const savedEmail=localStorage.getItem("lastLoginEmail");
     if(savedEmail) emailInput.value=savedEmail;
@@ -338,27 +329,23 @@
         btn.disabled=true;
     });
 
-    /* caps lock detection */
-    const password=document.getElementById("password");
+   const password=document.getElementById("password");
     const caps=document.getElementById("capsWarning");
     password.addEventListener("keyup",e=>{
         caps.style.display=e.getModifierState("CapsLock")?"block":"none";
     });
 
-    /* autofocus */
     window.addEventListener("load",()=>{
         if(!emailInput.value) emailInput.focus();
         else password.focus();
     });
 
-    /* enter submit */
     document.addEventListener("keydown",e=>{
         if(e.key==="Enter"){
             document.getElementById("loginForm").submit();
         }
     });
 
-    /* auto dismiss login alert */
     const alertBox = document.getElementById("authAlert");
     if(alertBox){
         setTimeout(()=>{
@@ -371,18 +358,15 @@
 </script>
 <script>
 
-    /* Forgot password interaction */
-    const forgot = document.getElementById("forgotLink");
+   const forgot = document.getElementById("forgotLink");
 
     forgot.addEventListener("click", function(e){
 
-        // visual acknowledgement
         this.style.pointerEvents="none";
         this.style.opacity=".7";
         this.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Opening...';
 
-        // small delay so user perceives action
-        setTimeout(()=>{
+       setTimeout(()=>{
             window.location.href=this.href;
         },450);
 

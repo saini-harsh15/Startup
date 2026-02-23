@@ -59,14 +59,13 @@ public class NewsService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Logging only; UI can handle empty
+            e.printStackTrace();
         }
         return articles;
     }
 
     private String buildQueryForIndustry(String industry) {
-        // Keep your same advanced query logic
-        String key = industry == null ? "startup" : industry.trim().toLowerCase();
+       String key = industry == null ? "startup" : industry.trim().toLowerCase();
         Map<String, String> map = new HashMap<>();
         map.put("ai", "(AI OR \"artificial intelligence\" OR machine learning OR ML)");
         map.put("fintech", "(fintech OR \"financial technology\" OR payments OR banking)");

@@ -11,6 +11,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             String companyName,
             String registrationNumber,
             String governmentId,
-            Date foundingDate, // The data type has been changed to Date
+            Date foundingDate,
             String industry);
 }

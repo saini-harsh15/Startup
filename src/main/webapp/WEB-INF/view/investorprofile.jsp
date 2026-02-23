@@ -48,7 +48,6 @@
             transition: background 0.3s ease;
         }
 
-        /* ================= PULSE ANIMATION ================= */
         @keyframes pulsePop {
             0% { transform: scale(1); }
             40% { transform: scale(1.25); }
@@ -56,8 +55,7 @@
         }
         .icon-pulse { animation: pulsePop .35s ease; }
 
-        /* ================= NAVBAR (FIXED) ================= */
-        .navbar {
+       .navbar {
             position: fixed; top: 14px; left: 14px; right: 14px; height: 68px; padding: 0 22px 0 26px;
             background: rgba(255, 255, 255, .85); backdrop-filter: blur(14px);
             border: var(--border); border-radius: 18px; display: flex;
@@ -72,7 +70,6 @@
         .logo { font-weight: 800; font-size: 1.35rem; color: var(--accent); cursor: pointer; }
         .logo span { color: var(--text); }
 
-        /* ================= SIDEBAR & OVERLAY ================= */
         .sidebar { position: fixed; top: 14px; left: 14px; height: calc(100% - 28px); width: 0; overflow: hidden; transition: .35s ease; z-index: 1100; }
         .sidebar.open { width: 300px; }
         .sidebar .panel {
@@ -93,7 +90,6 @@
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, .35); z-index: 1050; }
         .overlay.show { display: block; }
 
-        /* ================= PROFILE LAYOUT ================= */
         .page-wrap { max-width: 1200px; margin: auto; padding: 18px 24px 50px; }
 
         .profile-header-card {
@@ -124,7 +120,6 @@
             font-size: 2.3rem; font-weight: 800; color: var(--accent); border: var(--border);
         }
 
-        /* ================= FORMS ================= */
         .form-group { margin-bottom: 24px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; }
         .form-group input, .form-group textarea {
@@ -143,8 +138,7 @@
             width: 100%; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* ================= UI COMPONENTS ================= */
-        .user-chip {
+       .user-chip {
             display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 8px;
             border-radius: 999px; background: rgba(15,23,42,.05); border: var(--border); height: 38px;
         }
@@ -165,7 +159,6 @@
         .dropdown-content a { display: block; padding: 14px 16px; color: var(--text); text-decoration: none; font-weight: 500; }
         .dropdown-content a:hover { background: var(--accent-soft); color: var(--accent); padding-left: 20px; }
 
-        /* ================= INTERACTION SYSTEM ================= */
         button, .btn-save, .profile-icon, .user-chip, .theme-toggle {
             transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
         }

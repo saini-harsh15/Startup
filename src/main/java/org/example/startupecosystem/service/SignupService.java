@@ -56,7 +56,6 @@ public class SignupService {
             String investmentFirm
     ) {
 
-        // 🔒 PASSWORD VALIDATION
         if (!PasswordValidator.isValid(password)) {
             throw new IllegalArgumentException(
                     "Password must be at least 10 characters long and include uppercase, lowercase and a number. No spaces allowed."

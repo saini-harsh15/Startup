@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%
-    // Prevent caching of this page
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
     response.setDateHeader("Expires", 0); // Proxies.
@@ -93,27 +92,25 @@
         .send-button{ padding:10px 14px; border:none; border-radius:10px; background: var(--accent); color:#fff; font-weight:700; cursor:pointer; }
         .send-button:hover{ background: var(--accent-600); }
 
-        /* Enhanced message bubble + timestamp */
         .message{ max-width:72%; padding:10px 12px; border-radius:14px; position:relative; display:flex; flex-direction:column; gap:6px; box-shadow: 0 6px 18px rgba(12,17,38,0.06); }
         .message.sent{ align-self:flex-end; background: rgba(40,167,69,0.10); border: 1px solid rgba(40,167,69,0.25); }
         .message.received{ align-self:flex-start; background: rgba(255,255,255,0.75); border: 1px solid rgba(12,17,38,0.08); }
         .message .bubble{ white-space:pre-wrap; word-wrap:break-word; line-height:1.35; }
         .message .timestamp{ align-self:flex-end; font-size:0.72rem; color: var(--muted); }
 
-        /* Date separators like WhatsApp */
+
         .date-separator{ align-self:center; margin:10px 0; padding:6px 10px; font-size:0.78rem; font-weight:600; color: var(--text);
             background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.62)); border:1px solid rgba(255,255,255,0.48);
             backdrop-filter: blur(6px); border-radius:999px; box-shadow: 0 6px 16px rgba(12,17,38,0.08); }
 
-        /* Dark theme tweaks */
+
         [data-theme="dark"] .message.sent{ background: rgba(6,94,62,0.55); border-color: rgba(6,94,62,0.75); color:#d1fae5; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
         [data-theme="dark"] .message.received{ background: rgba(17,24,39,0.72); border-color: rgba(255,255,255,0.08); color:#e5e7eb; box-shadow: 0 6px 18px rgba(0,0,0,0.5); }
         [data-theme="dark"] .date-separator{ background: linear-gradient(180deg, rgba(17,24,39,0.72), rgba(17,24,39,0.64)); border-color: rgba(255,255,255,0.08); color:#e5e7eb; }
 
         .overlay{ position:fixed; top:0; left:0; right:0; bottom:0; background: rgba(15,23,42,0.3); display:none; z-index: 1300; }
         .overlay.show{ display:block; }
-        
-        /* Dark theme overrides */
+
         [data-theme="dark"]{
             --bg-1: linear-gradient(180deg,#0b1220 0%, #0e1526 50%, #0b1220 100%);
             --muted: #94a3b8;
@@ -147,7 +144,7 @@
 
         [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.35); }
         [data-theme="dark"] * { scrollbar-color: rgba(148,163,184,0.35) transparent; }
-        /* Chat header and input/icon buttons */
+
         .chat-header{ display:flex; align-items:center; gap:12px; padding:8px 10px; border-bottom:1px solid rgba(12,17,38,0.08); position:sticky; top:0; z-index:2; }
         .back-btn{ display:none; align-items:center; justify-content:center; width:36px; height:36px; border-radius:10px; border:1px solid rgba(12,17,38,0.06); background: rgba(255,255,255,0.72); color:var(--text); cursor:pointer; }
         .partner-meta{ display:flex; flex-direction:column; }
@@ -158,18 +155,18 @@
         .chat-input-area{ display:flex; gap:8px; padding:8px; border-top:1px solid rgba(12,17,38,0.08); align-items:center; }
         .chat-input-area input{ flex:1; padding:12px 14px; border-radius:999px; border:1px solid rgba(12,17,38,0.08); outline:none; background: rgba(255,255,255,0.8); }
         .send-button[disabled]{ opacity:0.6; cursor:not-allowed; }
-        /* Mobile layout */
+
         @media (max-width: 900px){
             .container{ grid-template-columns: 1fr; }
             .back-btn{ display:inline-flex; }
             body.mobile-chat-active .chat-list{ display:none; }
             body.mobile-chat-active .chat-window{ display:flex; }
         }
-        /* Dark theme for header/input */
+
         [data-theme="dark"] .back-btn, [data-theme="dark"] .icon-btn{ background: rgba(17,24,39,0.72); border-color: rgba(255,255,255,0.08); color: var(--text); }
         [data-theme="dark"] .chat-header{ border-bottom-color: rgba(255,255,255,0.08); }
         [data-theme="dark"] .chat-input-area input{ background:#0b1220; border-color: rgba(255,255,255,0.12); color: var(--text); }
-        /* === Skeleton loaders (shimmer) === */
+
         .skeleton{position:relative;overflow:hidden;background:rgba(15,23,42,0.06)}
         .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);transform:translateX(-100%);animation:shimmer 1.2s infinite}
         @keyframes shimmer{to{transform:translateX(100%)}}
@@ -182,7 +179,7 @@
         .history-skeleton{padding:12px;display:none}
         .history-skeleton .bubble{width:60%;height:48px;border-radius:14px;margin:10px 0}
         .history-skeleton .bubble.right{margin-left:auto}
-        /* Sidebar + overlay to match dashboard */
+
         .ms-sidebar{position:fixed;top:14px;left:14px;height:calc(100% - 28px);width:0;overflow:hidden;transition:.35s ease;z-index:1100}
         .ms-sidebar.open{width:300px}
         .ms-sidebar .panel{width:300px;height:100%;padding:26px 22px;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.96));border:1px solid rgba(15,23,42,.06);border-radius:18px;box-shadow:12px 0 35px rgba(0,0,0,.12)}
@@ -204,7 +201,6 @@
 </head>
 <body>
 
-<!-- Sidebar + overlay (dashboard-aligned) -->
 <div id="msSidebar" class="ms-sidebar">
   <div class="panel">
     <div class="logo"><i class="fas fa-leaf"></i> ECO<span>TRACK</span></div>
@@ -339,15 +335,14 @@
 <script>
     var stompClient = null;
     var currentInvestorId = Number(${investor.id});
-    var currentReceiverId = null; // selected startupId
-    var lastRenderedDateKey = null; // tracks last date separator in current chat
+    var currentReceiverId = null;
+    var lastRenderedDateKey = null;
 
     function scrollToBottom() {
         const historyDiv = document.getElementById('chatHistory');
         historyDiv.scrollTop = historyDiv.scrollHeight;
     }
 
-    // --- Timestamp helpers ---
     function parseTimestamp(ts){
         if (!ts) return new Date();
         try{
@@ -391,7 +386,7 @@
 
     function loadChat(startupId, startupName, event) {
         const historyDiv = document.getElementById('chatHistory');
-        // Mark active chat item in the list
+
         document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
         if (event && event.currentTarget) {
             event.currentTarget.classList.add('active');
@@ -400,21 +395,16 @@
             if (el) el.classList.add('active');
         }
 
-        // Update active receiver AFTER UI selection but BEFORE fetch completion
+
         currentReceiverId = startupId;
-        // Update chat header partner name and switch to chat view on mobile
         var pn = document.getElementById('partnerName');
         if (pn) { pn.textContent = startupName; }
         document.body.classList.add('mobile-chat-active');
-        // Reset last date separator for this chat
         lastRenderedDateKey = null;
 
-        // Show skeleton while loading
         var hs = document.getElementById('historySkeleton'); if(hs) hs.style.display='block';
-        // Show a simple loading indicator (not a fake conversation message)
         historyDiv.innerHTML = '<p style="text-align: center; color: var(--muted);">Loading chat history with ' + startupName + '...</p>';
 
-        // Fetch chat history from backend REST API
         const url = '/api/chat/history?userId1=' + encodeURIComponent(currentInvestorId) + '&userId2=' + encodeURIComponent(startupId);
         fetch(url, { method: 'GET' })
             .then(resp => {
@@ -422,9 +412,8 @@
                 return resp.json();
             })
             .then(messages => {
-                // Only render if the selected partner hasn't changed during the fetch
                 if (currentReceiverId !== startupId) {
-                    return; // user switched partner; ignore this result
+                    return;
                 }
                 if (hs) hs.style.display = 'none';
                 historyDiv.innerHTML = '';
@@ -437,12 +426,10 @@
                 } else {
                     let lastDateKey = null;
                     messages.forEach(m => {
-                        // First, ensure the message belongs to the current conversation (bidirectional)
                         const inThisConversation = (m.senderId == currentInvestorId && m.receiverId == currentReceiverId) ||
                             (m.senderId == currentReceiverId && m.receiverId == currentInvestorId);
                         if (!inThisConversation) return;
 
-                        // Insert date separator when the day changes
                         const ts = parseTimestamp(m.timestamp);
                         const dateKey = getDateKey(ts);
                         if (dateKey !== lastDateKey) {
@@ -453,7 +440,6 @@
                             lastDateKey = dateKey;
                         }
 
-                        // Only after confirming membership, classify as sent/received based on current user id
                         const typeClass = (m.senderId == currentInvestorId) ? 'sent' : 'received';
                         const div = document.createElement('div');
                         div.className = 'message ' + typeClass;
@@ -477,7 +463,6 @@
         const isActiveChat = (chatMessage.senderId == currentUserId && chatMessage.receiverId == currentReceiverId) ||
             (chatMessage.senderId == currentReceiverId && chatMessage.receiverId == currentUserId);
         if (isActiveChat) {
-            // Insert date separator if needed
             const ts = parseTimestamp(chatMessage.timestamp);
             const dateKey = getDateKey(ts);
             if (dateKey !== lastRenderedDateKey) {
@@ -527,7 +512,6 @@
         document.body.classList.remove('mobile-chat-active');
     }
 
-    // Simple theme toggler to match other pages
     function setTheme(theme){
         document.documentElement.setAttribute('data-theme', theme);
         try { localStorage.setItem('theme', theme); } catch(e) {}
@@ -539,17 +523,15 @@
     function toggleTheme(){
         const current = document.documentElement.getAttribute('data-theme') || 'light';
         setTheme(current === 'light' ? 'dark' : 'light');
-        // click pulse animation on icon
         var iconEl = document.querySelector('#themeToggleBtn i');
         if(iconEl){
             iconEl.classList.remove('icon-pulse');
-            void iconEl.offsetWidth; // restart animation
+            void iconEl.offsetWidth;
             iconEl.classList.add('icon-pulse');
             setTimeout(function(){ iconEl.classList.remove('icon-pulse'); }, 400);
         }
     }
 
-    // --- Attachment rendering, emoji picker, typing indicator helpers ---
     function renderMessageContent(container, msg, ts){
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
@@ -560,7 +542,6 @@
             try{
                 const meta = JSON.parse(content.substring(6));
 
-                // IMAGE
                 if (meta.type && meta.type.startsWith('image/')){
                     const img = document.createElement('img');
                     img.src = meta.url;
@@ -571,7 +552,6 @@
                     bubble.appendChild(img);
                 }
 
-                // PDF
                 else if(meta.type === 'application/pdf'){
                     const card = document.createElement('div');
                     card.style.display = 'flex';
@@ -613,7 +593,6 @@
                     bubble.appendChild(card);
                 }
 
-                // OTHER FILES
                 else{
                     const a = document.createElement('a');
                     a.href = meta.url;
@@ -719,13 +698,11 @@
             if(i===0) loadCategory(cat);
         });
 
-        // divider line
         const divider = document.createElement('div');
         divider.style.height = '1px';
         divider.style.background = 'rgba(0,0,0,.08)';
         divider.style.margin = '6px 0';
 
-// dark mode support
         if(document.documentElement.getAttribute('data-theme') === 'dark'){
             divider.style.background = 'rgba(255,255,255,.12)';
         }
@@ -789,10 +766,8 @@
         }
         connect();
 
-        // Hide chat list skeleton once DOM is ready
         try{ var ls = document.getElementById('listSkeleton'); if(ls) ls.style.display='none'; }catch(e){}
 
-        // Populate avatars initials in the chat list
         try{
             document.querySelectorAll('#startupList .chat-item').forEach(function(item){
                 var name = item.getAttribute('data-name') || '';
@@ -802,11 +777,9 @@
             });
         }catch(e){}
 
-        // Improve search UX: submit on Enter only
         const searchInput = document.getElementById('searchInput');
         const searchForm = document.getElementById('searchForm');
         if (searchInput && searchForm) {
-            // If the field comes prefilled with only quotes, clear it
             if (searchInput.value && /^'+$/.test(searchInput.value)) {
                 searchInput.value = '';
             }
@@ -820,7 +793,6 @@
             });
         }
 
-        // Message input behavior: enable/disable send and Enter to send + emoji/attach + typing
         const msgInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const emojiBtn = document.getElementById('emojiBtn');
@@ -892,7 +864,6 @@
             });
         }
     });
-// Sidebar open/close
     function openNav(){ try{ document.getElementById('msSidebar').classList.add('open'); document.getElementById('msOverlay').classList.add('show'); }catch(e){} }
     function closeNav(){ try{ document.getElementById('msSidebar').classList.remove('open'); document.getElementById('msOverlay').classList.remove('show'); }catch(e){} }
 </script>
@@ -931,7 +902,6 @@
 
 </script>
 
-<!-- SweetAlert2 for logout confirm -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     (function(){

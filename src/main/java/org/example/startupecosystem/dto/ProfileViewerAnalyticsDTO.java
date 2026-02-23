@@ -11,7 +11,7 @@ public class ProfileViewerAnalyticsDTO {
     private LocalDateTime lastViewedAt;
     private int score;
     private String temperature;
-    private String lastSeenText; // ⭐ NEW
+    private String lastSeenText;
 
     public ProfileViewerAnalyticsDTO(Long investorId,
                                      String investorName,

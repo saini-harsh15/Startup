@@ -61,7 +61,6 @@ public class Investor {
     private String publicKey;
 
 
-    // Getters and Setters
 
     public String getPublicKey() {
         return publicKey;

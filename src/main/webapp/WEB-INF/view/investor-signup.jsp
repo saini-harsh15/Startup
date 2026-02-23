@@ -129,7 +129,7 @@
             color:var(--muted);
         }
 
-        /* Password Strength */
+
         .strength-container{
             margin-top:10px;
         }
@@ -193,7 +193,7 @@
 
     <form action="/completeInvestorSignup" method="post" onsubmit="return validateForm()">
 
-        <!-- ACCOUNT -->
+
         <div class="section">
             <div class="section-title">Account Credentials</div>
             <div class="grid">
@@ -240,7 +240,7 @@
             </div>
         </div>
 
-        <!-- INVESTOR DETAILS -->
+
         <div class="section">
             <div class="section-title">Investor Details</div>
 
@@ -402,8 +402,6 @@
         return true;
 
     }
-
-    /* ================= EMAIL AVAILABILITY CHECK ================= */
 
     const emailInput = document.getElementById("email");
     const emailStatus = document.getElementById("emailStatus");

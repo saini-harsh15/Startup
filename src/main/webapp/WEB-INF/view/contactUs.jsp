@@ -16,7 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -40,7 +39,7 @@
         }
 
 
-        /* NAVBAR */
+
         .navbar {
             position: fixed;
             top: 14px;
@@ -87,8 +86,6 @@
             gap:18px;
         }
 
-
-        /* PROFILE */
         .profile-icon{
             width:42px;height:42px;
             border-radius:12px;
@@ -148,10 +145,6 @@
             from{opacity:0; transform:translateY(-6px) scale(.97);}
             to{opacity:1; transform:translateY(0) scale(1);}
         }
-
-
-        /* SIDEBAR */
-        /* ================= SIDEBAR ================= */
 
         .sidebar{
             position:fixed;
@@ -229,7 +222,6 @@
         }
         .overlay.show{display:block}
 
-        /* PAGE */
         body{
             padding-top:72px;
         }
@@ -324,8 +316,6 @@
             box-shadow:0 18px 34px rgba(0,0,0,.12);
         }
 
-
-        /* identity chip */
         .user-chip{
             display:inline-flex;
             align-items:center;
@@ -359,7 +349,6 @@
             transition:.2s ease;
         }
 
-        /* layout */
         .support-layout{
             display:grid;
             grid-template-columns:320px 1fr;
@@ -454,7 +443,7 @@
 
 <body>
 
-<!-- SIDEBAR -->
+
 <div id="mySidebar" class="sidebar">
     <div class="panel">
 
@@ -480,7 +469,6 @@
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-left">
         <i class="fas fa-bars hamburger" onclick="openNav()"></i>
@@ -506,8 +494,6 @@
     </div>
 </header>
 
-
-<!-- CONTENT -->
 <div class="page-wrap">
 
     <div class="header-section">
@@ -560,7 +546,6 @@
     </div>
 </div>
 
-<!-- SCRIPTS -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 

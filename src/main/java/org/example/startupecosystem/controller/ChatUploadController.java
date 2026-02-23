@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/chat")
 public class ChatUploadController {
 
-    private static final long MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+    private static final long MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
     private static final String[] ALLOWED_TYPES = new String[]{
             "image/png", "image/jpeg", "image/gif", "application/pdf",
             "text/plain"

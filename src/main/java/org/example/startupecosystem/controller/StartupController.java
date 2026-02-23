@@ -48,7 +48,7 @@ public class StartupController {
     @Autowired
     private InvestmentRequestRepository investmentRequestRepository;
 
-    // ---------------- SESSION HELPER (UNCHANGED) ----------------
+
     private Optional<Long> getUserIdFromSession(
             HttpSession session,
             String expectedRole,
@@ -75,12 +75,7 @@ public class StartupController {
             return Optional.empty();
         }
     }
-    // ------------------------------------------------------------
 
-
-    /* ============================================================
-       ✅ STARTUP DASHBOARD (CLEAN + UX-DRIVEN)
-       ============================================================ */
     @GetMapping("/dashboard/{id}")
     public String showStartupDashboard(
             @PathVariable("id") Long id,
@@ -97,7 +92,7 @@ public class StartupController {
 
         Long loggedInStartupId = userIdOpt.get();
 
-        // 🔒 SECURITY CHECK
+
         if (!loggedInStartupId.equals(id)) {
             return "redirect:/login";
         }
@@ -112,7 +107,7 @@ public class StartupController {
 
         model.addAttribute("startup", startup);
 
-        // ---------- METRICS ----------
+
         long profileViews = startupProfileViewRepository.countUniqueViewers(id);
         model.addAttribute("profileViews", profileViews);
 
@@ -121,35 +116,28 @@ public class StartupController {
 
         model.addAttribute("totalInvestment", totalInvestment);
         model.addAttribute("totalMessages", 0);
-        // -----------------------------
 
-        // ================= INVESTMENT REQUESTS (UX LOGIC) =================
         List<InvestmentRequest> allRequests =
                 investmentRequestRepository
                         .findByStartupIdOrderByCreatedAtDesc(id);
 
-        // Pending ONLY → dashboard main list (max 4)
         List<InvestmentRequest> pendingRequests = allRequests.stream()
                 .filter(r -> r.getStatus() == InvestmentRequestStatus.PENDING)
                 .limit(4)
                 .toList();
 
-        // True pending count (for summary card)
-        long pendingCount = allRequests.stream()
+                long pendingCount = allRequests.stream()
                 .filter(r -> r.getStatus() == InvestmentRequestStatus.PENDING)
                 .count();
 
         model.addAttribute("pendingRequests", pendingRequests);
         model.addAttribute("pendingRequestCount", pendingCount);
-        // ==================================================================
 
-        // ---------- NEWS ----------
         String topic = (startup.getIndustry() != null && !startup.getIndustry().trim().isEmpty())
                 ? startup.getIndustry().trim()
                 : "startup";
 
         model.addAttribute("newsList", newsService.fetchNews(topic));
-        // --------------------------
 
         return "startupDashboard";
     }
@@ -179,7 +167,7 @@ public class StartupController {
                                 startupId,
                                 InvestmentRequestStatus.ACCEPTED);
 
-        // ================= FORMAT FOR DISPLAY =================
+
 
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("dd MMM yyyy");
@@ -200,7 +188,7 @@ public class StartupController {
 
                 }).toList();
 
-        // ================= MONTHLY AGGREGATION =================
+
 
         Map<String, Double> monthlyMap =
                 acceptedRequests.stream()
@@ -216,7 +204,7 @@ public class StartupController {
         List<String> chartMonths = new java.util.ArrayList<>(monthlyMap.keySet());
         List<Double> chartTotals = new java.util.ArrayList<>(monthlyMap.values());
 
-        // ================= FUNDING STAGE AGGREGATION =================
+
 
         Map<String, Double> stageMap =
                 acceptedRequests.stream()
@@ -286,7 +274,7 @@ public class StartupController {
         return "startupInvestmentRequests";
     }
 
-    /* ================= INVESTMENT REQUEST REVIEW ================= */
+
 
     @GetMapping("/investment-requests/{requestId}")
     public String reviewInvestmentRequest(
@@ -307,7 +295,7 @@ public class StartupController {
         InvestmentRequest request = investmentRequestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        // 🔒 SECURITY CHECK
+
         if (!request.getStartup().getId().equals(startupId)) {
             return "redirect:/login";
         }
@@ -384,9 +372,6 @@ public class StartupController {
         return "redirect:/startup/dashboard/" + startupId;
     }
 
-
-
-    /* ===================== MESSAGES ===================== */
     @GetMapping("/messages")
     public String showMessagesPage(
             @RequestParam(value = "search", required = false) String search,
@@ -412,12 +397,10 @@ public class StartupController {
 
         if (search != null && !search.trim().isEmpty()) {
 
-            // 🔍 SEARCH ENTIRE INVESTOR DATABASE
             investors = investorService.searchInvestors(search.trim());
 
         } else {
 
-            // 💬 SHOW ONLY EXISTING CHAT PARTNERS
             List<Long> partnerIds = chatService.getChatPartnerIds(startupId);
 
             if (partnerIds.isEmpty()) {
@@ -558,10 +541,6 @@ public class StartupController {
         return "startupProfileAnalytics";
     }
 
-
-
-
-    /* ===================== PROFILE ===================== */
     @GetMapping("/profile")
     public String showProfile(
             Model model,

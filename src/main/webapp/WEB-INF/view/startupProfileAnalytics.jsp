@@ -51,7 +51,6 @@
             font-weight:700;
         }
 
-        /* CARD */
         .card{
             background:var(--card);
             border-radius:18px;
@@ -85,7 +84,6 @@
             color:var(--muted);
         }
 
-        /* LEFT */
         .identity{
             width:260px;
         }
@@ -100,7 +98,6 @@
             font-size:13px;
         }
 
-        /* CENTER METRICS */
         .metrics{
             display:flex;
             gap:60px;
@@ -120,13 +117,11 @@
             color:#888;
         }
 
-        /* RIGHT */
         .right{
             text-align:right;
             min-width:220px;
         }
 
-        /* temperature badges */
         .badge{
             display:inline-block;
             padding:6px 14px;
@@ -136,7 +131,6 @@
             margin-bottom:6px;
         }
 
-        /* LIGHT THEME — stronger readable badges */
         .hot{
             background:#ffe3e3;
             color:#c92a2a;
@@ -155,7 +149,6 @@
             border:1px solid #a5d8ff;
         }
 
-        /* DARK THEME — keep soft glow */
         .dark-mode .hot{
             background:rgba(255,77,79,.18);
             color:#ff8787;
@@ -174,14 +167,12 @@
             border:1px solid rgba(77,171,247,.35);
         }
 
-        /* hint text */
         .hint{
             font-size:13px;
             margin-bottom:12px;
             color:#666;
         }
 
-        /* button */
         .btn{
             background:linear-gradient(135deg,var(--accent),#1f8f3d);
             color:white;
@@ -208,8 +199,6 @@
             border-radius:16px;
             color:#777;
         }
-
-        /* ===== NAVBAR ===== */
 
         .navbar{
             position:fixed;
@@ -308,18 +297,15 @@
 
     <c:otherwise>
 
-        <!-- SORTING PRIORITY: HOT FIRST -->
-        <c:forEach var="v" items="${analytics}">
+       <c:forEach var="v" items="${analytics}">
 
             <div class="card">
 
-                <!-- LEFT -->
                 <div class="identity">
                     <div class="name">${v.investorName}</div>
                     <div class="type">${v.investorType}</div>
                 </div>
 
-                <!-- CENTER METRICS -->
                 <div class="metrics">
 
                     <div class="metric">
@@ -334,7 +320,6 @@
 
                 </div>
 
-                <!-- RIGHT ACTION -->
                 <div class="right">
 
                     <c:choose>

@@ -30,19 +30,17 @@ public class ForgotPasswordController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // ================= FORGOT PASSWORD PAGE =================
+
     @GetMapping("/forgot-password")
     public String forgotPasswordPage() {
         return "forget-password";
     }
 
-    // ================= FORGOT PASSWORD =================
     @PostMapping("/forgot-password")
     public String sendResetLink(@RequestParam String email, Model model) {
 
         Optional<Startup> startupOpt = startupRepository.findByEmail(email);
 
-        // Security best practice: same message either way
         if (startupOpt.isEmpty()) {
             model.addAttribute(
                     "message",
@@ -51,8 +49,6 @@ public class ForgotPasswordController {
             return "forget-password";
         }
 
-        // Optionally delete any existing tokens for this email to keep only one active
-        // tokenRepo.deleteAllByEmail(email); // if implemented
 
         String token = UUID.randomUUID().toString();
 
@@ -80,7 +76,6 @@ public class ForgotPasswordController {
         return "forget-password";
     }
 
-    // ================= RESET PAGE =================
     @GetMapping("/reset-password")
     public String resetPasswordPage(@RequestParam String token, Model model) {
         Optional<PasswordResetToken> tokenOpt = tokenRepo.findByToken(token);
@@ -97,7 +92,7 @@ public class ForgotPasswordController {
         return "reset-password";
     }
 
-    // ================= RESET SUBMIT =================
+
     @PostMapping("/reset-password")
     public String handleReset(
             @RequestParam String token,
@@ -142,11 +137,8 @@ public class ForgotPasswordController {
     }
 
     private void emailServiceSendHtml(String to, String subject, String html) throws Exception {
-        // Reuse EmailService's JavaMailSender via a simple adapter method without changing EmailService API
-        // Ideally EmailService should have a dedicated method, but to avoid broader changes we send directly.
-        // We'll extend EmailService in-place with a generic sendHtml method if available.
-        emailService.getClass(); // no-op to avoid unused warning
-        // Since EmailService currently only supports contact email, we’ll add a new method there.
+
+        emailService.getClass();
         throw new UnsupportedOperationException("Email sender not wired. Please implement in EmailService.");
     }
 }

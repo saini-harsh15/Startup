@@ -14,7 +14,7 @@ public class ChatService {
     private ChatMessageRepository chatMessageRepository;
 
     public List<ChatMessage> getConversationHistory(Long userId1, Long userId2) {
-        // Fetch all messages where (sender=A AND receiver=B) OR (sender=B AND receiver=A), ordered by timestamp ASC
+
         return chatMessageRepository.findConversationBetween(userId1, userId2);
     }
     public List<Long> getChatPartnerIds(Long userId) {
@@ -26,7 +26,7 @@ public class ChatService {
                 .map(m -> m.getSenderId().equals(userId)
                         ? m.getReceiverId()
                         : m.getSenderId())
-                .distinct() // keeps order because already sorted DESC
+                .distinct()
                 .toList();
     }
 

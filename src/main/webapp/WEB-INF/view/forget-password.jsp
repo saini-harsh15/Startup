@@ -146,7 +146,6 @@
         <div id="serverMessage" class="message">${message}</div>
     </c:if>
 
-    <!-- AFTER SUCCESS STATE -->
     <div id="afterSubmit" style="display:none;text-align:center;margin-top:10px;">
 
         <div class="message" id="maskedEmailMsg"></div>
@@ -177,14 +176,14 @@
     const timerText = document.getElementById("timerText");
     const serverMsg = document.getElementById("serverMessage");
 
-    /* Loading State */
+
     form.addEventListener("submit",()=>{
         btn.innerHTML = "Sending...";
         btn.disabled = true;
         btn.style.opacity=".8";
     });
 
-    /* After Server Response */
+
     window.addEventListener("load",()=>{
         if(serverMsg){
 
@@ -206,7 +205,7 @@
         }
     });
 
-    /* Cooldown Timer */
+
     let cooldown = 60;
     function startCooldown(){
         resendBtn.disabled = true;
@@ -224,7 +223,7 @@
         },1000);
     }
 
-    /* Resend */
+
     resendBtn.addEventListener("click",()=>{
         form.submit();
     });

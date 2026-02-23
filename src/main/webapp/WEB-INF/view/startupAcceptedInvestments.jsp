@@ -35,9 +35,7 @@
             transition:.25s ease;
         }
 
-        /* ================= NAVBAR ================= */
-
-        .navbar{
+       .navbar{
             position:fixed;
             top:14px;
             left:14px;
@@ -136,8 +134,6 @@
             box-shadow:0 8px 20px rgba(40,167,69,.4);
         }
 
-        /* ================= PAGE WRAP ================= */
-
         .page-wrap{
             max-width:1200px;
             margin:auto;
@@ -148,8 +144,6 @@
             font-size:1.6rem;
             margin-bottom:20px;
         }
-
-        /* ================= SUMMARY ================= */
 
         .summary-card{
             background:var(--card);
@@ -180,8 +174,6 @@
             margin-top:6px;
             color:var(--accent);
         }
-
-        /* ================= CARDS ================= */
 
         .investment-grid{
             display:grid;
@@ -236,7 +228,7 @@
         .chart-container {
             position: relative;
             height: 420px;
-            max-width: 800px;   /* slightly smaller for perfect balance */
+            max-width: 800px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -245,7 +237,7 @@
 
         .chart-center {
             position: absolute;
-            inset: 0;                 /* THIS is the key */
+            inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -267,9 +259,7 @@
             line-height: 1.2;
         }
 
-        /* ================= DARK MODE ================= */
-
-        .dark-mode{
+       .dark-mode{
             --bg:#0f172a;
             --card:#111827;
             --text:#e5e7eb;
@@ -342,8 +332,8 @@
             display:flex;
             flex-direction:column;
             justify-content:center;
-            align-items:center;      /* center horizontally */
-            text-align:center;       /* center text */
+            align-items:center;
+            text-align:center;
             min-height:260px;
         }
 
@@ -352,7 +342,7 @@
             text-transform:uppercase;
             letter-spacing:1px;
             font-weight:600;
-            color:#94a3b8;   /* softer muted */
+            color:#94a3b8;
             margin-bottom: 6px;
         }
 
@@ -360,7 +350,7 @@
             font-size:3.2rem;
             font-weight:800;
             margin-top:10px;
-            color:#16a34a;   /* deeper, richer green */
+            color:#16a34a;
             letter-spacing:1px;
             margin-bottom: 6px 0;
         }
@@ -377,7 +367,7 @@
             margin-top:18px;
             font-size:.95rem;
             font-weight:500;
-            color:#64748b;  /* lighter muted */
+            color:#64748b;
             display:flex;
             align-items:center;
             gap:8px;
@@ -422,7 +412,7 @@
 
     <div class="overview-grid">
 
-        <!-- Capital Card -->
+
         <div class="overview-card capital-card">
 
             <div class="summary-label">Capital Raised</div>
@@ -438,7 +428,7 @@
 
         </div>
 
-        <!-- Monthly Chart Card -->
+
         <div class="overview-card">
             <div class="summary-label">Monthly Inflow</div>
             <canvas id="monthlyChart" height="130"></canvas>
@@ -519,7 +509,6 @@
     const stageLabels = ${stageLabelsJson};
     const stageTotals = ${stageTotalsJson};
 
-    // ===== Monthly Line Chart =====
     new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: {
@@ -539,7 +528,6 @@
         }
     });
 
-    // ===== Funding Stage Pie Chart =====
     const stageChart = new Chart(document.getElementById('stageChart'), {
         type: 'doughnut',
         data: {
@@ -595,7 +583,6 @@
         }
     });
 
-    // ===== Animated Center Total =====
 
     const totalFunding = totals.reduce((a, b) => a + b, 0);
     const centerElement = document.getElementById("centerTotal");

@@ -17,11 +17,11 @@ public class UserRegistrationDto {
     private String registrationNumber;
     private String governmentId;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // ⚠️ fixed MM
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date foundingDate;
 
-    private Double fundingAsk;      // ✅ ADDED
-    private Double equityOffered;   // ✅ ADDED
+    private Double fundingAsk;
+    private Double equityOffered;
 
     // Investor-specific fields
     private String investorName;
@@ -29,7 +29,7 @@ public class UserRegistrationDto {
     private Integer yearsOfExperience;
     private String preferredIndustry;
 
-    // ===== REAL INVESTOR PROFILE FIELDS =====
+
     private String investorType;
     private String preferredDomains;
     private String fundingStages;
@@ -40,7 +40,7 @@ public class UserRegistrationDto {
     private String bio;
     private String investmentPreferences;
 
-    // ===== Getters & Setters =====
+
 
 
     public String getInvestmentPreferences() {

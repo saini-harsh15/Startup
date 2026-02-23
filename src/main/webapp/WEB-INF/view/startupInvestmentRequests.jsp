@@ -35,7 +35,6 @@
             margin-bottom: 24px;
         }
 
-        /* ================= FILTER TABS ================= */
         .filter-tabs {
             display: flex;
             gap: 12px;
@@ -70,7 +69,7 @@
             box-shadow:0 8px 22px rgba(0,0,0,.6);
         }
 
-        /* ================= REQUEST GRID ================= */
+
         .request-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -105,7 +104,7 @@
             font-size: 1.05rem;
         }
 
-        /* ================= STATUS BADGES ================= */
+
         .status-badge{
             padding:6px 14px;
             border-radius:999px;
@@ -116,7 +115,7 @@
             transition:.2s ease;
         }
 
-        /* LIGHT MODE */
+
         .status-pending{
             background:#fff4e6;
             color:#e8590c;
@@ -135,12 +134,12 @@
             box-shadow:0 2px 6px rgba(201,42,42,.15);
         }
 
-        /* hover feedback */
+
         .request-card:hover .status-badge{
             transform:scale(1.05);
         }
 
-        /* DARK MODE — glowing style */
+
         .dark-mode .status-pending{
             background:rgba(255,169,77,.18);
             color:#ffa94d;
@@ -199,8 +198,6 @@
             color: var(--muted);
             margin-top: 80px;
         }
-
-        /* ===== GLOBAL NAVBAR (GLASS) ===== */
 
         .navbar{
             position:fixed;
@@ -267,10 +264,8 @@
             transform:scale(1.08);
             box-shadow:0 6px 18px rgba(0,0,0,.25);
         }
-        /* push content below navbar */
         body{ padding-top:110px; }
 
-        /* DARK MODE */
         .dark-mode{
             --bg:#0f172a;
             --card:#111827;
@@ -308,7 +303,6 @@
             letter-spacing:.4px;
         }
 
-        /* logo subtle lift */
         .logo{
             transition:transform .2s ease, letter-spacing .2s ease;
         }
@@ -317,7 +311,6 @@
             letter-spacing:.5px;
         }
 
-        /* profile hover */
         .profile{
             padding:8px 14px;
             border-radius:10px;
@@ -331,7 +324,6 @@
             background:rgba(255,255,255,.08);
         }
 
-        /* theme toggle animation */
         .theme-toggle{
             transition:transform .25s ease, color .25s ease;
         }
@@ -367,7 +359,6 @@
 
 <h1>Investment Requests</h1>
 
-<!-- FILTER TABS -->
 <div class="filter-tabs">
     <button class="tab" data-status="ALL">All</button>
     <button class="tab active" data-status="PENDING">Pending</button>
@@ -434,7 +425,6 @@
     </c:otherwise>
 </c:choose>
 
-<!-- FILTER SCRIPT -->
 <script>
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -451,8 +441,7 @@
         });
     });
 
-    // Default = Pending
-    document.querySelector('.tab[data-status="ALL"]').click();
+     document.querySelector('.tab[data-status="ALL"]').click();
 </script>
 
 <script>

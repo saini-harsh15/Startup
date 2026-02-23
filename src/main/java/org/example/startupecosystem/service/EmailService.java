@@ -13,14 +13,12 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // Team / admin emails
     private static final String[] TEAM_EMAILS = {
             "harshsaini2462@gmail.com",
             "ashutoshgola91@gmail.com",
             "ryash0353@gmail.com"
     };
 
-    // Verified sender email (important for Gmail deliverability)
     private static final String FROM_EMAIL = "Startup Ecosystem <startupecosystemtracker@gmail.com>";
 
     public void sendContactFormEmail(String senderName,
@@ -112,7 +110,6 @@ public class EmailService {
         sendHtml(to, subject, html, null);
     }
 
-    // Core generic HTML sender used by both contact and reset emails
     public void sendHtml(String to, String subject, String html, String replyTo) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -126,10 +123,9 @@ public class EmailService {
         mailSender.send(mimeMessage);
     }
 
-    // ==================== RESET PASSWORD EMAIL ====================
     public String buildResetPasswordEmail(String resetLink) {
         String safeUrl = resetLink == null ? "" : resetLink;
-        // Modern, mobile-friendly table layout with inline styles (email-client safe)
+
         return "<!DOCTYPE html>" +
                 "<html lang='en'>" +
                 "<head>" +

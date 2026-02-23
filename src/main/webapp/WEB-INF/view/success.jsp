@@ -12,7 +12,7 @@
         body {
             background: #f0f8ff;
             font-family: 'Segoe UI', sans-serif;
-            padding-top: 70px; /* for navbar spacing */
+            padding-top: 70px;
         }
         .success-container {
             max-width: 600px;

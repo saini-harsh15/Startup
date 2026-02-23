@@ -16,7 +16,7 @@ public class ContactController {
 
     @GetMapping("/contact")
     public String showContactPage() {
-        return "contactUs"; // Returns the contactUs.jsp page
+        return "contactUs";
     }
 
     @PostMapping("/contact")
@@ -33,6 +33,6 @@ public class ContactController {
             redirectAttributes.addFlashAttribute("errorMessage", "There was an error sending your message. Please try again later.");
         }
 
-        return "redirect:/contact"; // Redirects back to the contact page
+        return "redirect:/contact";
     }
 }

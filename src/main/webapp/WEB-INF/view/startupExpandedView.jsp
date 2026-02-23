@@ -49,8 +49,6 @@
         }
 
 
-
-        /* ========== NAVBAR ========== */
         .navbar{
             position:fixed;
             top:10px;
@@ -89,7 +87,6 @@
             font-weight:700;
         }
 
-        /* ========== SIDEBAR ========== */
         .sidebar{
             position:fixed;top:14px;left:14px;
             height:calc(100% - 28px);
@@ -154,7 +151,6 @@
         }
         .overlay.show{display:block}
 
-        /* ========== PAGE ========== */
         .page-wrap{
             max-width:1300px;
             margin:0 auto;
@@ -265,9 +261,6 @@
             background:#dfe3e8;
         }
 
-        /* Theme Toggle */
-        /* ===== Dashboard Style Theme Toggle ===== */
-
         .theme-toggle{
             cursor:pointer;
             border-radius:12px;
@@ -288,20 +281,19 @@
                     background .18s ease;
         }
 
-        /* hover lift */
+
         .theme-toggle:hover{
             transform:translateY(-2px) scale(1.08);
             color:var(--accent);
             box-shadow:0 10px 26px rgba(40,167,69,.28);
         }
 
-        /* click feedback */
+
         .theme-toggle:active{
             transform:scale(.92);
             box-shadow:0 4px 12px rgba(0,0,0,.18);
         }
 
-        /* rotating icon */
         .theme-toggle i{
             transition:transform .35s ease;
         }
@@ -310,7 +302,6 @@
             transform:rotate(-18deg) scale(1.1);
         }
 
-        /* DARK MODE VERSION */
         .dark-mode .theme-toggle{
             background:linear-gradient(180deg, rgba(17,24,39,.85), rgba(17,24,39,.65));
             border:1px solid rgba(255,255,255,.08);
@@ -339,7 +330,6 @@
 
 <body>
 
-<!-- SIDEBAR -->
 <div id="mySidebar" class="sidebar">
     <div class="panel">
         <div class="sidebar-logo">
@@ -362,7 +352,7 @@
 
 <div id="overlay" class="overlay" onclick="closeNav()"></div>
 
-<!-- NAVBAR -->
+
 <header class="navbar">
     <div class="nav-left">
         <i class="fas fa-bars hamburger" onclick="openNav()"></i>
@@ -379,7 +369,7 @@
 
 </header>
 
-<!-- CONTENT -->
+
 <div class="page-wrap">
 
     <div class="detail-header">
@@ -470,7 +460,6 @@
         }
     }
 
-    /* Restore saved theme */
     document.addEventListener("DOMContentLoaded", function(){
         const saved = (function(){
             try{return localStorage.getItem("theme");}

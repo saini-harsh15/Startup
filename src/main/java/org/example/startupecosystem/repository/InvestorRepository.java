@@ -15,8 +15,7 @@ public interface InvestorRepository extends JpaRepository<Investor, Long> {
 
     Optional<Investor> findByEmail(String email);
 
-    // Standard method inherited from JpaRepository, often added for clarity.
-    Optional<Investor> findById(Long id);
+     Optional<Investor> findById(Long id);
 
     boolean existsByEmail(String email);
 

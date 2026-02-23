@@ -22,7 +22,6 @@ public class InvestorData {
     @Column(name = "preferred_industry")
     private String preferredIndustry;
 
-    // Default constructor is required by JPA
     public InvestorData() {
     }
 

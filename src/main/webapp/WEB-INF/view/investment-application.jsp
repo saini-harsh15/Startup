@@ -128,7 +128,7 @@
             box-shadow:0 18px 42px rgba(40,167,69,.6);
         }
 
-        /* Toast */
+
         .toast{
             position:fixed;
             bottom:24px;
@@ -159,7 +159,7 @@
 
     <form action="/investor/submit-investment-request" method="post">
 
-        <!-- Identifiers -->
+
         <input type="hidden" name="startupId" value="${startup.id}">
         <input type="hidden" name="investorId" value="${investor.id}">
 
@@ -210,7 +210,7 @@
     </form>
 </div>
 
-<!-- SUCCESS TOAST + REDIRECT (controller-controlled) -->
+
 <c:if test="${investmentSuccess}">
     <div class="toast">
         <i class="fas fa-check-circle" style="color:#22c55e"></i>

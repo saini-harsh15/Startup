@@ -17,21 +17,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        // Enable an in-memory message broker with destination prefixes /topic (for broadcasting)
-        // This is where the client will subscribe to receive real-time updates.
+
         config.enableSimpleBroker("/topic");
 
-        // Define the prefix for application-specific destinations. 
-        // Messages sent from the client with this prefix will be routed to a @Controller method.
+
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // The endpoint the client connects to for the WebSocket handshake.
-        // withSockJS() provides fallback options for browsers that don't natively support WebSockets.
-        // setAllowedOriginPatterns("*") ensures the WS handshake isn't blocked by origin checks
-        // when accessed from different hosts/ports or behind proxies during development.
+
         registry.addEndpoint("/ws-chat").setAllowedOriginPatterns("*").withSockJS();
     }
 
@@ -44,7 +39,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         messageConverters.add(converter);
 
-        // return false → keep default converters + add this one
+
         return false;
     }
 }

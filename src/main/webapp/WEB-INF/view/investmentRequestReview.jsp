@@ -18,7 +18,7 @@
 
     <style>
 
-        /* ===== GLOBAL NAVBAR ===== */
+
 
         .navbar{
             position:fixed;
@@ -121,7 +121,7 @@
             gap:4px;
         }
 
-        /* LABEL STYLE */
+
         .item span{
             color:#64748b;
             font-size:.75rem;
@@ -130,7 +130,7 @@
             text-transform:uppercase;
         }
 
-        /* VALUE STYLE */
+
         .value{
             font-weight:600;
             font-size:.98rem;
@@ -243,14 +243,14 @@
 
         .btn:hover{opacity:.9}
 
-        /* ===== DARK MODE ===== */
+
 
         .dark-mode body{
             background:#0f172a;
             color:#e5e7eb;
         }
 
-        /* navbar */
+
         .dark-mode .navbar{
             background:rgba(17,24,39,.9);
             border-color:rgba(255,255,255,.08);
@@ -260,14 +260,14 @@
             color:#e5e7eb;
         }
 
-        /* card */
+
         .dark-mode .card{
             background:#111827;
             border:1px solid rgba(255,255,255,.06);
             box-shadow:0 20px 55px rgba(0,0,0,.6);
         }
 
-        /* labels */
+
         .dark-mode .item span{
             color:#9ca3af;
         }
@@ -276,19 +276,19 @@
             color:#e5e7eb;
         }
 
-        /* message */
+
         .dark-mode .message-box{
             background:#0b1220;
             border:1px solid rgba(255,255,255,.08);
         }
 
-        /* back button */
+
         .dark-mode .btn-back{
             background:#1f2937;
             color:#e5e7eb;
         }
 
-        /* status badges */
+
         .dark-mode .status-PENDING{
             background:rgba(255,169,77,.18);
             color:#ffa94d;

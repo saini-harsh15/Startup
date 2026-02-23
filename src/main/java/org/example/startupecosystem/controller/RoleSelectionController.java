@@ -44,8 +44,8 @@ public class RoleSelectionController {
             Long userId = signupService.registerNewUser(
                     userDto.getEmail(),
                     userDto.getPassword(),
-                    "Startup",                         // Hardcoded role
-                    userDto.getCompanyName(),          // Name
+                    "Startup",
+                    userDto.getCompanyName(),
                     userDto.getDescription(),
                     userDto.getIndustry(),
                     userDto.getRegistrationNumber(),
@@ -53,8 +53,8 @@ public class RoleSelectionController {
                     userDto.getFoundingDate(),
                     userDto.getFundingAsk(),
                     userDto.getEquityOffered(),
-                    null,                              // Investor name not needed
-                    null                               // Investment firm not needed
+                    null,
+                    null
             );
 
             session.setAttribute("loggedInUserId", userId.toString());

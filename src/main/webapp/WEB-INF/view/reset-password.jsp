@@ -44,7 +44,6 @@
             padding:20px;
         }
 
-        /* ================= CARD ================= */
         .auth-card{
             width:100%;
             max-width:420px;
@@ -61,8 +60,7 @@
             to{opacity:1;transform:translateY(0)}
         }
 
-        /* ================= BRAND ================= */
-        .brand{
+       .brand{
             display:flex;
             align-items:center;
             justify-content:center;
@@ -78,7 +76,6 @@
             opacity:.85;
         }
 
-        /* ================= TEXT ================= */
         h2{
             text-align:center;
             font-weight:800;
@@ -93,7 +90,6 @@
             margin-bottom:28px;
         }
 
-        /* ================= FORM ================= */
         label{
             font-size:.85rem;
             font-weight:600;
@@ -135,8 +131,7 @@
             color:var(--accent);
         }
 
-        /* ================= BUTTON ================= */
-        button{
+         button{
             width:100%;
             margin-top:8px;
             padding:14px;
@@ -156,7 +151,6 @@
             box-shadow:0 20px 42px rgba(40,167,69,.6);
         }
 
-        /* ================= ERROR ================= */
         .error{
             margin-top:18px;
             text-align:center;
@@ -165,7 +159,6 @@
             color:var(--danger);
         }
 
-        /* ================= FOOTER ================= */
         .helper-text{
             margin-top:22px;
             text-align:center;
