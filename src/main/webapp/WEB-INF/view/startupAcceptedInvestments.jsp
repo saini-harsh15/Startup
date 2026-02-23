@@ -378,6 +378,114 @@
             color:#22c55e;
         }
 
+        .pagination-container{
+            margin-top:32px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:18px;
+        }
+
+        .pagination-btn{
+            width:42px;
+            height:42px;
+            border-radius:12px;
+            border:1px solid rgba(15,23,42,.08);
+            background:var(--card);
+            color:var(--text);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            transition:.2s ease;
+            box-shadow:var(--shadow-sm);
+        }
+
+        .pagination-btn:hover{
+            background:var(--accent-soft);
+            color:var(--accent);
+            transform:translateY(-2px);
+            box-shadow:var(--shadow-md);
+        }
+
+        .pagination-btn:disabled{
+            opacity:.4;
+            cursor:not-allowed;
+            transform:none;
+            box-shadow:none;
+        }
+
+        .pagination-indicator{
+            font-weight:600;
+            color:var(--text);
+            font-size:.9rem;
+            min-width:120px;
+            text-align:center;
+        }
+
+        /* Dark Mode */
+        .dark-mode .pagination-btn{
+            background:#111827;
+            border:1px solid rgba(255,255,255,.08);
+        }
+
+        .dark-mode .pagination-btn:hover{
+            background:rgba(40,167,69,.15);
+        }
+
+        .dark-mode .pagination-indicator{
+            color:#9ca3af;
+        }
+
+        .section-header{
+            margin:40px 0 20px;
+        }
+
+        .section-header h3{
+            font-size:1.25rem;
+            font-weight:700;
+            margin:0;
+        }
+
+        .section-header p{
+            margin:6px 0 0;
+            font-size:.9rem;
+            color:var(--muted);
+        }
+
+        .time-toggle{
+            display:flex;
+            background:rgba(0,0,0,.05);
+            border-radius:10px;
+            padding:4px;
+        }
+
+        .toggle-btn{
+            border:none;
+            background:transparent;
+            padding:6px 14px;
+            font-size:.75rem;
+            font-weight:600;
+            border-radius:8px;
+            cursor:pointer;
+            color:var(--muted);
+            transition:.2s ease;
+        }
+
+        .toggle-btn.active{
+            background:var(--card);
+            color:var(--accent);
+            box-shadow:var(--shadow-sm);
+        }
+
+        .toggle-btn:hover{
+            color:var(--accent);
+        }
+
+        .dark-mode .time-toggle{
+            background:rgba(255,255,255,.08);
+        }
+
     </style>
 </head>
 
@@ -430,7 +538,17 @@
 
 
         <div class="overview-card">
-            <div class="summary-label">Monthly Inflow</div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <div class="summary-label">Funding Inflow</div>
+
+                <div class="time-toggle">
+                    <button class="toggle-btn active" data-type="monthly">Monthly</button>
+                    <button class="toggle-btn" data-type="weekly">Weekly</button>
+                    <button class="toggle-btn" data-type="yearly">Yearly</button>
+                </div>
+            </div>
+
             <canvas id="monthlyChart" height="130"></canvas>
         </div>
 
@@ -456,6 +574,13 @@
         </div>
     </c:if>
 
+    <div class="section-header">
+        <h3>Accepted Investment Records</h3>
+        <p>
+            ${acceptedRequests.size()} confirmed funding transactions to date.
+        </p>
+    </div>
+
     <div class="investment-grid">
         <c:forEach var="req" items="${acceptedRequests}">
             <div class="investment-card">
@@ -476,6 +601,18 @@
 
             </div>
         </c:forEach>
+    </div>
+
+    <div class="pagination-container">
+        <button id="prevPage" class="pagination-btn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <span id="pageIndicator" class="pagination-indicator"></span>
+
+        <button id="nextPage" class="pagination-btn">
+            <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
 
 </div>
@@ -506,16 +643,33 @@
 
     const months = ${chartMonthsJson};
     const totals = ${chartTotalsJson};
+    const weeklyLabels = months.slice(-7);
+    const weeklyTotals = totals.slice(-7);
+
+    const yearlyLabels = months;
+    const yearlyTotals = totals.reduce((acc, val) => {
+        acc[0] = (acc[0] || 0) + val;
+        return acc;
+    }, []);
     const stageLabels = ${stageLabelsJson};
     const stageTotals = ${stageTotalsJson};
 
-    new Chart(document.getElementById('monthlyChart'), {
+    let chartData = {
+        monthly: { labels: months, data: totals },
+        weekly: { labels: weeklyLabels, data: weeklyTotals },
+        yearly: { labels: ["This Year"], data: yearlyTotals }
+    };
+
+    let currentType = "monthly";
+
+    const ctx = document.getElementById('monthlyChart');
+
+    const inflowChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: months,
+            labels: chartData[currentType].labels,
             datasets: [{
-                label: 'Investment Growth',
-                data: totals,
+                data: chartData[currentType].data,
                 borderColor: '#28a745',
                 backgroundColor: 'rgba(40,167,69,0.15)',
                 tension: 0.3,
@@ -524,8 +678,34 @@
         },
         options: {
             plugins: { legend: { display: false } },
-            responsive: true
+            responsive: true,
+            animation: {
+                duration: 700,
+                easing: 'easeInOutQuart'
+            },
+            transitions: {
+                active: {
+                    animation: {
+                        duration: 500
+                    }
+                }
+            }
         }
+    });
+
+    document.querySelectorAll(".toggle-btn").forEach(btn => {
+        btn.addEventListener("click", function(){
+
+            document.querySelectorAll(".toggle-btn").forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+
+            const type = this.dataset.type;
+            currentType = type;
+
+            inflowChart.data.labels = chartData[type].labels;
+            inflowChart.data.datasets[0].data = chartData[type].data;
+            inflowChart.update('active');
+        });
     });
 
     const stageChart = new Chart(document.getElementById('stageChart'), {
@@ -638,6 +818,58 @@
         }
 
         animateCapital();
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const cards = document.querySelectorAll(".investment-card");
+        const cardsPerPage = 6;
+        let currentPage = 1;
+        const totalPages = Math.ceil(cards.length / cardsPerPage);
+
+        if (totalPages <= 1) {
+            document.getElementById("paginationControls").style.display = "none";
+        }
+
+        const prevBtn = document.getElementById("prevPage");
+        const nextBtn = document.getElementById("nextPage");
+        const indicator = document.getElementById("pageIndicator");
+
+        if (cards.length === 0) {
+            document.getElementById("paginationControls").style.display = "none";
+            return;
+        }
+
+        function showPage(page) {
+            currentPage = page;
+
+            cards.forEach((card, index) => {
+                const start = (currentPage - 1) * cardsPerPage;
+                const end = start + cardsPerPage;
+
+                card.style.display = (index >= start && index < end) ? "block" : "none";
+            });
+
+            indicator.textContent = "Page " + currentPage + " of " + totalPages;
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            prevBtn.style.opacity = currentPage === 1 ? 0.5 : 1;
+            nextBtn.style.opacity = currentPage === totalPages ? 0.5 : 1;
+        }
+
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) showPage(currentPage - 1);
+        });
+
+        nextBtn.addEventListener("click", () => {
+            if (currentPage < totalPages) showPage(currentPage + 1);
+        });
+
+        showPage(1);
     });
 </script>
 

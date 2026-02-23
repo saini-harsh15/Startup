@@ -317,6 +317,43 @@
             background:#273244;
             box-shadow:0 10px 25px rgba(0,0,0,.6);
         }
+
+        .investor-links{
+            margin-top:10px;
+            display:flex;
+            gap:10px;
+        }
+
+        .investor-links a{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 12px;
+            border-radius:8px;
+            font-size:.8rem;
+            font-weight:600;
+            text-decoration:none;
+            background:#eef2f7;
+            color:#0f172a;
+            border:1px solid rgba(15,23,42,.08);
+            transition:all .18s ease;
+        }
+
+        .investor-links a:hover{
+            background:#e2e8f0;
+            transform:translateY(-2px);
+            box-shadow:0 6px 16px rgba(0,0,0,.12);
+        }
+
+        .dark-mode .investor-links a{
+            background:#1f2937;
+            color:#e5e7eb;
+            border:1px solid rgba(255,255,255,.08);
+        }
+
+        .dark-mode .investor-links a:hover{
+            background:#273244;
+        }
     </style>
 </head>
 
@@ -357,6 +394,22 @@
                 <span>Email</span>
                 <div class="value">${request.investor.email}</div>
             </div>
+        </div>
+
+        <div class="investor-links">
+
+            <c:if test="${not empty request.investor.linkedin}">
+                <a href="${request.investor.linkedin}" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-linkedin"></i> View LinkedIn
+                </a>
+            </c:if>
+
+            <c:if test="${not empty request.investor.website}">
+                <a href="${request.investor.website}" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-globe"></i> View Website
+                </a>
+            </c:if>
+
         </div>
 
         <h3>Investment Details</h3>
