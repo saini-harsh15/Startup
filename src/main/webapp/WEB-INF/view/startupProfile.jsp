@@ -164,6 +164,57 @@
             .main-content { grid-template-columns: 1fr; }
             .identity-col { border-right: none; border-bottom: var(--border); padding-bottom: 30px; }
         }
+
+        .identity-meta p {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .identity-meta p:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .status-active {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .status-active i {
+            font-size: 0.55rem;   /* smaller dot */
+        }
+
+        .form-col {
+            min-width: 0;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            max-width: 100%;
+        }
+
+        .main-content {
+            overflow: hidden;
+        }
     </style>
 </head>
 
@@ -223,9 +274,21 @@
             <span style="background: var(--accent-soft); color: var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">
                 STARTUP PROFILE
             </span>
-            <div style="margin-top: 25px; text-align: left;">
-                <p style="font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-industry" style="margin-right:8px; color:var(--accent)"></i> ${startup.industry}</p>
-                <p style="font-size: 0.85rem;"><i class="fas fa-envelope" style="margin-right:8px; color:var(--accent)"></i> ${startup.email}</p>
+            <div class="identity-meta" style="margin-top: 25px; text-align: left;">
+                <p>
+                    <i class="fas fa-industry" style="margin-right:8px; color:var(--accent)"></i>
+                    ${startup.industry}
+                </p>
+                <p>
+                    <i class="fas fa-envelope" style="margin-right:8px; color:var(--accent)"></i>
+                    ${startup.email}
+                </p>
+                <p>
+    <span class="status-badge status-active">
+        <span class="status-dot"></span>
+        Active
+    </span>
+                </p>
             </div>
         </div>
 
