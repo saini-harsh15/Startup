@@ -84,6 +84,10 @@
         .password-container{position:relative}
         .toggle-password{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;}
 
+       .toggle-password:hover{
+           color:var(--accent);
+       }
+
         .btn-custom{
             width:100%;
             padding:14px;
@@ -220,6 +224,14 @@
             transform:scale(.97);
         }
 
+       .password-container input{
+           transition: opacity .18s ease, transform .18s ease;
+       }
+
+       .password-container input.revealing{
+           opacity: 0;
+           transform: scale(0.98);
+       }
 
     </style>
 </head>
@@ -311,10 +323,22 @@
 
 <script>
     function togglePasswordVisibility(){
-        const p=document.getElementById("password");
-        const i=document.getElementById("eyeIcon");
-        if(p.type==="password"){p.type="text";i.classList.replace("fa-eye-slash","fa-eye");}
-        else{p.type="password";i.classList.replace("fa-eye","fa-eye-slash");}
+        const input = document.getElementById("password");
+        const icon = document.getElementById("eyeIcon");
+
+        input.classList.add("revealing");
+
+        setTimeout(() => {
+            if(input.type === "password"){
+                input.type = "text";
+                icon.classList.replace("fa-eye-slash","fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye","fa-eye-slash");
+            }
+
+            input.classList.remove("revealing");
+        }, 120);
     }
 
     const emailInput=document.getElementById("email");

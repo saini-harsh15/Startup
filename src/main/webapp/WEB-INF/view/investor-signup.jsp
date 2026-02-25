@@ -181,6 +181,46 @@
             .grid{grid-template-columns:1fr}
             .signup-card{padding:32px 24px}
         }
+
+        .criteria-row{
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+            margin-top:12px;
+        }
+
+        .criteria{
+            font-size:.75rem;
+            padding:6px 12px;
+            border-radius:999px;
+            background:#f1f5f9;
+            color:#64748b;
+            font-weight:600;
+            transition:all .25s ease;
+        }
+
+        .criteria.valid{
+            background:rgba(40,167,69,.12);
+            color:#28a745;
+        }
+
+        .criteria.invalid{
+            background:rgba(220,53,69,.1);
+            color:#dc3545;
+        }
+
+        .toggle-password:hover{
+            color:var(--accent);
+        }
+
+        .password-wrap input{
+            transition: opacity .18s ease, transform .18s ease;
+        }
+
+        .password-wrap input.revealing{
+            opacity: 0;
+            transform: scale(0.98);
+        }
     </style>
 </head>
 
@@ -221,20 +261,26 @@
                         <div class="strength-bar-bg">
                             <div id="strengthBar" class="strength-bar"></div>
                         </div>
-                        <ul class="checklist">
-                            <li id="ruleLength">✖ At least 10 characters</li>
-                            <li id="ruleUpper">✖ One uppercase letter</li>
-                            <li id="ruleLower">✖ One lowercase letter</li>
-                            <li id="ruleNumber">✖ One number</li>
-                            <li id="ruleSpace">✖ No spaces</li>
-                        </ul>
+                        <div class="criteria-row">
+                            <span id="cLength" class="criteria">10+ chars</span>
+                            <span id="cUpper" class="criteria">Uppercase</span>
+                            <span id="cLower" class="criteria">Lowercase</span>
+                            <span id="cNumber" class="criteria">Number</span>
+                            <span id="cSpace" class="criteria">No spaces</span>
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <label>Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword"
-                           placeholder="Re-enter your password" required>
+                    <div class="password-wrap">
+                        <input type="password" id="confirmPassword" name="confirmPassword"
+                               placeholder="Re-enter your password" required>
+                        <span class="toggle-password"
+                              onclick="togglePasswordVisibility('confirmPassword','eye2')">
+            <i id="eye2" class="fas fa-eye-slash"></i>
+        </span>
+                    </div>
                 </div>
 
             </div>
@@ -334,15 +380,22 @@
 
 <script>
     function togglePasswordVisibility(id, eye){
-        const f=document.getElementById(id);
-        const i=document.getElementById(eye);
-        if(f.type==="password"){
-            f.type="text";
-            i.classList.replace("fa-eye-slash","fa-eye");
-        } else {
-            f.type="password";
-            i.classList.replace("fa-eye","fa-eye-slash");
-        }
+        const input = document.getElementById(id);
+        const icon = document.getElementById(eye);
+
+        input.classList.add("revealing");
+
+        setTimeout(() => {
+            if(input.type === "password"){
+                input.type = "text";
+                icon.classList.replace("fa-eye-slash","fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye","fa-eye-slash");
+            }
+
+            input.classList.remove("revealing");
+        }, 120);
     }
 
     const passwordInput = document.getElementById("password");
@@ -353,11 +406,23 @@
         const value = passwordInput.value;
         let score = 0;
 
-        if(value.length >= 10) score++;
-        if(/[A-Z]/.test(value)) score++;
-        if(/[a-z]/.test(value)) score++;
-        if(/[0-9]/.test(value)) score++;
-        if(!/\s/.test(value)) score++;
+        const lengthValid = value.length >= 10;
+        const upperValid = /[A-Z]/.test(value);
+        const lowerValid = /[a-z]/.test(value);
+        const numberValid = /[0-9]/.test(value);
+        const spaceValid = !/\s/.test(value);
+
+        toggleCriteria("cLength", lengthValid);
+        toggleCriteria("cUpper", upperValid);
+        toggleCriteria("cLower", lowerValid);
+        toggleCriteria("cNumber", numberValid);
+        toggleCriteria("cSpace", spaceValid);
+
+        if(lengthValid) score++;
+        if(upperValid) score++;
+        if(lowerValid) score++;
+        if(numberValid) score++;
+        if(spaceValid) score++;
 
         if(score <= 2){
             strengthText.innerText = "Weak Password";
@@ -379,6 +444,11 @@
         }
     });
 
+    function toggleCriteria(id, isValid){
+        const el = document.getElementById(id);
+        el.classList.remove("valid", "invalid");
+        el.classList.add(isValid ? "valid" : "invalid");
+    }
     function validateForm(){
         const password = document.getElementById("password").value.trim();
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
