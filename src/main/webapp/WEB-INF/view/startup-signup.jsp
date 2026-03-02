@@ -301,14 +301,22 @@
                     <label>Industry</label>
                     <select name="industry" required>
                         <option value="">Select Industry</option>
-                        <option>FinTech</option>
-                        <option>HealthTech</option>
-                        <option>EdTech</option>
-                        <option>AgriTech</option>
-                        <option>ClimateTech</option>
-                        <option>SaaS</option>
-                        <option>E-commerce</option>
-                        <option>AI / ML</option>
+
+                        <option value="ai">AI</option>
+                        <option value="fintech">FinTech</option>
+                        <option value="healthcare">HealthTech</option>
+                        <option value="edtech">EdTech</option>
+                        <option value="saas">SaaS</option>
+                        <option value="blockchain">Blockchain / Web3</option>
+                        <option value="ecommerce">E-Commerce / D2C</option>
+                        <option value="cybersecurity">Cybersecurity</option>
+                        <option value="agritech">AgriTech</option>
+                        <option value="cleantech">ClimateTech / CleanTech</option>
+                        <option value="logistics">Logistics / Supply Chain</option>
+                        <option value="gaming">Gaming / Esports</option>
+                        <option value="biotech">Biotech</option>
+                        <option value="realestate">PropTech / Real Estate Tech</option>
+
                     </select>
                 </div>
 

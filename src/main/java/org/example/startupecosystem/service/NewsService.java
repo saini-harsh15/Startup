@@ -84,13 +84,46 @@ public class NewsService {
         Map<String, String> map = new HashMap<>();
 
         map.put("ai",
-                "(AI OR \"artificial intelligence\" OR machine learning OR ML)");
+                "(AI OR \"artificial intelligence\" OR machine learning OR ML OR generative AI OR LLM)");
 
         map.put("fintech",
-                "(fintech OR \"financial technology\" OR payments OR banking)");
+                "(fintech OR \"financial technology\" OR payments OR banking OR neobank OR blockchain)");
 
         map.put("healthcare",
-                "(healthtech OR healthcare OR \"digital health\")");
+                "(healthtech OR healthcare OR \"digital health\" OR medtech OR telemedicine)");
+
+        map.put("edtech",
+                "(edtech OR \"education technology\" OR e-learning OR online learning)");
+
+        map.put("saas",
+                "(SaaS OR \"software as a service\" OR B2B software)");
+
+        map.put("blockchain",
+                "(blockchain OR web3 OR cryptocurrency OR crypto OR DeFi)");
+
+        map.put("ecommerce",
+                "(ecommerce OR \"e-commerce\" OR D2C OR \"direct to consumer\")");
+
+        map.put("cybersecurity",
+                "(cybersecurity OR \"cyber security\" OR infosec OR \"data protection\")");
+
+        map.put("agritech",
+                "(agritech OR \"agriculture technology\" OR farmtech)");
+
+        map.put("cleantech",
+                "(cleantech OR \"clean technology\" OR sustainability OR \"climate tech\" OR ESG)");
+
+        map.put("logistics",
+                "(logistics OR supply chain OR \"last mile delivery\")");
+
+        map.put("gaming",
+                "(gaming OR esports OR \"game development\")");
+
+        map.put("biotech",
+                "(biotech OR biotechnology OR \"life sciences\")");
+
+        map.put("realestate",
+                "(proptech OR \"real estate technology\" OR property tech)");
 
         String industryTerms = map.getOrDefault(
                 key,
@@ -98,7 +131,7 @@ public class NewsService {
         );
 
         String startupContext =
-                "(startup OR startups OR venture OR funding OR \"series a\" OR seed)";
+                "(startup OR startups OR venture OR funding OR \"series a\" OR seed OR \"venture capital\" OR VC)";
 
         return String.format("%s AND %s", industryTerms, startupContext);
     }
