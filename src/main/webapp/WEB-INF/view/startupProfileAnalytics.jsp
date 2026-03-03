@@ -341,7 +341,7 @@
 
                     </c:choose>
 
-                    <a class="btn" href="/startup/chat?investorId=${v.investorId}">
+                    <a class="btn" href="/startup/messages?investorId=${v.investorId}">
                         Start Conversation
                     </a>
 

@@ -952,5 +952,33 @@
 })();
 </script>
 
+<script>
+(function(){
+    function getQueryParam(key){
+        try{
+            var params = new URLSearchParams(window.location.search);
+            return params.get(key);
+        }catch(e){ return null; }
+    }
+    function tryAutoOpen(){
+        var idStr = getQueryParam('investorId');
+        if(!idStr) return;
+        var investorId = Number(idStr);
+        if(!investorId || isNaN(investorId)) return;
+        var item = document.getElementById('partner' + investorId);
+        if(!item) return;
+        var nameEl = item.querySelector('.chat-name');
+        var investorName = nameEl ? nameEl.textContent.trim() : ('Investor ' + investorId);
+        // Defer to let any other init complete
+        setTimeout(function(){
+            try{ loadChat(investorId, investorName); }catch(e){}
+        }, 0);
+    }
+    if (document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', tryAutoOpen);
+    } else { tryAutoOpen(); }
+})();
+</script>
+
 </body>
 </html>
