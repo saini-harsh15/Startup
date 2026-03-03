@@ -180,16 +180,16 @@
         .history-skeleton .bubble{width:60%;height:48px;border-radius:14px;margin:10px 0}
         .history-skeleton .bubble.right{margin-left:auto}
 
-        .ms-sidebar{position:fixed;top:14px;left:14px;height:calc(100% - 28px);width:0;overflow:hidden;transition:.35s ease;z-index:1100}
-        .ms-sidebar.open{width:300px}
-        .ms-sidebar .panel{width:300px;height:100%;padding:26px 22px;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.96));border:1px solid rgba(15,23,42,.06);border-radius:18px;box-shadow:12px 0 35px rgba(0,0,0,.12)}
-        [data-theme="dark"] .ms-sidebar .panel{background:linear-gradient(180deg,#0f172a,rgba(17,24,39,.95));border-color:rgba(255,255,255,.08)}
-        .ms-sidebar .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:#28a745;margin-bottom:22px}
-        .ms-sidebar .logo i{background:#28a745;color:#fff;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center}
-        .ms-sidebar a{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:14px;text-decoration:none;color:inherit;transition:.25s ease}
-        .ms-sidebar a:hover{background:rgba(40,167,69,.12);color:#28a745;padding-left:20px}
-        .ms-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000}
-        .ms-overlay.show{display:block}
+        .sidebar{position:fixed;top:14px;left:14px;height:calc(100% - 28px);width:0;overflow:hidden;transition:.35s ease;z-index:1100}
+        .sidebar.open{width:300px}
+        .sidebar .panel{width:300px;height:100%;padding:26px 22px;background:linear-gradient(180deg,#ffffff,rgba(255,255,255,.96));border:1px solid rgba(15,23,42,.06);border-radius:18px;box-shadow:12px 0 35px rgba(0,0,0,.12)}
+        [data-theme="dark"] .sidebar .panel{background:linear-gradient(180deg,#0f172a,rgba(17,24,39,.95));border-color:rgba(255,255,255,.08)}
+        .sidebar .logo{display:flex;align-items:center;gap:10px;font-size:1.3rem;font-weight:800;color:#28a745;margin-bottom:22px}
+        .sidebar .logo i{background:#28a745;color:#fff;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+        .sidebar a{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:14px;text-decoration:none;color:inherit;transition:.25s ease}
+        .sidebar a:hover{background:rgba(40,167,69,.12);color:#28a745;padding-left:20px}
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1000}
+        .overlay.show{display:block}
 
 
         #emojiPicker::-webkit-scrollbar{width:6px}
@@ -197,11 +197,31 @@
         [data-theme="dark"] #emojiPicker{background:#0f172a}
         [data-theme="dark"] #emojiPicker button:hover{background:rgba(255,255,255,.12)}
 
+        /* Accessibility: focus-visible outlines */
+        .icon-btn:focus-visible, .send-button:focus-visible, .hamburger:focus-visible, .theme-toggle:focus-visible, .profile-icon:focus-visible, .back-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px rgba(40,167,69,0.18);
+        }
+        .search-container input:focus, .chat-input-area input:focus {
+            border-color: rgba(40,167,69,0.45);
+            box-shadow: 0 0 0 4px rgba(40,167,69,0.12);
+        }
+        /* Presence dot on partner name (visual only) */
+        .partner-name::after{
+            content:"";
+            display:inline-block; width:8px; height:8px; margin-left:8px;
+            background:#22c55e; border-radius:50%; box-shadow:0 0 0 3px rgba(34,197,94,0.18);
+            vertical-align:middle;
+        }
+        [data-theme="dark"] .partner-name::after{ background:#34d399; box-shadow:0 0 0 3px rgba(52,211,153,0.22); }
+        /* Avatar text improve */
+        .chat-row .avatar{ font-size:.85rem; color: var(--accent); font-weight:800; }
     </style>
 </head>
 <body>
 
-<div id="msSidebar" class="ms-sidebar">
+<div id="mySidebar" class="sidebar">
   <div class="panel">
     <div class="logo"><i class="fas fa-leaf"></i> ECO<span>TRACK</span></div>
     <a href="/investor/dashboard/${investor.id}"><i class="fas fa-th-large"></i> Dashboard</a>
@@ -210,12 +230,12 @@
     <a href="/contact"><i class="fas fa-headset"></i> Support</a>
   </div>
 </div>
-<div id="msOverlay" class="ms-overlay" onclick="closeNav()"></div>
+<div id="overlay" class="overlay" onclick="closeNav()"></div>
 
 <header class="navbar" role="banner">
     <div class="navbar-left">
         <div class="hamburger" onclick="openNav()" aria-label="Open menu" title="Open menu"><i class="fas fa-bars"></i></div>
-        <div class="logo" title="Project name">Startup Ecosystem</div>
+        <div class="logo">ECO<span>TRACK</span></div>
     </div>
 
     <div class="navbar-right">
@@ -310,7 +330,7 @@
                 <button class="back-btn" id="backBtn" onclick="showListOnMobile()" title="Back to chats" aria-label="Back to chats"><i class="fas fa-arrow-left"></i></button>
                 <div class="partner-meta">
                     <div class="partner-name" id="partnerName">Select a conversation</div>
-                    <div class="partner-sub">Secure chat • Online status <span id="typingIndicator" style="display:none;">· typing…</span></div>
+                    <div class="partner-sub">Secure chat • Online status <span id="typingIndicator" style="display:none;" aria-live="polite" aria-atomic="true">· typing…</span></div>
                 </div>
                 <div class="header-actions"></div>
             </div>
@@ -864,8 +884,8 @@
             });
         }
     });
-    function openNav(){ try{ document.getElementById('msSidebar').classList.add('open'); document.getElementById('msOverlay').classList.add('show'); }catch(e){} }
-    function closeNav(){ try{ document.getElementById('msSidebar').classList.remove('open'); document.getElementById('msOverlay').classList.remove('show'); }catch(e){} }
+    function openNav(){ try{ document.getElementById('mySidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); }catch(e){} }
+    function closeNav(){ try{ document.getElementById('mySidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }catch(e){} }
 </script>
 
 <script>
@@ -936,6 +956,38 @@
             document.addEventListener('DOMContentLoaded', attachLogoutConfirm);
         } else { attachLogoutConfirm(); }
     })();
+</script>
+
+<script>
+(function(){
+    function initials(name){
+        if(!name) return '';
+        var parts = name.trim().split(/\s+/);
+        var first = (parts[0] && parts[0][0]) ? parts[0][0] : '';
+        var last = parts.length>1 && parts[parts.length-1] ? parts[parts.length-1][0] : '';
+        return (''+first+last).toUpperCase();
+    }
+    function enhanceAvatars(listSelector){
+        try{
+            document.querySelectorAll(listSelector + ' .chat-item').forEach(function(item){
+                var name = item.getAttribute('data-name') || '';
+                var avatar = item.querySelector('.avatar');
+                if (avatar && avatar.textContent.trim()===''){
+                    avatar.textContent = initials(name);
+                }
+            });
+        }catch(e){}
+    }
+    if (document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', function(){
+            enhanceAvatars('#startupList');
+            enhanceAvatars('#investorList');
+        });
+    } else {
+        enhanceAvatars('#startupList');
+        enhanceAvatars('#investorList');
+    }
+})();
 </script>
 
 </body>
