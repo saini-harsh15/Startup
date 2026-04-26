@@ -11,7 +11,7 @@
     <groupId>org.ecosystem</groupId>
     <artifactId>StartupEcosystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>StartupEcosystem</name>
     <description>StartupEcosystem</description>
     <url/>
@@ -120,6 +120,7 @@
     </dependencies>
 
     <build>
+        <finalName>StartupApp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

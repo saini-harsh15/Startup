@@ -3,6 +3,12 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+application-dev.properties
+*.class
+*.jar
+application-dev.properties        # never push your local dev config
+.env
+*.env
 
 ### STS ###
 .apt_generated

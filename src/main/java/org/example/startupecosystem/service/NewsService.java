@@ -21,7 +21,7 @@ public class NewsService {
 
     // Constructor Injection (recommended)
     public NewsService(
-            @Value("${news.api.key}") String apiKey,
+            @Value("28829c642e22d67e5a1adf6a394b3281") String apiKey,
             @Value("${news.api.base-url}") String baseUrl
     ) {
         this.apiKey = apiKey;
