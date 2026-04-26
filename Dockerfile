@@ -12,6 +12,8 @@ WORKDIR /app
 COPY --from=build /app/target/*.war app.war
 EXPOSE 10000
 ENTRYPOINT ["java", \
+  "-Xms64m", \
+  "-Xmx256m", \
   "-Dspring.profiles.active=prod", \
   "-Dserver.address=0.0.0.0", \
   "-Dserver.port=10000", \
