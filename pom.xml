@@ -11,7 +11,7 @@
     <groupId>org.ecosystem</groupId>
     <artifactId>StartupEcosystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>StartupEcosystem</name>
     <description>StartupEcosystem</description>
     <url/>
