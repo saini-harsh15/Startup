@@ -11,4 +11,8 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.war app.war
 EXPOSE 10000
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dserver.address=0.0.0.0", "-jar", "app.war"]
+ENTRYPOINT ["java", \
+  "-Dspring.profiles.active=prod", \
+  "-Dserver.address=0.0.0.0", \
+  "-Dserver.port=10000", \
+  "-jar", "app.war"]
