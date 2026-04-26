@@ -10,5 +10,5 @@ RUN mvn clean package -DskipTests -q
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.war app.war
-EXPOSE 8080
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.war"]
+EXPOSE 10000
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dserver.address=0.0.0.0", "-jar", "app.war"]

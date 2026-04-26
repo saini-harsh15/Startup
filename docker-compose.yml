@@ -1,51 +1,51 @@
-services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    networks:
-      - s-network
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/startup_eco?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-        SPRING_DATASOURCE_USERNAME: harsh
-        SPRING_DATASOURCE_PASSWORD: harsh123
-        SPRING_PROFILES_ACTIVE: dev
-
-        SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
-        SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
-        SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
-        SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
-        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
-        NEWS_API_KEY: ${NEWS_API_KEY}
-
-
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: startup_eco
-      MYSQL_USER: harsh
-      MYSQL_PASSWORD: harsh123
-    ports:
-      - "3307:3306"
-    networks:
-      - s-network
-    volumes:
-      - mysql-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-networks:
-  s-network:
-    driver: bridge
-
-volumes:
-  mysql-data:
+#services:
+#  app:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - s-network
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    environment:
+#        SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/startup_eco?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#        SPRING_DATASOURCE_USERNAME: harsh
+#        SPRING_DATASOURCE_PASSWORD: harsh123
+#        SPRING_PROFILES_ACTIVE: dev
+#
+#        SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+#        SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+#        SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+#        SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+#        SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH}
+#        SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE}
+#        NEWS_API_KEY: ${NEWS_API_KEY}
+#
+#
+#  mysql:
+#    image: mysql:8.0
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root123
+#      MYSQL_DATABASE: startup_eco
+#      MYSQL_USER: harsh
+#      MYSQL_PASSWORD: harsh123
+#    ports:
+#      - "3307:3306"
+#    networks:
+#      - s-network
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#    healthcheck:
+#      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot123"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 30s
+#
+#networks:
+#  s-network:
+#    driver: bridge
+#
+#volumes:
+#  mysql-data:
