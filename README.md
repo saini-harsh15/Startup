@@ -152,6 +152,7 @@ Through this project, I gained hands-on experience with:
 * Pagination and performance optimization
 * Exception handling and debugging
 * MVC architecture in Spring Boot
+* Real-time messaging using WebSockets
 * Team collaboration and project development workflow
 
 ---
@@ -160,7 +161,6 @@ Through this project, I gained hands-on experience with:
 
 * JWT-based authentication
 * AI-powered recommendation engine integration
-* Real-time messaging using WebSockets
 * Cloud deployment (AWS/Railway/Render)
 * Dockerized deployment
 * Admin dashboard and analytics
